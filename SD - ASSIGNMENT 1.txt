@@ -1,0 +1,79 @@
+SD - ASSIGNMENT 1
+
+
+> THREADS:
+    
+    - voter
+    - poll clerk
+    - pollster
+
+
+> MUTUAL SPACES
+    
+    - poll station (fifo)
+        - controla quantos eleitores podem estar dentro da (polling station)
+        - usar ReentrantLock + Condition para controlo de entrada/saída
+        - estrutura de dados: Queue<Voter> 
+        - métodos:
+            - enterStation()
+            - exitStation()
+
+    - ID Check:
+        - o [Poll Clerk] verifica se o ID do [voter] já foi usado
+        - usar um ReentrantLock para evitar acessos concorrentes
+        - estrutura de dados: `HashMap<String, Boolean>` (ou `ConcurrentHashMap<String, Boolean>`)
+        - métodos:
+            - checkID()
+            - registerID()
+
+    - e-voting booth (1 [voter] each time)
+        - Apenas 1 [voter] pode votar ao mesmo tempo
+        - usar ReentrantLock
+        - métodos:
+            - vote()
+
+    - exit poll (queue)
+        - Eleitores saem da votação e alguns são abordados pelo *Pollster*
+        - usar **ReentrantLock** para garantir acesso seguro à fila de espera
+        - estrutura de dados: `Queue<Voter>`
+        - métodos:
+            - conductPoll()
+            - addVoterExitPoll()
+            - rebornVoter()
+
+    - logs
+        - usar **ReentrantLock** para garantir que apenas uma *thread* escreve de cada vez
+
+
+
+
+    - [voters] gather outside
+    - [Poll Clerk] abre a (polling station)
+    - entram X voters para a (polling station) o resto fica fora em wait
+    - por ordem de entrada os [voters] vão ao (ID Check) : 
+            - present ID and wait for [poll clerk] to approve
+    - [voter] goes to (e-voting booth) : 
+            - random vote
+            - await random amount of time
+    - [voter] exit from (polling station):
+            - diz que pode entrar um [voter] na (polling station)
+    - [voter] goes to (exit poll):
+            - X percentage will be aapprouch by [pollster]
+                - can choose to respond or not
+                    - anser could be true or false
+    - [voter] reborn :
+            - same ID or a New one
+
+    - [Poll Clerk] closes the (poll station) :
+            - could be by number of votes
+            - could be by time
+            - all [voters] inside the (poll station) must complete their votes
+
+
+
+
+
+
+NOTE:AS threads invocam metodos do Mutual spaces
+
+
