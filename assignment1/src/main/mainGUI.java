@@ -72,7 +72,7 @@ public class mainGUI extends javax.swing.JFrame {
         pollingStationSpinner.setModel(new javax.swing.SpinnerNumberModel(2, 2, 5, 1));
 
         poolingStation.setBackground(new java.awt.Color(204, 255, 204));
-        poolingStation.setBorder(javax.swing.BorderFactory.createBevelBorder(null));
+        poolingStation.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
 
         psStatus.setFont(new java.awt.Font("Helvetica Neue", 2, 18)); // NOI18N
         psStatus.setText("Closed");
@@ -187,7 +187,7 @@ public class mainGUI extends javax.swing.JFrame {
             .addGroup(poolingStationLayout.createSequentialGroup()
                 .addGap(19, 19, 19)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 119, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 113, Short.MAX_VALUE)
                 .addComponent(idCheck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(1, 1, 1)
                 .addComponent(jLabel7)
