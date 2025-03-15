@@ -1,35 +1,29 @@
 package Threads.Pollster;
 
 import Monitors.ExitPoll.IExitPoll;
-import Monitors.Logs.ILogs;
-import java.util.Random;
+import Monitors.PollStation.MPollStation;
 
-public class TPollster implements Runnable {
+public class TPollster extends Thread {
     private final IExitPoll exitPoll;
-    private final ILogs log;
-    private final Random random = new Random();
+    private final MPollStation pollStation;
+    private final PollsterState pollsterState;
 
-    public TPollster(IExitPoll exitPoll, ILogs log) {
+    private TPollster(IExitPoll exitPoll,MPollStation pollStation) {
+        this.pollsterState = PollsterState.WAIT;
         this.exitPoll = exitPoll;
-        this.log = log;
+        this.pollStation = pollStation;
     }
-
+    
+    public Runnable getInstance(IExitPoll exitPoll, MPollStation pollStation){
+        return new TPollster(exitPoll, pollStation);
+    }
+    
     @Override
     public void run() {
-        log.log("[Pollster] - Aguardando eleitores na saída...");
-
-        while (!exitPoll.isElectionOver()) {
-            try {
-                Thread.sleep(1000);
-                String voterID = exitPoll.getNextVoter();
-                if (voterID != null) {
-                    boolean truthful = random.nextBoolean();
-                    log.log("[Pollster] - Entrevistou " + voterID + " que disse " + (truthful ? "a verdade" : "uma mentira"));
-                }
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }
-        log.log("[Pollster] - Pesquisa encerrada.");
+        do{
+            exitPoll.callVotersOnExitPoll();
+            exitPoll.questionVote();
+            exitPoll.receiveVote();
+        }while(!pollStation.annoucesElectionEnd());
     }
 }

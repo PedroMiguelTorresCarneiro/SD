@@ -1,28 +1,32 @@
 package Threads.PollClerk;
 
+import Monitors.EvotingBooth.IEvotingBooth;
 import Monitors.PollStation.IPollStation;
-import Monitors.Logs.ILogs;
 import Monitors.ExitPoll.IExitPoll;
 
-public class TPollClerk implements Runnable {
+public class TPollClerk extends Thread {
     private final IPollStation pollStation;
     private final IExitPoll exitPoll;
-    private final ILogs log;
-    private final int maxVotes;
+    private final IEvotingBooth votingBooth;
+    private final int maxVoters;
     private int voteCount = 0;
     private ClerkState state;
 
-    public TPollClerk(IPollStation pollStation, IExitPoll exitPoll, ILogs log, int maxVotes) {
+    private TPollClerk(IPollStation pollStation, IExitPoll exitPoll, IEvotingBooth votingBooth, int maxVoters) {
         this.pollStation = pollStation;
         this.exitPoll = exitPoll;
-        this.log = log;
-        this.maxVotes = maxVotes;
+        this.votingBooth = votingBooth;
+        this.maxVoters = maxVoters;
         this.state = ClerkState.OPEN_PS;
     }
-
+    
+    public Runnable getInstance(IPollStation pollStation, IExitPoll exitPoll, int maxVoters){
+        return new TPollClerk(pollStation, exitPoll, votingBooth, maxVoters);
+    }
+    
     @Override
     public void run() {
-        while (state != ClerkState.GO_HOME) {
+        while (!votingBooth.finishConting()) {
             switch (state) {
                 case OPEN_PS -> openPollStation();
                 case WAIT_FOR_VOTERS -> waitForVoters();

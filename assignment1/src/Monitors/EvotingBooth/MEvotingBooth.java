@@ -1,21 +1,26 @@
 package Monitors.EvotingBooth;
 
-import Monitors.Logs.ILogs;
-import Monitors.Logs.MLogs;
+import Monitors.IAll;
+import Threads.Voter.TVoter;
 
 import java.util.HashMap;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MEvotingBooth implements IEvotingBooth {
-    private static MEvotingBooth instance;
-    private final Lock lock = new ReentrantLock(); // 🔒 Garante que só um `Voter` está a votar por vez
+    private static MEvotingBooth instance = null;
     private final HashMap<String, String> votes = new HashMap<>();
-    private final ILogs log = MLogs.getInstance();
+    private final ReentrantLock lock;
+    private Condition c1;
+    
+    private MEvotingBooth() {
+        lock = new ReentrantLock();
+        // podemos criar as condições de paragem 
+        c1 = lock.newCondition();
+    }
 
-    private MEvotingBooth() {}
-
-    public static IEvotingBooth getInstance() {
+    public IAll getInstance() {
         if (instance == null) {
             instance = new MEvotingBooth();
         }
@@ -23,22 +28,32 @@ public class MEvotingBooth implements IEvotingBooth {
     }
 
     @Override
-    public void voting(String voterID, String vote) {
-        lock.lock(); // 🔒 Garante que só um `Voter` está a votar ao mesmo tempo
+    public void voting(TVoter t1) {
         try {
-            log.log("[EvotingBooth] - " + voterID + " está a votar...");
-            Thread.sleep(1000); // Simula tempo de votação
-            votes.put(voterID, vote);
-            log.log("[EvotingBooth] - " + voterID + " votou em " + vote);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        } finally {
-            lock.unlock(); // 🔓 Libera para outro `Voter`
+            // esperar um tempo
+            c1.wait(452124);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(MEvotingBooth.class.getName()).log(Level.SEVERE, null, ex);
         }
+        // add vote to Votes
+        votes.put(t1.getId(), t1.getVote());
     }
-
+    
     @Override
-    public boolean isRegistered(String voterID) {
-        return votes.containsKey(voterID); // Apenas leitura, sem necessidade de lock
+    public String getVotesResult(){
+        int countA = 0;
+        int countB = 0;
+        
+        // Percorrer os valores do HashMap e contar os votos
+        for (String vote : votes.values()) {
+            if ("A".equals(vote)) {
+                countA++;
+            } else if ("B".equals(vote)) {
+                countB++;
+            }
+        }
+        
+        // Retornar o resultado formatado
+        return "A : " + countA + " - B : " + countB;
     }
 }

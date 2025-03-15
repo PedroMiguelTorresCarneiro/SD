@@ -9,7 +9,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class MPollStation implements IPollStation {
+public class MPollStation implements IAll {
     private static MPollStation instance;
     private final Lock lock = new ReentrantLock();
     private final Condition canEnter = lock.newCondition();
@@ -23,14 +23,13 @@ public class MPollStation implements IPollStation {
         this.state = PollStationState.CLOSED_PS; // Começa fechada
     }
 
-    public static IPollStation getInstance(int maxCapacity) {
+    public static IAll getInstance(int maxCapacity) {
         if (instance == null) {
             instance = new MPollStation(maxCapacity);
         }
         return instance;
     }
     
-    @Override
     public String getPollState() {
         lock.lock();
         try {
@@ -43,7 +42,6 @@ public class MPollStation implements IPollStation {
         }
     }
     
-    @Override
     public void enterPS(String voterID) throws InterruptedException {
         lock.lock();
         try {
@@ -57,7 +55,6 @@ public class MPollStation implements IPollStation {
         }
     }
 
-    @Override
     public void exitPS(String voterID) {
         lock.lock();
         try {
@@ -69,7 +66,6 @@ public class MPollStation implements IPollStation {
         }
     }
 
-    @Override
     public void closeStation() {
         lock.lock();
         try {
@@ -81,7 +77,6 @@ public class MPollStation implements IPollStation {
         }
     }
     
-    @Override
     public void openStation() {
         lock.lock();
         try {
@@ -93,7 +88,6 @@ public class MPollStation implements IPollStation {
         }
     }
     
-    @Override
     public boolean openFifo() {
         lock.lock();
         try {
@@ -101,6 +95,10 @@ public class MPollStation implements IPollStation {
         } finally {
             lock.unlock();
         }
+    }
+
+    public boolean annoucesElectionEnd() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
 }

@@ -1,6 +1,9 @@
 package Monitors.EvotingBooth;
 
-public interface IEvotingBooth {
-    void voting(String voterID, String vote);
-    boolean isRegistered(String voterID);
+import Monitors.IAll;
+import Threads.Voter.TVoter;
+
+public interface IEvotingBooth extends IAll{
+    void voting(TVoter t1);
+    String getVotesResult();
 }

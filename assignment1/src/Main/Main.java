@@ -5,6 +5,7 @@ import Monitors.IDCheck.*;
 import Monitors.EvotingBooth.*;
 import Monitors.Logs.*;
 import Monitors.ExitPoll.*;
+import Monitors.IAll;
 import Threads.Voter.*;
 import Threads.PollClerk.*;
 import Threads.Pollster.*;
@@ -19,7 +20,7 @@ public class Main {
         ILogs log = MLogs.getInstance();
         IEvotingBooth votingBooth = MEvotingBooth.getInstance();
         IIDCheck idCheck = MIDCheck.getInstance(votingBooth);
-        IExitPoll exitPoll = MExitPoll.getInstance();
+        IAll exitPoll = MExitPoll.getInstance();
         IPollStation pollStation = MPollStation.getInstance(maxCapacity);
 
         // 🔹 Criar e iniciar os eleitores (TVoter)

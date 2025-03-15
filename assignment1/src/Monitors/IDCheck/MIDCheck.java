@@ -1,48 +1,52 @@
 package Monitors.IDCheck;
 
 import Monitors.EvotingBooth.IEvotingBooth;
-import Monitors.Logs.ILogs;
-import Monitors.Logs.MLogs;
-
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import Monitors.IAll;
+import Threads.Voter.TVoter;
+import java.util.concurrent.locks.*;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MIDCheck implements IIDCheck {
     private static MIDCheck instance;
-    private final Lock lock = new ReentrantLock(); // Garante exclusividade no check ID
-    private final ILogs log = MLogs.getInstance();
-    private final IEvotingBooth votingBooth;
+    private final ReentrantLock lock;
+    private Condition c1;
+    private IEvotingBooth votingBooth;
+    private List<String> listID = new ArrayList<String>();
 
-    private MIDCheck(IEvotingBooth votingBooth) {
-        this.votingBooth = votingBooth;
+    private MIDCheck() {
+        lock = new ReentrantLock();
+        // podemos criar as condições de paragem 
+        c1 = lock.newCondition();
     }
 
-    public static IIDCheck getInstance(IEvotingBooth votingBooth) {
+    public IAll getInstance(){
         if (instance == null) {
-            instance = new MIDCheck(votingBooth);
+            instance = new MIDCheck();
         }
         return instance;
     }
-
+    
     @Override
-    public boolean checkingID(String voterID) {
-        lock.lock(); // 🔒 Garante que só um `Voter` faz check de ID ao mesmo tempo
+    public void callAvoter(){
+        // chamar um metodo da PS para acordar a thread
+    }
+    
+    @Override
+    public void RegiterID(TVoter t1){
+        // regist ID
+        listID.add(t1.getId());
+    }
+    
+    @Override
+    public boolean checkingID(TVoter t1){
         try {
-            log.log("[IDCheck] - Verificando ID de " + voterID);
-            Thread.sleep(500); // Simula tempo de verificação
-
-            if (votingBooth.isRegistered(voterID)) {
-                log.log("[IDCheck] - " + voterID + " já está registado! ID inválido.");
-                return false; // ID já existe
-            }
-
-            log.log("[IDCheck] - " + voterID + " pode votar.");
-            return true; // ID ainda não existe
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return false;
-        } finally {
-            lock.unlock(); // 🔓 Libera para outro `Voter`
+            c1.wait(1325465); // simula um tempo de checkar o ID
+        } catch (InterruptedException ex) {
+            Logger.getLogger(MIDCheck.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        return listID.contains(t1.getId());
     }
 }

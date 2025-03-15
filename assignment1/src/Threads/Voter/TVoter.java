@@ -9,18 +9,19 @@ import java.util.Random;
 
 public class TVoter implements Runnable {
     private String id;
-    private final String vote;
+    private String vote;
+    private static int voterIDs = 0;
+    
     private final IPollStation pollStation;
     private final IIDCheck idCheck;
     private final IEvotingBooth votingBooth;
     private final IExitPoll exitPoll;
     private final ILogs log;
     private VoterState state;
-    private final Random random = new Random();
 
-    public TVoter(String id, String vote, IPollStation pollStation, IIDCheck idCheck, IEvotingBooth votingBooth, IExitPoll exitPoll, ILogs log) {
-        this.id = id;
-        this.vote = vote;
+    private TVoter(IPollStation pollStation, IIDCheck idCheck, IEvotingBooth votingBooth, IExitPoll exitPoll, ILogs log) {
+        setId();
+        setVote();
         this.pollStation = pollStation;
         this.idCheck = idCheck;
         this.votingBooth = votingBooth;
@@ -28,7 +29,29 @@ public class TVoter implements Runnable {
         this.log = log;
         this.state = VoterState.WAITING;
     }
-
+    
+    public static Runnable getInstance(IPollStation pollStation, IIDCheck idCheck, IEvotingBooth votingBooth, IExitPoll exitPoll, ILogs log){
+        return new TVoter(pollStation, idCheck, votingBooth, exitPoll, log);
+    }
+    
+    public void setId(){
+        this.id = "V" + Integer.toString(voterIDs++);
+    }
+    
+    public void setVote(){
+        Random random = new Random();
+        this.vote = random.nextBoolean() ? "A" : "B";
+    }
+    
+    public String getId(){
+        return id;
+    }
+    
+    public String getVote(){
+        return vote;
+    }
+    
+    
     @Override
     public void run() {
         while (state != VoterState.GO_HOME) {
@@ -50,7 +73,9 @@ public class TVoter implements Runnable {
         try {
             while ("Closed".equals(pollStation.getPollState()) || !pollStation.openFifo()) {
                 log.log("[Voter] - " + id + " está à espera que a PollStation abra e tenha espaço.");
-                Thread.sleep(500);
+                while(true){
+                    ;
+                }
             }
             pollStation.enterPS(id);
             state = VoterState.WAITING_FIFO;
@@ -93,25 +118,16 @@ public class TVoter implements Runnable {
         }
     }
 
-    private void reborn() {
-        if (exitPoll.isElectionOver()) {
-            log.log("[Voter] - " + id + " não pode renascer, eleições encerradas.");
-            state = VoterState.GO_HOME;
-            return;
-        }
-
-        boolean sameID = random.nextDouble() > 0.5;
-        if (sameID) {
-            log.log("[Voter] - " + id + " renasceu com o mesmo ID.");
-        } else {
-            String newID;
-            do {
-                newID = "V" + random.nextInt(1000);
-            } while (idCheck.checkingID(newID));
-            id = newID;
-            log.log("[Voter] - " + id + " renasceu com novo ID.");
-        }
-
-        state = VoterState.WAITING;
+    public String getVote() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
+
+    public String getVote() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public String getVote() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
 }

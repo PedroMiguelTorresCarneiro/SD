@@ -1,76 +1,63 @@
 package Monitors.ExitPoll;
-
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+// packages
+import Monitors.IAll;
+import Threads.Voter.TVoter;
+// libs
+import java.util.*;
+import java.util.concurrent.locks.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MExitPoll implements IExitPoll {
-    private static MExitPoll instance;
+    private static MExitPoll instance = null;
     private final Queue<String> exitPollQueue = new LinkedList<>();
-    private final Lock lock = new ReentrantLock();
-    private boolean electionOver = false; // 🔹 Estado da eleição
+    private final ReentrantLock lock;
+    private Condition c1;
+    private final Random random = new Random();
 
-    private MExitPoll() {}
-
-    public static IExitPoll getInstance() {
+    private MExitPoll() {
+        lock = new ReentrantLock();
+        // podemos criar as condições de paragem 
+        c1 = lock.newCondition();
+    }
+    
+    public IAll getInstance() {
         if (instance == null) {
             instance = new MExitPoll();
         }
         return instance;
     }
-
-    @Override
-    public void addToExitPoll(String voterID) {
-        lock.lock();
+    
+    public void callVoterExitPoll(){
+        // chama uma thread na exitPollQueue
+        c1.notify();
+    }
+    
+    public void receiveVoterAnswer(TVoter t1){
+        // guarda o voto algures
+        exitPollQueue.add(t1.getVote());
+    }
+    
+    public void questionsForVotes(){
         try {
-            if (!electionOver) { // 🔹 Só adicionamos enquanto a eleição estiver aberta
-                exitPollQueue.add(voterID);
-                System.out.println(voterID + " entrou na fila de exit poll.");
-            }
-        } finally {
-            lock.unlock();
+            // esperar um tempo para simular a resposta
+            c1.wait(12453);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(MExitPoll.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
-    @Override
-    public String getNextVoter() {
-        lock.lock();
-        try {
-            return exitPollQueue.poll();
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    @Override
-    public boolean hasVoters() {
-        lock.lock();
-        try {
-            return !exitPollQueue.isEmpty();
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    @Override
-    public void announceElectionEnd() {
-        lock.lock();
-        try {
-            electionOver = true;
-            System.out.println("Exit Poll: Eleições encerradas!");
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    @Override
-    public boolean isElectionOver() {
-        lock.lock();
-        try {
-            return electionOver;
-        } finally {
-            lock.unlock();
+    
+    public void reborn(TVoter t1){
+        // calcular uma percentagem de reborn com o mesmo ID
+        boolean sameID = random.nextDouble() > 0.5;
+        if (sameID) {
+            // update do Voto
+            t1.setVote();
+        } else {
+            // novo ID
+            t1.setId();
+            // update voto
+            t1.setVote();
         }
     }
 }
