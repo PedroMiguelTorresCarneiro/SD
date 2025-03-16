@@ -30,15 +30,9 @@
 ┃ ┣ 📜 IAll.java (Interface que combina todas as outras)
 ┃
 ┣ 📂 Threads/ (Contém as Threads e Interfaces das Threads)
-┃ ┣ 📂 Voter/
-┃ ┃ ┣ 📜 ITVoter.java (Interface do Voter)
-┃ ┃ ┣ 📜 TVoter.java (Implementação do Voter)
-┃ ┣ 📂 PollClerk/
-┃ ┃ ┣ 📜 ITPollClerk.java (Interface do PollClerk)
-┃ ┃ ┣ 📜 TPollClerk.java (Implementação do PollClerk)
-┃ ┣ 📂 Pollster/
-┃ ┃ ┣ 📜 ITPollster.java (Interface do Pollster)
-┃ ┃ ┣ 📜 TPollster.java (Implementação do Pollster)
+┃ ┣ 📜 TVoter.java (Implementação do Voter)
+┃ ┣ 📜 TPollClerk.java (Implementação do PollClerk)
+┃ ┣ 📜 TPollster.java (Implementação do Pollster)
 ┃
 ┣ 📂 Main/ (Contém a classe Main para rodar o sistema)
 ┃ ┣ 📜 Main.java

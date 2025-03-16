@@ -1,4 +1,4 @@
-package Threads.PollClerk;
+package Threads;
 
 public enum ClerkState {
     OPEN_PS,

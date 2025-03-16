@@ -1,104 +1,154 @@
 package Monitors.PollStation;
 
-import Monitors.Logs.ILogs;
-import Monitors.Logs.MLogs;
 
+import Monitors.IAll;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class MPollStation implements IAll {
-    private static MPollStation instance;
-    private final Lock lock = new ReentrantLock();
-    private final Condition canEnter = lock.newCondition();
-    private final int maxCapacity;
-    private PollStationState state;
-    private final Queue<String> waitingFIFO = new LinkedList<>(); // FIFO para threads dentro da PollStation
-    private final ILogs log = MLogs.getInstance(); // Instância do log
+public class MPollStation implements IPollStation {
+    private final int capacidadeMax;
+    private final Queue<String> filaEspera = new LinkedList<>();
+    private final Queue<String> filaInterna = new LinkedList<>();
+    private int votantesAtuais = 0;
+    private boolean fechada = false;
+    private final Lock lock;
+    private final Condition podeEntrar; 
+    private final Condition podeSerChamado;
+    private final Condition podeVotar;
+    private final Condition podeChamarProximo; 
+    private final Condition podeFecharEstacao ;
+    private String votanteAtual = null;
+    private static MPollStation instance = null;
 
-    private MPollStation(int maxCapacity) {
-        this.maxCapacity = maxCapacity;
-        this.state = PollStationState.CLOSED_PS; // Começa fechada
+    private MPollStation(int capacidadeMax) {
+        this.capacidadeMax = capacidadeMax;
+        lock = new ReentrantLock();
+        // Condições
+        podeEntrar = lock.newCondition();
+        podeSerChamado = lock.newCondition();
+        podeVotar = lock.newCondition();
+        podeChamarProximo = lock.newCondition();
+        podeFecharEstacao = lock.newCondition();
+        
     }
-
-    public static IAll getInstance(int maxCapacity) {
+    
+    public static IPollStation getInstance(int capacidadeMax) {
         if (instance == null) {
-            instance = new MPollStation(maxCapacity);
+            instance =  new MPollStation(capacidadeMax);
         }
         return instance;
     }
     
-    public String getPollState() {
+ 
+    public void entrarNaEstacao(String voterId) throws InterruptedException {
         lock.lock();
         try {
-            if (state == PollStationState.OPEN_PS)
-                return "Open";
-            else
-                return "Closed";
-        } finally {
-            lock.unlock();
-        }
-    }
-    
-    public void enterPS(String voterID) throws InterruptedException {
-        lock.lock();
-        try {
-            while (state != PollStationState.OPEN_PS || waitingFIFO.size() >= maxCapacity) {
-                canEnter.await(); // Espera até a PollStation estar aberta e ter espaço
+            if (fechada) {
+                System.out.println("❌ Estação fechada! " + voterId + " vai para casa.");
+                //logs.registrarVoter(voterId); 
+                return;
             }
-            waitingFIFO.add(voterID); // Adiciona a thread ao FIFO
-            log.log("[PollStation] - " + voterID + " entrou na PollStation.");
+
+            filaEspera.add(voterId);
+            //logs.setExternal(voterId); // Registra a chegada do votante
+            System.out.println("🕒 Votante " + voterId + " entrou na fila externa...");
+
+            while (votantesAtuais >= capacidadeMax || !filaEspera.peek().equals(voterId)) {
+                if (fechada) {
+                    System.out.println("❌ Estação fechada! " + voterId + " foi removido da fila.");
+                    return;
+                }
+                podeEntrar.await();
+            }
+
+            filaEspera.poll();
+            votantesAtuais++;
+            filaInterna.add(voterId);
+            //logs.setInternal(voterId); // Registra a entrada do votante
+            System.out.println("✅ Votante " + voterId + " entrou na estação e aguarda verificação de ID.");
+            podeSerChamado.signal();
         } finally {
             lock.unlock();
         }
     }
 
-    public void exitPS(String voterID) {
+    public String chamarProximoParaVerificacao() throws InterruptedException {
         lock.lock();
         try {
-            waitingFIFO.remove(voterID); // Remove o eleitor do FIFO interno
-            canEnter.signal(); // Permite que outro Voter entre
-            log.log("[PollStation] - " + voterID + " saiu da PollStation.");
+            while (filaInterna.isEmpty()) {
+                podeSerChamado.await();
+            }
+
+            votanteAtual = filaInterna.poll();
+            //logs.setIDCheck(votanteAtual); // Registra a verificação de ID
+            return votanteAtual;
         } finally {
             lock.unlock();
         }
     }
 
-    public void closeStation() {
+    public void permitirVoto() {
         lock.lock();
         try {
-            state = PollStationState.CLOSED_PS;
-            canEnter.signalAll(); // Libera todas as Threads em espera
-            log.log("[PollStation] - A votação foi encerrada!");
-        } finally {
-            lock.unlock();
-        }
-    }
-    
-    public void openStation() {
-        lock.lock();
-        try {
-            state = PollStationState.OPEN_PS;
-            canEnter.signalAll(); // Libera todas as Threads em espera
-            log.log("[PollStation] - Aberta a PollStation!");
-        } finally {
-            lock.unlock();
-        }
-    }
-    
-    public boolean openFifo() {
-        lock.lock();
-        try {
-            return waitingFIFO.size() < maxCapacity;
+            podeVotar.signal();
         } finally {
             lock.unlock();
         }
     }
 
-    public boolean annoucesElectionEnd() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void aguardarAutorizacaoParaVotar(String voterId) throws InterruptedException {
+        lock.lock();
+        try {
+            while (!voterId.equals(votanteAtual)) {
+                podeVotar.await();
+            }
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public void sairDaEstacao(String voterId) {
+        lock.lock();
+        try {
+            votantesAtuais--;
+            System.out.println("🚪 Votante " + voterId + " saiu da estação.");
+            votanteAtual = null;
+            podeChamarProximo.signal(); // Permite ao TPollClerk chamar o próximo
+            podeEntrar.signal(); // Agora outro votante pode entrar
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public void aguardarSaidaDoAnterior() throws InterruptedException {
+        lock.lock();
+        try {
+            while (votanteAtual != null) {
+                podeChamarProximo.await();
+            }
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public void fecharEstacao() {
+        lock.lock();
+        try {
+            fechada = true;
+            System.out.println("⏹ A estação de votação foi FECHADA!");
+            podeEntrar.signalAll();
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public boolean isFechada() {
+        return fechada;
     }
     
 }

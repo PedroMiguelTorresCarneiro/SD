@@ -1,6 +1,8 @@
 package Monitors;
 
 public interface IAll {
-
-    public IAll getInstance();
+    // Generic getInstance that can return any implementation
+    static <T extends IAll> T getInstance() {
+        return null; // This will be overridden by implementing classes
+    }
 }

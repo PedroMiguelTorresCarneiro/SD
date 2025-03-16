@@ -1,4 +1,4 @@
-package Threads.Pollster;
+package Threads;
 
 public enum PollsterState {
     WAIT,

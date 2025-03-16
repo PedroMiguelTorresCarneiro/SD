@@ -1,10 +1,17 @@
 package Monitors.PollStation;
 
 public interface IPollStation {
-    void enterPS(String voterID) throws InterruptedException;
-    void exitPS(String voterID);
-    void closeStation();
-    void openStation();
-    String getPollState();
-    boolean openFifo();
+    
+    static IPollStation getInstance(int capacidadeMax){
+        return MPollStation.getInstance(capacidadeMax);
+    }
+    
+    void entrarNaEstacao(String voterId) throws InterruptedException;
+    String chamarProximoParaVerificacao() throws InterruptedException;
+    void permitirVoto();
+    void aguardarAutorizacaoParaVotar(String voterId) throws InterruptedException;
+    void sairDaEstacao(String voterId);
+    public void aguardarSaidaDoAnterior() throws InterruptedException;
+    void fecharEstacao();
+    boolean isFechada();
 }

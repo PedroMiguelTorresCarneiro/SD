@@ -1,56 +1,50 @@
 package Main;
 
-import Monitors.PollStation.*;
-import Monitors.IDCheck.*;
-import Monitors.EvotingBooth.*;
-import Monitors.Logs.*;
-import Monitors.ExitPoll.*;
-import Monitors.IAll;
-import Threads.Voter.*;
-import Threads.PollClerk.*;
-import Threads.Pollster.*;
+import Monitors.EvotingBooth.IEvotingBooth;
+import Monitors.ExitPoll.IExitPoll;
+import Monitors.IDCheck.IIDCheck;
+import Monitors.PollStation.IPollStation;
+import Threads.TPollClerk;
+import Threads.TPollster;
+import Threads.TVoter;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         int numVoters = 3;   // Número de eleitores a serem criados
         int maxCapacity = 2;  // Capacidade máxima dentro da PollStation
-        int maxVotes = 4;    // Número total de votos antes de fechar a votação
-
-        // 🔹 Criar os monitores (Shared Regions)
-        ILogs log = MLogs.getInstance();
-        IEvotingBooth votingBooth = MEvotingBooth.getInstance();
-        IIDCheck idCheck = MIDCheck.getInstance(votingBooth);
-        IAll exitPoll = MExitPoll.getInstance();
-        IPollStation pollStation = MPollStation.getInstance(maxCapacity);
-
-        // 🔹 Criar e iniciar os eleitores (TVoter)
-        Thread[] voters = new Thread[numVoters];
-        for (int i = 0; i < numVoters; i++) {
-            String voterID = "V" + i;
-            String vote = Math.random() > 0.5 ? "A" : "B"; // Escolhe aleatoriamente Party A ou Party B
-            voters[i] = new Thread(new TVoter(voterID, vote, pollStation, idCheck, votingBooth, exitPoll, log));
-            voters[i].start();
-        }
-
-        // 🔹 Criar e iniciar o PollClerk
-        Thread pollClerk = new Thread(new TPollClerk(pollStation, exitPoll, log, maxVotes));
+        int maxVotes = 6;    // Número total de votos antes de fechar a votação
+           
+        System.out.println("\n----------------------------------");
+        System.out.println("Iniciar simulação de eleições...");
+        System.out.println("Total de votos possíveis: " + maxVotes);
+        System.out.println("Total de votantes: " + numVoters);
+        System.out.println("----------------------------------");
+        
+        
+        // Shared Regions
+        IPollStation pollStation = IPollStation.getInstance(maxCapacity);
+        IIDCheck idCheck = IIDCheck.getInstance();
+        IEvotingBooth booth = IEvotingBooth.getInstance();
+        IExitPoll exitPoll = IExitPoll.getInstance();
+        
+        // Threads 
+        TPollClerk pollClerk = new TPollClerk(pollStation, idCheck, booth, exitPoll, maxVotes);
+        TPollster pollster = new TPollster(exitPoll);
+        
         pollClerk.start();
-
-        // 🔹 Criar e iniciar o Pollster
-        Thread pollster = new Thread(new TPollster(exitPoll, log));
         pollster.start();
-
-        // 🔹 Esperar que todas as Threads terminem
-        try {
-            for (Thread voter : voters) {
-                voter.join();
-            }
-            pollClerk.join();
-            pollster.join();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+        
+        
+        for (int i = 1; i <= 10; i++) {
+            new TVoter("V" + i, pollStation, booth, exitPoll).start();
         }
 
-        log.log("[Main] - Simulação encerrada.");
+        pollClerk.join();
+        pollster.join();
+
+        System.out.println("✅ Simulação de eleições terminada!");
+        System.exit(0); // Termina a execução
+
+        
     }
 }

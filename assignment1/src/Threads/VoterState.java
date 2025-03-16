@@ -1,4 +1,4 @@
-package Threads.Voter;
+package Threads;
 
 public enum VoterState {
     WAITING,
