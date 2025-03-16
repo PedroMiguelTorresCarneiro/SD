@@ -53,7 +53,9 @@ public class TVoter extends Thread {
             }
 
             // **Voltar para a fila externa**
-            run();
+            //run();
+            // **Criar uma nova thread em vez de chamar run() diretamente**
+            new TVoter(voterId, pollStation, booth, exitPoll).start();
 
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
