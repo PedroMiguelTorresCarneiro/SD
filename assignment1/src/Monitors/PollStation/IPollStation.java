@@ -5,13 +5,17 @@ public interface IPollStation {
     static IPollStation getInstance(int capacidadeMax){
         return MPollStation.getInstance(capacidadeMax);
     }
+
+    public void openPS(int maxVotes);
+
+    public void callNextVoter();
+
+    public void closePS();
+
+    public boolean open();
+
+    public void enterPS(String voterId);
+
+    public void exitingPS();
     
-    void entrarNaEstacao(String voterId) throws InterruptedException;
-    String chamarProximoParaVerificacao() throws InterruptedException;
-    void permitirVoto();
-    void aguardarAutorizacaoParaVotar(String voterId) throws InterruptedException;
-    void sairDaEstacao(String voterId);
-    public void aguardarSaidaDoAnterior() throws InterruptedException;
-    void fecharEstacao();
-    boolean isFechada();
 }

@@ -1,65 +1,74 @@
 package Monitors.EvotingBooth;
 
 import Monitors.IAll;
+
+import Threads.TPollClerk;
+
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.locks.Lock;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class MEvotingBooth implements IEvotingBooth {
+public class MEvotingBooth implements IAll{
     private static MEvotingBooth instance = null;
-    private final Map<String, String> votos = new HashMap<>();
-    private final ReentrantLock lock;
+    private final Map<String, String> votes = new HashMap<>();
+    private final ReentrantLock lock_gathering;
+    private final Condition simulateCountig;
+    private long countA, countB;
     
     private MEvotingBooth() {
-        lock = new ReentrantLock();
+        lock_gathering = new ReentrantLock();
+        simulateCountig = lock_gathering.newCondition();
     }
 
-    public static MEvotingBooth getInstance() {
+    public static IAll getInstance() {
         if (instance == null) {
             instance = new MEvotingBooth();
         }
         return instance;
     }
 
-    public String votar(String voterId) throws InterruptedException {
-        lock.lock();
+    public void gathering() throws InterruptedException {
+        lock_gathering.lock();
         try {
-            //System.out.println("🗳 Votante " + voterId + " está votando...");
-            String voto = (Math.random() > 0.4) ? "A" : "B";
-            votos.put(voterId, voto);
-            
-            //logs.atualizarEstado(voterId, "IDCheck", "VotingBooth"); // Registra a mudança de fila
-            //logs.atualizarEstado(voterId, "VotingBooth", "");    // Registra a mudança de fila
+            System.out.println("Iniciando contagem dos votos...");
 
-            Thread.sleep((long) (Math.random() * 16)); 
-            
-            //logs.atualizarEstado(voterId, "VotingBooth", "Vote", voto); // Registra o voto do votante
+            // Contar os votos
+            countA = votes.values().stream()
+                    .filter(valor -> "A".equals(valor))
+                    .count();
 
-            System.out.println("✅ Votante " + voterId + " terminou de votar. Voto: " + voto);
-            return voto;
+            countB = votes.values().stream()
+                    .filter(valor -> "B".equals(valor))
+                    .count();
+
+            System.out.println("Contagem finalizada - Candidato A: " + countA + ", Candidato B: " + countB);
+
+            // Sinalizar que a contagem foi concluída
+            simulateCountig.await(1000, TimeUnit.MILLISECONDS);
         } finally {
-            lock.unlock();
+            lock_gathering.unlock();
         }
     }
 
-    public int getTotalVotos() {
-        lock.lock();
-        try {
-            return votos.size(); // Retorna a quantidade total de votos
-        } finally {
-            lock.unlock();
-        }
+    public void publishElectionResults(TPollClerk pollClerk) {
+        
+        System.out.println("Total de votos em A: " + countA);
+        System.out.println("Total de votos em B: " + countB);
+        System.out.println("\n\n *VENCEDOR* -> "+ (countA > countB ? "A" : (countB > countA ? "B" : "EMPATE")) );
+        
+        pollClerk.setState(TPollClerk.PollClerkState.PUBLISHING_WINNER);
+        
     }
 
-    public Map<String, String> gatherVotes() throws InterruptedException {
-        lock.lock();
-        try {
-            System.out.println("📊 Contando votos...");
-            Thread.sleep(2000);
-            return new HashMap<>(votos);
-        } finally {
-            lock.unlock();
-        }
+    public void vote() {
+        
     }
+
+    public String getVote(String voterId) {
+        return votes.get(voterId);
+    }
+
+    
 }

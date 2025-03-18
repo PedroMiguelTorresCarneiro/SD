@@ -1,16 +1,21 @@
 package Monitors.EvotingBooth;
 
 import Monitors.IAll;
-import java.util.Map;
+import Threads.TPollClerk;
 
 public interface IEvotingBooth extends IAll{
     
     // Type-specific getInstance
-    static IEvotingBooth getInstance() {
+    static IAll getInstance() {
         return MEvotingBooth.getInstance();
     }
-    
-    String votar(String voterId) throws InterruptedException;
-    int getTotalVotos();
-    Map<String, String> gatherVotes() throws InterruptedException;
+
+    void gathering() throws InterruptedException;
+
+    void publishElectionResults(TPollClerk pollClerk);
+
+    void vote();
+
+    String getVote(String voterId);
+
 }

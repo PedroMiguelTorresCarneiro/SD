@@ -21,26 +21,4 @@ public class MIDCheck implements IIDCheck {
         return instance;
     }
     
-    public boolean verificarID(String voterId) {
-        lock.lock();
-        try {
-            
-            if (idsRegistrados.contains(voterId)) {
-                return false; // ID já foi usado antes
-            }
-            idsRegistrados.add(voterId);
-            return true;
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    public boolean idJaUsado(String voterId) {
-        lock.lock();
-        try {
-            return idsRegistrados.contains(voterId);
-        } finally {
-            lock.unlock();
-        }
-    }
 }

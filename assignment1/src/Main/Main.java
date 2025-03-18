@@ -2,6 +2,7 @@ package Main;
 
 import Monitors.EvotingBooth.IEvotingBooth;
 import Monitors.ExitPoll.IExitPoll;
+import Monitors.IAll;
 import Monitors.IDCheck.IIDCheck;
 import Monitors.PollStation.IPollStation;
 import Threads.TPollClerk;
@@ -10,9 +11,9 @@ import Threads.TVoter;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
-        int numVoters = 3;   // Número de eleitores a serem criados
-        int maxCapacity = 2;  // Capacidade máxima dentro da PollStation
-        int maxVotes = 6;    // Número total de votos antes de fechar a votação
+        int numVoters = 10;   // Número de eleitores a serem criados
+        int maxCapacity = 5;  // Capacidade máxima dentro da PollStation
+        int maxVotes = 20;    // Número total de votos antes de fechar a votação
            
         System.out.println("\n----------------------------------");
         System.out.println("Iniciar simulação de eleições...");
@@ -24,7 +25,7 @@ public class Main {
         // Shared Regions
         IPollStation pollStation = IPollStation.getInstance(maxCapacity);
         IIDCheck idCheck = IIDCheck.getInstance();
-        IEvotingBooth booth = IEvotingBooth.getInstance();
+        IAll booth = IEvotingBooth.getInstance();
         IExitPoll exitPoll = IExitPoll.getInstance();
         
         // Threads 
@@ -35,7 +36,7 @@ public class Main {
         pollster.start();
         
         
-        for (int i = 1; i <= 10; i++) {
+        for (int i = 1; i <= numVoters; i++) {
             new TVoter("V" + i, pollStation, booth, exitPoll).start();
         }
 

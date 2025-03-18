@@ -1,12 +1,20 @@
 package Threads;
 
 import Monitors.ExitPoll.IExitPoll;
-import java.util.Random;
 
 public class TPollster extends Thread {
+    // Shared Regions
     private final IExitPoll exitPoll;
-    private final Random random = new Random();
+    
+    // Initiate State
+    private PollsterState state = PollsterState.WATING_VOTERS;
 
+    private static enum PollsterState {
+        WATING_VOTERS,
+        SELECT_VOTER,
+        PUBLISHING_RESULTS
+    }
+    
     public TPollster(IExitPoll exitPoll) {
         this.exitPoll = exitPoll;
     }
@@ -14,14 +22,38 @@ public class TPollster extends Thread {
     @Override
     public void run() {
         try {
-            while (!exitPoll.isEncerrado()) {
-                String voterId = exitPoll.entrevistarProximo();
-                if (voterId == null) break; // Se a eleição acabou, termina a thread
-
+            while(state != PollsterState.PUBLISHING_RESULTS) {
+                switch(state){
+                    case PollsterState.WATING_VOTERS -> {
+                        
+                        if(!exitPoll.open()){
+                            exitPoll.announceResults();
+                            break;
+                        }
+                        
+                        exitPoll.conductSurvey();
+                        
+                    }
+                    case PollsterState.SELECT_VOTER -> {
+                        exitPoll.waitForVoters();
+                    }
+                    default -> {
+                    }
+                } 
             }
+            exitPoll.publishResults();
             System.out.println("⏹ TPollster terminou o seu trabalho!");
+            
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
     }
+    
+    
+    public void setState(PollsterState state){
+        this.state = state;
+    }
+        
 }
+
+
