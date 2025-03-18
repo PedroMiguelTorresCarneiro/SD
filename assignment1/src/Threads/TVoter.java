@@ -21,7 +21,7 @@ public class TVoter extends Thread {
     private boolean validID = true;
     private final double diffIdRatio = 0.6;
 
-    private static enum VoterState {
+    public static enum VoterState {
         WATING_OUTSIDE,
         WATING_INSIDE,
         ANWSER_SURVEY,
@@ -59,7 +59,7 @@ public class TVoter extends Thread {
                             pollStation.exitingPS();
                             break;
                         }
-                        booth.vote();
+                        booth.vote(this);
                     }
                     case VoterState.VOTING -> {
                         pollStation.exitingPS();
@@ -104,5 +104,9 @@ public class TVoter extends Thread {
         }while(voterId.equals(newId));
         
         voterId = newId;
+    }
+    
+    public String getID(){
+        return voterId;
     }
 }

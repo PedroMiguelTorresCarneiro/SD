@@ -2,6 +2,7 @@ package Monitors.EvotingBooth;
 
 import Monitors.IAll;
 import Threads.TPollClerk;
+import Threads.TVoter;
 
 public interface IEvotingBooth extends IAll{
     
@@ -14,7 +15,7 @@ public interface IEvotingBooth extends IAll{
 
     void publishElectionResults(TPollClerk pollClerk);
 
-    void vote();
+    void vote(TVoter voter) throws InterruptedException;
 
     String getVote(String voterId);
 
