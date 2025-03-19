@@ -3,10 +3,7 @@ package Monitors.ExitPoll;
 
 import Threads.TPollster;
 import Threads.TVoter;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
@@ -21,9 +18,9 @@ public class MExitPoll implements IExitPoll {
     private final Random random = new Random();
     
     
-    private final LinkedList<String> votes = new LinkedList<>();
-    private final ReentrantLock lock_checkingState, lock_publishResults, lock_survey, lock_waitingSurvey, lock_VoterAnswer, lock_ConductSurvey;
-    private final Condition simulate_publishing, simulate_survey, waitingForPollster, simulate_Voting;
+    private final LinkedList<Character> votes = new LinkedList<>();
+    private final ReentrantLock lock_checkingState, lock_publishResults, lockSurvey, lock_VoterAnswer;
+    private final Condition simulate_publishing, waitingForPollster, simulate_Voting;
     private boolean open = true;
     private long countA, countB;
     private final double choosingRatio = 0.7;
@@ -34,16 +31,14 @@ public class MExitPoll implements IExitPoll {
         lock_publishResults = new ReentrantLock();
         simulate_publishing = lock_publishResults.newCondition();
         
-        lock_survey = new ReentrantLock();
-        simulate_survey = lock_survey.newCondition();
+
         
-        lock_waitingSurvey = new ReentrantLock();
-        waitingForPollster = lock_waitingSurvey.newCondition();
+        lockSurvey = new ReentrantLock();
+        waitingForPollster = lockSurvey.newCondition();
         
         lock_VoterAnswer = new ReentrantLock();
         simulate_Voting = lock_VoterAnswer.newCondition();
         
-        lock_ConductSurvey = new ReentrantLock();
     }
     
     public static IExitPoll getInstance() {
@@ -65,12 +60,16 @@ public class MExitPoll implements IExitPoll {
 
     @Override
     public void conductSurvey(TPollster pollster) throws InterruptedException {
-        lock_ConductSurvey.lock();
+        lockSurvey.lock();
+
         try{
-            simulate_Voting.signalAll();
+          //  simulate_Voting.signal();
+
+            waitingForPollster.signal();
+
             pollster.setState(TPollster.PollsterState.SELECT_VOTER);
         } finally {
-            lock_ConductSurvey.unlock();
+            lockSurvey.unlock();
         }
         
     }
@@ -85,8 +84,8 @@ public class MExitPoll implements IExitPoll {
         lock_publishResults.lock();
         try{
             
-            for (String vote : votes){
-                if (vote.equals("A")){
+            for (Character vote : votes){
+                if (vote == 'A'){
                     countA++;
                 }else{
                     countB++;
@@ -97,9 +96,9 @@ public class MExitPoll implements IExitPoll {
             long randomDuration = 500 + random.nextInt(1501);
             simulate_publishing.await(randomDuration, TimeUnit.MILLISECONDS);
             
-            System.out.println("Total de votos em A: " + countA);
-            System.out.println("Total de votos em B: " + countB);
-            System.out.println("\n\n *VENCEDOR* -> "+ (countA > countB ? "A" : (countB > countA ? "B" : "EMPATE")) );
+            System.out.println("Total votes for A: " + countA);
+            System.out.println("Total votes for B: " + countB);
+            System.out.println("\n\n *WINNER* -> " + (countA > countB ? "A" : (countB > countA ? "B" : "TIE")));
             
             pollster.setState(TPollster.PollsterState.PUBLISHING_RESULTS);
             
@@ -113,6 +112,7 @@ public class MExitPoll implements IExitPoll {
         lock_checkingState.lock();
         try{
             open = false;
+            System.out.println("Clerk closed the ExitPoll");
         } finally{
             lock_checkingState.unlock();
         }
@@ -120,28 +120,33 @@ public class MExitPoll implements IExitPoll {
 
     @Override
     public boolean choosen() throws InterruptedException{
-        lock_waitingSurvey.lock();
+        lockSurvey.lock();
+
         try{
             waitingForPollster.await();
             
-            return Math.random() > choosingRatio;
+            return Math.random() < choosingRatio;
             
         } finally {
-            lock_waitingSurvey.unlock();
+            lockSurvey.unlock();
         }
     }
 
     @Override
-    public void callForSurvey(String vote, TVoter voter) throws InterruptedException{
+    public void callForSurvey(Character vote, TVoter voter) throws InterruptedException{
         lock_VoterAnswer.lock();
+
         try{
                 
             // Voter pode mentir ou não no voto!
             boolean lie = Math.random() < choosingRatio;
+
             if (lie) {
-                votes.add(vote.equals("B") ? "A" : "B");
+                votes.add(vote == 'B' ? 'A' : 'B');
             }
-        
+            
+            System.out.println("Voter " + voter.getID() + " is being interviewed");
+
             // Simular o voto uma duração random entre 0,5s e 2s
             long randomDuration = 500 + random.nextInt(1501);
             simulate_Voting.await(randomDuration, TimeUnit.MILLISECONDS);
@@ -153,6 +158,4 @@ public class MExitPoll implements IExitPoll {
         }
         
     }
-    
-    
 }

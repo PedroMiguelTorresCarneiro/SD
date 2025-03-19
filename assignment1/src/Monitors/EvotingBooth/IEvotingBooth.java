@@ -1,6 +1,5 @@
 package Monitors.EvotingBooth;
 
-import Monitors.IAll;
 import Threads.TPollClerk;
 import Threads.TVoter;
 
@@ -17,6 +16,6 @@ public interface IEvotingBooth{
 
     void vote(TVoter voter) throws InterruptedException;
 
-    String getVote(String voterId);
+    Character getVote(String voterId);
 
 }

@@ -15,9 +15,9 @@ public class Main {
         int maxVotes = 20;    // Número total de votos antes de fechar a votação
            
         System.out.println("\n----------------------------------");
-        System.out.println("Iniciar simulação de eleições...");
-        System.out.println("Total de votos possíveis: " + maxVotes);
-        System.out.println("Total de votantes: " + numVoters);
+        System.out.println("Starting election simulation...");
+        System.out.println("Total possible votes: " + maxVotes);
+        System.out.println("Total voters: " + numVoters);
         System.out.println("----------------------------------");
         
         
@@ -42,9 +42,6 @@ public class Main {
         pollClerk.join();
         pollster.join();
 
-        System.out.println("✅ Simulação de eleições terminada!");
-        System.exit(0); // Termina a execução
-
-        
+        System.out.println("✅ Election simulation finished!");        
     }
 }

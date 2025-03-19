@@ -16,7 +16,7 @@ public interface IPollStation {
 
     void closePS();
 
-    boolean isOpen();
+    boolean isCLosedAfterElection();
 
     void enterPS(TVoter voter) throws InterruptedException;
 

@@ -32,6 +32,7 @@ public class MIDCheck implements IIDCheck {
     @Override
     public boolean checkID(TVoter voter) throws InterruptedException{
         lock_idCheck.lock();
+
         try{
             voter.setState(TVoter.VoterState.CHECKING_ID);
             String voterId = voter.getID();
@@ -44,6 +45,7 @@ public class MIDCheck implements IIDCheck {
                idsChecked.add(voterId);
                return true;
             }
+            
             return false;
         }finally{
            lock_idCheck.unlock();

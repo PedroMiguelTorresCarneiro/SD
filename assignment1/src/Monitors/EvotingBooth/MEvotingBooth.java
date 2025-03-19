@@ -1,7 +1,5 @@
 package Monitors.EvotingBooth;
 
-import Monitors.IAll;
-
 import Threads.TPollClerk;
 import Threads.TVoter;
 
@@ -14,7 +12,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class MEvotingBooth implements IEvotingBooth{
     private static MEvotingBooth instance;
-    private final Map<String, String> votes = new HashMap<>();
+    private final Map<String, Character> votes = new HashMap<>();
     private final ReentrantLock lock_gathering, lock_gettingVote, lock_vote;
     private final Condition simulateCountig, simulateVoting;
     private long countA, countB;
@@ -28,7 +26,7 @@ public class MEvotingBooth implements IEvotingBooth{
         lock_gettingVote = new ReentrantLock();
         
         lock_vote = new ReentrantLock();
-        simulateVoting = lock_gathering.newCondition();
+        simulateVoting = lock_vote.newCondition();
     }
 
     public static IEvotingBooth getInstance() {
@@ -41,50 +39,48 @@ public class MEvotingBooth implements IEvotingBooth{
     public void gathering() throws InterruptedException {
         lock_gathering.lock();
         try {
-            System.out.println("Iniciando contagem dos votos...");
+            System.out.println("Starting vote counting...");
 
             // Contar os votos
             countA = votes.values().stream()
-                    .filter(valor -> "A".equals(valor))
+                    .filter(valor -> valor == 'A')
                     .count();
 
             countB = votes.values().stream()
-                    .filter(valor -> "B".equals(valor))
+                    .filter(valor -> valor == 'B')
                     .count();
 
-            System.out.println("Contagem finalizada - Candidato A: " + countA + ", Candidato B: " + countB);
-
+       
             // Sinalizar que a contagem foi concluída
             simulateCountig.await(2000, TimeUnit.MILLISECONDS);
+
         } finally {
             lock_gathering.unlock();
         }
     }
 
     public void publishElectionResults(TPollClerk pollClerk) {
-        
-        System.out.println("Total de votos em A: " + countA);
-        System.out.println("Total de votos em B: " + countB);
-        System.out.println("\n\n *VENCEDOR* -> "+ (countA > countB ? "A" : (countB > countA ? "B" : "EMPATE")) );
-        
+        System.out.println("Total votes for A: " + countA);
+        System.out.println("Total votes for B: " + countB);
+        System.out.println("\n\n *WINNER* -> " + (countA > countB ? "A" : (countB > countA ? "B" : "TIE")) );
+
         pollClerk.setState(TPollClerk.PollClerkState.PUBLISHING_WINNER);
-        
     }
 
     public void vote(TVoter voter) throws InterruptedException {
         lock_vote.lock();
-        try{
-            
+
+        try{      
             // Determinar o voto baseado na percentagem
-            String vote = Math.random() < partyA_ratio ? "A" : "B";
+            Character vote = Math.random() < partyA_ratio ? 'A' : 'B';
             //Registar o voto
             votes.put(voter.getID(), vote);
-            
-            System.out.println("Eleitor " + voter.getID() + " votou em " + vote);
-            
+                
             // Simular o voto uma duração random entre 0,5s e 2s
             long randomDuration = 500 + random.nextInt(1501);
             simulateVoting.await(randomDuration, TimeUnit.MILLISECONDS);
+
+            System.out.println("Voter " + voter.getID() + " voted for " + vote);
             
             // Mudar o State
             voter.setState(TVoter.VoterState.VOTING);
@@ -94,14 +90,13 @@ public class MEvotingBooth implements IEvotingBooth{
         }
     }
 
-    public String getVote(String voterId) {
+    public Character getVote(String voterId) {
         lock_gettingVote.lock();
+        
         try{
             return votes.get(voterId);
         } finally {
             lock_gettingVote.unlock();
         }
     }
-
-    
 }

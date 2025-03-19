@@ -42,7 +42,7 @@ public class TPollster extends Thread {
                 } 
             }
             exitPoll.publishResults(this);
-            System.out.println("⏹ TPollster terminou o seu trabalho!");
+            System.out.println("⏹ TPollster has finished its work!");
             
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

@@ -22,5 +22,5 @@ public interface IExitPoll extends IAll{
 
     boolean choosen() throws InterruptedException;
 
-    void callForSurvey(String vote, TVoter voter) throws InterruptedException;
+    void callForSurvey(Character vote, TVoter voter) throws InterruptedException;
 }

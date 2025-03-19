@@ -48,13 +48,19 @@ public class TPollClerk extends Thread implements ITPollClerk{
                 switch(state){
                     case PollClerkState.OPEN_PS ->{
                         // Open PollStation
+
+                      //  System.out.println("PollClerk is opening the PollStation");
                         pollStation.openPS(this);
                     }
                     case PollClerkState.ID_CHECK_WAIT ->{
+                     //   System.out.println("PollClerk is waiting for the next voter");
                         pollStation.callNextVoter(this);
                     }
                     case PollClerkState.ID_CHECK -> {
                         // Control para fechar a PollStation
+
+                      //  System.out.println("PollClerk is checking the ID");
+             
                         if(pollStation.maxVotes(maxVotes, idCheck)){
                             pollStation.closePS();
                         }
@@ -64,14 +70,20 @@ public class TPollClerk extends Thread implements ITPollClerk{
                             setState(PollClerkState.INFORMING_EP);
                             break;
                         }
-                        // passo para o state
-                        setState(PollClerkState.ID_CHECK_WAIT); 
+
+                        setState(PollClerkState.ID_CHECK_WAIT);
+                  
                     }
                     case PollClerkState.INFORMING_EP -> {
                         exitPoll.close();
+
                         booth.gathering();
+
+                        setState(PollClerkState.GATHERING_VOTES);
                     }
                     case PollClerkState.GATHERING_VOTES -> {
+
+                      //  System.out.println("PollClerk is gathering the votes");
                         booth.publishElectionResults(this);
                         setState(PollClerkState.PUBLISHING_WINNER);
                     }
@@ -87,6 +99,11 @@ public class TPollClerk extends Thread implements ITPollClerk{
 
     public void setState(PollClerkState state){
         this.state = state;
+    }
+
+
+    public PollClerkState getClerkState(){
+        return state;
     }
     
     
