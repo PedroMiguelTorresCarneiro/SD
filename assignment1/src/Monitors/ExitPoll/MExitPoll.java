@@ -96,9 +96,11 @@ public class MExitPoll implements IExitPoll {
             long randomDuration = 500 + random.nextInt(1501);
             simulate_publishing.await(randomDuration, TimeUnit.MILLISECONDS);
             
+            System.out.println("\n ----------------------|SURVEY RESULTS");
             System.out.println("Total votes for A: " + countA);
             System.out.println("Total votes for B: " + countB);
-            System.out.println("\n\n *WINNER* -> " + (countA > countB ? "A" : (countB > countA ? "B" : "TIE")));
+            System.out.println("\n *WINNER* -> " + (countA > countB ? "A" : (countB > countA ? "B" : "TIE")));
+            System.out.print("--------------------------------------------\n");
             
             pollster.setState(TPollster.PollsterState.PUBLISHING_RESULTS);
             

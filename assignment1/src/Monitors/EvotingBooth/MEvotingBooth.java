@@ -60,9 +60,12 @@ public class MEvotingBooth implements IEvotingBooth{
     }
 
     public void publishElectionResults(TPollClerk pollClerk) {
+        
+        System.out.println("\n ----------------------|ELECTION RESULTS");
         System.out.println("Total votes for A: " + countA);
         System.out.println("Total votes for B: " + countB);
-        System.out.println("\n\n *WINNER* -> " + (countA > countB ? "A" : (countB > countA ? "B" : "TIE")) );
+        System.out.println("\n *WINNER* -> " + (countA > countB ? "A" : (countB > countA ? "B" : "TIE")) );
+        System.out.print("--------------------------------------------\n");
 
         pollClerk.setState(TPollClerk.PollClerkState.PUBLISHING_WINNER);
     }
