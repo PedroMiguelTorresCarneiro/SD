@@ -12,8 +12,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class MEvotingBooth implements IAll{
-    private static MEvotingBooth instance = null;
+public class MEvotingBooth implements IEvotingBooth{
+    private static MEvotingBooth instance;
     private final Map<String, String> votes = new HashMap<>();
     private final ReentrantLock lock_gathering, lock_gettingVote, lock_vote;
     private final Condition simulateCountig, simulateVoting;
@@ -31,7 +31,7 @@ public class MEvotingBooth implements IAll{
         simulateVoting = lock_gathering.newCondition();
     }
 
-    public static IAll getInstance() {
+    public static IEvotingBooth getInstance() {
         if (instance == null) {
             instance = new MEvotingBooth();
         }

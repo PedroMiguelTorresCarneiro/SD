@@ -4,10 +4,10 @@ import Monitors.IAll;
 import Threads.TPollClerk;
 import Threads.TVoter;
 
-public interface IEvotingBooth extends IAll{
+public interface IEvotingBooth{
     
     // Type-specific getInstance
-    static IAll getInstance() {
+    static IEvotingBooth getInstance() {
         return MEvotingBooth.getInstance();
     }
 

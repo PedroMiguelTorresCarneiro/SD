@@ -1,21 +1,29 @@
 package Monitors.PollStation;
 
+import Monitors.IDCheck.IIDCheck;
+import Threads.TPollClerk;
+import Threads.TVoter;
+
 public interface IPollStation {
     
     static IPollStation getInstance(int capacidadeMax){
         return MPollStation.getInstance(capacidadeMax);
     }
 
-    public void openPS(int maxVotes);
+    void openPS(TPollClerk pollclerk) throws InterruptedException;
 
-    public void callNextVoter();
+    void callNextVoter(TPollClerk pollclerk);
 
-    public void closePS();
+    void closePS();
 
-    public boolean open();
+    boolean isOpen();
 
-    public void enterPS(String voterId);
+    void enterPS(TVoter voter) throws InterruptedException;
 
-    public void exitingPS();
+    void exitingPS(TVoter voter) throws InterruptedException;
+    
+    boolean isEmpty();
+    
+    public boolean maxVotes(int maxVotes, IIDCheck idCheck);
     
 }

@@ -9,7 +9,7 @@ public class TPollster extends Thread {
     // Initiate State
     private PollsterState state = PollsterState.WATING_VOTERS;
 
-    private static enum PollsterState {
+    public static enum PollsterState {
         WATING_VOTERS,
         SELECT_VOTER,
         PUBLISHING_RESULTS
@@ -26,22 +26,22 @@ public class TPollster extends Thread {
                 switch(state){
                     case PollsterState.WATING_VOTERS -> {
                         
-                        if(!exitPoll.open()){
-                            exitPoll.announceResults();
+                        if(!exitPoll.isOpen()){
+                            setState(PollsterState.PUBLISHING_RESULTS);
                             break;
                         }
                         
-                        exitPoll.conductSurvey();
+                        exitPoll.conductSurvey(this);
                         
                     }
                     case PollsterState.SELECT_VOTER -> {
-                        exitPoll.waitForVoters();
+                        exitPoll.waitForVoters(this);
                     }
                     default -> {
                     }
                 } 
             }
-            exitPoll.publishResults();
+            exitPoll.publishResults(this);
             System.out.println("⏹ TPollster terminou o seu trabalho!");
             
         } catch (InterruptedException e) {

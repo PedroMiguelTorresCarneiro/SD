@@ -1,6 +1,8 @@
 package Monitors.ExitPoll;
 
 import Monitors.IAll;
+import Threads.TPollster;
+import Threads.TVoter;
 
 public interface IExitPoll extends IAll{
     
@@ -8,19 +10,17 @@ public interface IExitPoll extends IAll{
         return MExitPoll.getInstance();
     }
 
-    public boolean open();
+    boolean isOpen();
 
-    public void announceResults();
+    void publishResults(TPollster pollster) throws InterruptedException;
 
-    public void conductSurvey();
+    void conductSurvey(TPollster pollster) throws InterruptedException;
 
-    public void waitForVoters();
+    void waitForVoters(TPollster pollster);
 
-    public void publishResults();
+    void close();
 
-    public void close();
+    boolean choosen() throws InterruptedException;
 
-    public boolean choosen();
-
-    public void callForSurvey(String voterId, String vote);
+    void callForSurvey(String vote, TVoter voter) throws InterruptedException;
 }

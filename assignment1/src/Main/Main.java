@@ -2,7 +2,6 @@ package Main;
 
 import Monitors.EvotingBooth.IEvotingBooth;
 import Monitors.ExitPoll.IExitPoll;
-import Monitors.IAll;
 import Monitors.IDCheck.IIDCheck;
 import Monitors.PollStation.IPollStation;
 import Threads.TPollClerk;
@@ -25,7 +24,7 @@ public class Main {
         // Shared Regions
         IPollStation pollStation = IPollStation.getInstance(maxCapacity);
         IIDCheck idCheck = IIDCheck.getInstance();
-        IAll booth = IEvotingBooth.getInstance();
+        IEvotingBooth booth = IEvotingBooth.getInstance();
         IExitPoll exitPoll = IExitPoll.getInstance();
         
         // Threads 
@@ -37,7 +36,7 @@ public class Main {
         
         
         for (int i = 1; i <= numVoters; i++) {
-            new TVoter("V" + i, pollStation, booth, exitPoll).start();
+            new TVoter("V" + i, pollStation, idCheck, booth, exitPoll).start();
         }
 
         pollClerk.join();

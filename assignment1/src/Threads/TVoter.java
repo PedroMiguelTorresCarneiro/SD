@@ -45,31 +45,31 @@ public class TVoter extends Thread {
             while(state != VoterState.GO_HOME){
                 switch(state){
                     case VoterState.WATING_OUTSIDE -> {
-                        if(!pollStation.open()){
+                        if(!pollStation.isOpen()){
                             setState(VoterState.GO_HOME);
                             break;
                         }
-                        pollStation.enterPS(voterId);
+                        pollStation.enterPS(this);
                     }
                     case VoterState.WATING_INSIDE -> {
-                        validID = idCheck.checkID(voterId);
+                        validID = idCheck.checkID(this);
                     }
                     case VoterState.CHECKING_ID -> {
                         if(!validID){
-                            pollStation.exitingPS();
+                            pollStation.exitingPS(this);
                             break;
                         }
                         booth.vote(this);
                     }
                     case VoterState.VOTING -> {
-                        pollStation.exitingPS();
+                        pollStation.exitingPS(this);
                     }
                     case VoterState.EXIT_PS ->{
                         if(!exitPoll.choosen()){
                             reborn();
                             break;
                         }
-                        exitPoll.callForSurvey(voterId, booth.getVote(voterId));
+                        exitPoll.callForSurvey(booth.getVote(voterId), this);
                     }
                     case VoterState.ANWSER_SURVEY -> {
                         reborn();

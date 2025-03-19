@@ -29,7 +29,7 @@ public class TPollClerk extends Thread implements ITPollClerk{
         PUBLISHING_WINNER
     }
     
-    private TPollClerk(IPollStation pollStation, IIDCheck idCheck, IEvotingBooth booth, IExitPoll exitPoll, int maxVotes) {
+    public TPollClerk(IPollStation pollStation, IIDCheck idCheck, IEvotingBooth booth, IExitPoll exitPoll, int maxVotes) {
         this.pollStation = pollStation;
         this.idCheck = idCheck;
         this.booth = booth;
@@ -48,19 +48,19 @@ public class TPollClerk extends Thread implements ITPollClerk{
                 switch(state){
                     case PollClerkState.OPEN_PS ->{
                         // Open PollStation
-                        pollStation.openPS(maxVotes);
+                        pollStation.openPS(this);
                     }
                     case PollClerkState.ID_CHECK_WAIT ->{
-                        pollStation.callNextVoter();
+                        pollStation.callNextVoter(this);
                     }
                     case PollClerkState.ID_CHECK -> {
                         // Control para fechar a PollStation
-                        if(){
+                        if(pollStation.maxVotes(maxVotes, idCheck)){
                             pollStation.closePS();
                         }
                         
                         // flag para dizer quadno já não ha ninguem na PollStation
-                        if(){
+                        if(pollStation.isEmpty()){
                             setState(PollClerkState.INFORMING_EP);
                             break;
                         }
@@ -88,5 +88,6 @@ public class TPollClerk extends Thread implements ITPollClerk{
     public void setState(PollClerkState state){
         this.state = state;
     }
+    
     
 }
