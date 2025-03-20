@@ -6,7 +6,7 @@ import Monitors.IDCheck.IIDCheck;
 import Monitors.PollStation.IPollStation;
 
 
-public class TPollClerk extends Thread implements ITPollClerk{
+public class TPollClerk extends Thread {
     // Shared Regions
     private final IPollStation pollStation;
     private final IIDCheck idCheck;
@@ -91,7 +91,7 @@ public class TPollClerk extends Thread implements ITPollClerk{
                 }
             }
 
-            System.out.println("⏹ TPollClerk terminou o seu trabalho!");
+            //System.out.println("⏹ TPollClerk terminou o seu trabalho!");
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }

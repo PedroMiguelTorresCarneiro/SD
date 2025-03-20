@@ -1,13 +1,14 @@
 package Monitors.PollStation;
 
 import Monitors.IDCheck.IIDCheck;
+import Monitors.Logs.ILogs;
 import Threads.TPollClerk;
 import Threads.TVoter;
 
 public interface IPollStation {
     
-    static IPollStation getInstance(int capacidadeMax){
-        return MPollStation.getInstance(capacidadeMax);
+    static IPollStation getInstance(int capacidadeMax, ILogs logs){
+        return MPollStation.getInstance(capacidadeMax, logs);
     }
 
     void openPS(TPollClerk pollclerk) throws InterruptedException;

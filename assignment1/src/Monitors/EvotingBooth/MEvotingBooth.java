@@ -1,5 +1,6 @@
 package Monitors.EvotingBooth;
 
+import Monitors.Logs.ILogs;
 import Threads.TPollClerk;
 import Threads.TVoter;
 
@@ -12,14 +13,16 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class MEvotingBooth implements IEvotingBooth{
     private static MEvotingBooth instance;
+    private static ILogs log;
     private final Map<String, Character> votes = new HashMap<>();
     private final ReentrantLock lock_gathering, lock_gettingVote, lock_vote;
     private final Condition simulateCountig, simulateVoting;
     private long countA, countB;
-    private final double partyA_ratio = 0.6;
+    private final double partyA_ratio = 0.7;
     private final Random random = new Random();
     
-    private MEvotingBooth() {
+    private MEvotingBooth(ILogs logs) {
+        log = logs;
         lock_gathering = new ReentrantLock();
         simulateCountig = lock_gathering.newCondition();
         
@@ -29,9 +32,9 @@ public class MEvotingBooth implements IEvotingBooth{
         simulateVoting = lock_vote.newCondition();
     }
 
-    public static IEvotingBooth getInstance() {
+    public static IEvotingBooth getInstance(ILogs logs) {
         if (instance == null) {
-            instance = new MEvotingBooth();
+            instance = new MEvotingBooth(logs);
         }
         return instance;
     }
@@ -39,7 +42,7 @@ public class MEvotingBooth implements IEvotingBooth{
     public void gathering() throws InterruptedException {
         lock_gathering.lock();
         try {
-            System.out.println("Starting vote counting...");
+            //System.out.println("Starting vote counting...");
 
             // Contar os votos
             countA = votes.values().stream()
@@ -61,12 +64,15 @@ public class MEvotingBooth implements IEvotingBooth{
 
     public void publishElectionResults(TPollClerk pollClerk) {
         
+        
+        log.logElectionResults(countA, countB, (countA > countB ? "A" : (countB > countA ? "B" : "TIE")));
+        /*
         System.out.println("\n ----------------------|ELECTION RESULTS");
         System.out.println("Total votes for A: " + countA);
         System.out.println("Total votes for B: " + countB);
         System.out.println("\n *WINNER* -> " + (countA > countB ? "A" : (countB > countA ? "B" : "TIE")) );
         System.out.print("--------------------------------------------\n");
-
+        */
         pollClerk.setState(TPollClerk.PollClerkState.PUBLISHING_WINNER);
     }
 
@@ -83,7 +89,9 @@ public class MEvotingBooth implements IEvotingBooth{
             long randomDuration = 500 + random.nextInt(1501);
             simulateVoting.await(randomDuration, TimeUnit.MILLISECONDS);
 
-            System.out.println("Voter " + voter.getID() + " voted for " + vote);
+            //System.out.println("Voter " + voter.getID() + " voted for " + vote);
+            log.logVoting(voter.getID(), vote);
+            
             
             // Mudar o State
             voter.setState(TVoter.VoterState.VOTING);

@@ -1,13 +1,14 @@
 package Monitors.ExitPoll;
 
 import Monitors.IAll;
+import Monitors.Logs.ILogs;
 import Threads.TPollster;
 import Threads.TVoter;
 
 public interface IExitPoll extends IAll{
     
-    static IExitPoll getInstance() {
-        return MExitPoll.getInstance();
+    static IExitPoll getInstance(ILogs logs) {
+        return MExitPoll.getInstance(logs);
     }
 
     boolean isOpen();

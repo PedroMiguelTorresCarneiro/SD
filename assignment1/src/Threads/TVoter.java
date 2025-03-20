@@ -20,6 +20,7 @@ public class TVoter extends Thread {
     private final Random random = new Random();
     private boolean validID = true;
     private final double diffIdRatio = 0.6;
+    private final double chooseToAnwser = 0.6;
 
     public static enum VoterState {
         WATING_OUTSIDE,
@@ -38,7 +39,7 @@ public class TVoter extends Thread {
         this.booth = booth;
         this.exitPoll = exitPoll;
 
-        System.out.println("Voter " + voterId + " is waiting outside");
+        //System.out.println("Voter " + voterId + " is waiting outside");
     }
 
     @Override
@@ -48,10 +49,10 @@ public class TVoter extends Thread {
                 switch(state){
                     case VoterState.WATING_OUTSIDE -> {
                         if(pollStation.isCLosedAfterElection()){
-                            System.out.println("Voter " + voterId + " is going home");
+                            //System.out.println("Voter " + voterId + " is going home");
 
                             setState(VoterState.GO_HOME);
-
+                            
                             break;
                         }
 
@@ -61,7 +62,7 @@ public class TVoter extends Thread {
                         validID = idCheck.checkID(this);
                     }
                     case VoterState.CHECKING_ID -> {
-                        System.out.println("Voter " + voterId + " ID is being checked");
+                        //System.out.println("Voter " + voterId + " ID is being checked");
 
                         if(!validID){
                             pollStation.exitingPS(this);
@@ -74,24 +75,30 @@ public class TVoter extends Thread {
                         pollStation.exitingPS(this);
                     }
                     case VoterState.EXIT_PS ->{
-                        System.out.println("Voter " + voterId + " is exiting the poll station");
+                        //System.out.println("Voter " + voterId + " is exiting the poll station");
 
                         if(!exitPoll.choosen()){
                             reborn();
                             break;
                         }
-
-                        exitPoll.callForSurvey(booth.getVote(voterId), this);
+                        
+                        if(Math.random() < chooseToAnwser){
+                            exitPoll.callForSurvey(booth.getVote(voterId), this);
+                        }else{
+                            reborn();
+                            break;
+                        }
+                        
+                        
                     }
                     case VoterState.ANWSER_SURVEY -> {
-                        System.out.println("Voter " + voterId + " is answering the survey");
+                        //System.out.println("Voter " + voterId + " is answering the survey");
                         reborn();
                     }
                     default -> {}
                 }
                 
             }
-            
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
@@ -103,15 +110,15 @@ public class TVoter extends Thread {
     }
     
     private void reborn() {
-        boolean DiffID = Math.random() > diffIdRatio;
+        boolean DiffID = Math.random() < diffIdRatio;
 
         if (DiffID) {
             generateNewID();
-            System.out.println("Voter " + voterId + " reborned(new ID)");
+            //System.out.println("Voter " + voterId + " reborned(new ID)");
         }
 
         setState(VoterState.WATING_OUTSIDE);
-        System.out.println("Voter " + voterId + " is reborned");
+        //System.out.println("Voter " + voterId + " is reborned");
     }
     
     private void generateNewID(){

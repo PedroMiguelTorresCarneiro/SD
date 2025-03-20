@@ -1,6 +1,7 @@
 package Monitors.ExitPoll;
 
 
+import Monitors.Logs.ILogs;
 import Threads.TPollster;
 import Threads.TVoter;
 import java.util.LinkedList;
@@ -12,6 +13,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class MExitPoll implements IExitPoll {
     private static MExitPoll instance = null;
+    private static ILogs log;
     // Armazena o voto real do votante
     // Votantes que saíram da estação
     // Condition para entrevistas
@@ -23,9 +25,11 @@ public class MExitPoll implements IExitPoll {
     private final Condition simulate_publishing, waitingForPollster, simulate_Voting;
     private boolean open = true;
     private long countA, countB;
-    private final double choosingRatio = 0.7;
+    private final double lieRatio = 0.2;
+    private final double beingChosen = 0.1;
     
-    private MExitPoll() {
+    private MExitPoll(ILogs logs) {
+        log = logs;
         lock_checkingState = new ReentrantLock();
         
         lock_publishResults = new ReentrantLock();
@@ -41,9 +45,9 @@ public class MExitPoll implements IExitPoll {
         
     }
     
-    public static IExitPoll getInstance() {
+    public static IExitPoll getInstance(ILogs logs) {
         if (instance == null) {
-            instance = new MExitPoll();
+            instance = new MExitPoll(logs);
         }
         return instance;
     }
@@ -96,12 +100,14 @@ public class MExitPoll implements IExitPoll {
             long randomDuration = 500 + random.nextInt(1501);
             simulate_publishing.await(randomDuration, TimeUnit.MILLISECONDS);
             
+            log.logSurveyResults(countA, countB, (countA > countB ? "A" : (countB > countA ? "B" : "TIE")));
+            /*
             System.out.println("\n ----------------------|SURVEY RESULTS");
             System.out.println("Total votes for A: " + countA);
             System.out.println("Total votes for B: " + countB);
             System.out.println("\n *WINNER* -> " + (countA > countB ? "A" : (countB > countA ? "B" : "TIE")));
             System.out.print("--------------------------------------------\n");
-            
+            */
             pollster.setState(TPollster.PollsterState.PUBLISHING_RESULTS);
             
         } finally {
@@ -114,7 +120,7 @@ public class MExitPoll implements IExitPoll {
         lock_checkingState.lock();
         try{
             open = false;
-            System.out.println("Clerk closed the ExitPoll");
+            //System.out.println("Clerk closed the ExitPoll");
         } finally{
             lock_checkingState.unlock();
         }
@@ -127,7 +133,7 @@ public class MExitPoll implements IExitPoll {
         try{
             waitingForPollster.await();
             
-            return Math.random() < choosingRatio;
+            return Math.random() < beingChosen;
             
         } finally {
             lockSurvey.unlock();
@@ -141,14 +147,19 @@ public class MExitPoll implements IExitPoll {
         try{
                 
             // Voter pode mentir ou não no voto!
-            boolean lie = Math.random() < choosingRatio;
+            boolean lie = Math.random() < lieRatio;
+            char lieOrNot = ' ';
 
             if (lie) {
+                lieOrNot = 'L';
                 votes.add(vote == 'B' ? 'A' : 'B');
             }
             
-            System.out.println("Voter " + voter.getID() + " is being interviewed");
-
+            
+            //System.out.println("Voter " + voter.getID() + " is being interviewed");
+            log.logSurvey(voter.getID(),lieOrNot);
+            
+            
             // Simular o voto uma duração random entre 0,5s e 2s
             long randomDuration = 500 + random.nextInt(1501);
             simulate_Voting.await(randomDuration, TimeUnit.MILLISECONDS);
