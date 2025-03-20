@@ -1,7 +1,6 @@
 package Monitors.ExitPoll;
 
 
-import Monitors.Logs.ILogs;
 import Threads.TPollster;
 import Threads.TVoter;
 import java.util.LinkedList;
@@ -9,11 +8,12 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
+import Monitors.Repository.IRepo;
 
 
-public class MExitPoll implements IExitPoll {
+public class MExitPoll implements IExitPoll_ALL {
     private static MExitPoll instance = null;
-    private static ILogs log;
+    private static IRepo log;
     // Armazena o voto real do votante
     // Votantes que saíram da estação
     // Condition para entrevistas
@@ -28,7 +28,7 @@ public class MExitPoll implements IExitPoll {
     private final double lieRatio = 0.2;
     private final double beingChosen = 0.1;
     
-    private MExitPoll(ILogs logs) {
+    private MExitPoll(IRepo logs) {
         log = logs;
         lock_checkingState = new ReentrantLock();
         
@@ -45,7 +45,7 @@ public class MExitPoll implements IExitPoll {
         
     }
     
-    public static IExitPoll getInstance(ILogs logs) {
+    public static IExitPoll_ALL getInstance(IRepo logs) {
         if (instance == null) {
             instance = new MExitPoll(logs);
         }

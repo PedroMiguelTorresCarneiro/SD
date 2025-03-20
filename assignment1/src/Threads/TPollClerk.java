@@ -59,9 +59,9 @@ public class TPollClerk extends Thread {
                     case PollClerkState.ID_CHECK -> {
                         // Control para fechar a PollStation
 
-                      //  System.out.println("PollClerk is checking the ID");
-             
-                        if(pollStation.maxVotes(maxVotes, idCheck)){
+                        //  System.out.println("PollClerk is checking the ID")
+                        int maxVoters = idCheck.getVoterRegisted();
+                        if(pollStation.maxVotes(maxVotes, maxVoters)){
                             pollStation.closePS();
                         }
                         

@@ -3,11 +3,11 @@ package Main;
 import Monitors.EvotingBooth.IEvotingBooth;
 import Monitors.ExitPoll.IExitPoll;
 import Monitors.IDCheck.IIDCheck;
-import Monitors.Logs.ILogs;
 import Monitors.PollStation.IPollStation;
 import Threads.TPollClerk;
 import Threads.TPollster;
 import Threads.TVoter;
+import Monitors.Repository.IRepo;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
@@ -19,7 +19,7 @@ public class Main {
         int maxVotes = 20;    
     
         // Shared Regions
-        ILogs logs = ILogs.getInstance(maxVotes, numVoters, maxCapacity);
+        IRepo logs = IRepo.getInstance(maxVotes, numVoters, maxCapacity);
         
         IPollStation pollStation = IPollStation.getInstance(maxCapacity, logs);
         IIDCheck idCheck = IIDCheck.getInstance(logs);

@@ -2,8 +2,7 @@ package Monitors.PollStation;
 
 
 import Monitors.IDCheck.IIDCheck;
-import Monitors.Logs.ILogs;
-import Monitors.Logs.MLogs;
+import Monitors.Repository.MRepo;
 import Threads.TPollClerk;
 import Threads.TVoter;
 import java.util.LinkedList;
@@ -11,10 +10,11 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
+import Monitors.Repository.IRepo;
 
-public class MPollStation implements IPollStation {
+public class MPollStation implements IPollStation_ALL {
     private static MPollStation instance = null;
-    private static MLogs log;
+    private static MRepo log;
     private final int capacidadeMax;
     private Boolean alreadyClosed = false;
     
@@ -34,9 +34,9 @@ public class MPollStation implements IPollStation {
 
     private PollStationState state = PollStationState.CLOSED;
     
-    private MPollStation(int capacidadeMax, ILogs logs) {
+    private MPollStation(int capacidadeMax, IRepo logs) {
         this.capacidadeMax = capacidadeMax;
-        log = (MLogs) logs;
+        log = (MRepo) logs;
         
         lock_changeState = new ReentrantLock();
         simulate_Open = lock_changeState.newCondition();
@@ -54,7 +54,7 @@ public class MPollStation implements IPollStation {
         lock_isOpen = new ReentrantLock();         
     }
     
-    public static IPollStation getInstance(int capacidadeMax, ILogs logs) {
+    public static IPollStation_ALL getInstance(int capacidadeMax, IRepo logs) {
         if (instance == null) {
             instance =  new MPollStation(capacidadeMax, logs);
         }
@@ -62,7 +62,6 @@ public class MPollStation implements IPollStation {
         return instance;
     }
 
-    @Override
     public void openPS(TPollClerk pollclerk) throws InterruptedException {
         lock_changeState.lock();
         try{
@@ -85,7 +84,6 @@ public class MPollStation implements IPollStation {
         }
     }
     
-    @Override
     public void enterPS(TVoter voter) throws InterruptedException {
         lock_externalFifo.lock();
         try{
@@ -118,7 +116,6 @@ public class MPollStation implements IPollStation {
         }
     }
 
-    @Override
     public void callNextVoter(TPollClerk pollclerk) {
         lock_externalFifo.lock();
         
@@ -141,7 +138,6 @@ public class MPollStation implements IPollStation {
         }
     }
 
-    @Override
     public void closePS() {
         lock_changeState.lock();
 
@@ -159,7 +155,6 @@ public class MPollStation implements IPollStation {
         }
     }
 
-    @Override
     public boolean isCLosedAfterElection() {
         lock_isOpen.lock();
 
@@ -172,7 +167,6 @@ public class MPollStation implements IPollStation {
 
     
 
-    @Override
     public void exitingPS(TVoter voter) throws InterruptedException {
         // para deixar entrar uma pessoa
         lock_exitingPS.lock();
@@ -189,7 +183,6 @@ public class MPollStation implements IPollStation {
         }
     }
     
-    @Override
     public boolean isEmpty(){
         lock_isEmpty.lock();
 
@@ -200,12 +193,11 @@ public class MPollStation implements IPollStation {
         }
     }
 
-    @Override
-    public boolean maxVotes(int maxVotes, IIDCheck idCheck) {
+    public boolean maxVotes(int maxVotes, int votersRegistered) {
         lock_maxedVotes.lock();
 
         try{
-            if(idCheck.getVoterRegisted() >= maxVotes) {
+            if(votersRegistered >= maxVotes) {
                 return true;
             }
             return false;

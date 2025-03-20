@@ -1,11 +1,11 @@
-package Monitors.Logs;
+package Monitors.Repository;
 
 import java.util.concurrent.locks.ReentrantLock;
 import java.io.FileWriter;
 import java.io.BufferedWriter;
 import java.io.IOException;
 
-public class MLogs implements ILogs {
+public class MRepo implements IRepo_ALL {
     // ANSI color codes
     private static final String RESET = "\u001B[0m";
     private static final String RED = "\u001B[31m";
@@ -15,7 +15,7 @@ public class MLogs implements ILogs {
     private static final String BOLD = "\u001B[1m";
 
     // Singleton instance
-    private static MLogs instance;
+    private static MRepo instance;
 
     // Configuration values
     private final int votesNumber;
@@ -29,7 +29,7 @@ public class MLogs implements ILogs {
     private BufferedWriter fileWriter;
 
     // Private constructor
-    private MLogs(int votesNumber, int votersNumber, int fifoLimit) {
+    private MRepo(int votesNumber, int votersNumber, int fifoLimit) {
         this.votesNumber = votesNumber;
         this.votersNumber = votersNumber;
         this.fifoLimit = fifoLimit;
@@ -46,9 +46,9 @@ public class MLogs implements ILogs {
     }
 
     // Singleton getInstance method
-    public static MLogs getInstance(int votesNumber, int votersNumber, int fifoLimit) {
+    public static IRepo_ALL getInstance(int votesNumber, int votersNumber, int fifoLimit) {
         if (instance == null) {
-            instance = new MLogs(votesNumber, votersNumber, fifoLimit);
+            instance = new MRepo(votesNumber, votersNumber, fifoLimit);
         }
         return instance;
     }
@@ -73,7 +73,6 @@ public class MLogs implements ILogs {
     }
 
     // Print the header with configuration details
-    @Override
     public void logHeader() {
         lock.lock(); // Acquire the lock
         try {

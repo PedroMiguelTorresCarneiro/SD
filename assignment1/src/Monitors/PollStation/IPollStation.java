@@ -1,13 +1,13 @@
 package Monitors.PollStation;
 
 import Monitors.IDCheck.IIDCheck;
-import Monitors.Logs.ILogs;
 import Threads.TPollClerk;
 import Threads.TVoter;
+import Monitors.Repository.IRepo;
 
 public interface IPollStation {
     
-    static IPollStation getInstance(int capacidadeMax, ILogs logs){
+    static IPollStation getInstance(int capacidadeMax, IRepo logs){
         return MPollStation.getInstance(capacidadeMax, logs);
     }
 
@@ -25,6 +25,6 @@ public interface IPollStation {
     
     boolean isEmpty();
     
-    public boolean maxVotes(int maxVotes, IIDCheck idCheck);
+    public boolean maxVotes(int maxVotes, int maxVoters);
     
 }

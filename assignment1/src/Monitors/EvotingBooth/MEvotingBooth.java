@@ -1,6 +1,5 @@
 package Monitors.EvotingBooth;
 
-import Monitors.Logs.ILogs;
 import Threads.TPollClerk;
 import Threads.TVoter;
 
@@ -10,10 +9,11 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
+import Monitors.Repository.IRepo;
 
-public class MEvotingBooth implements IEvotingBooth{
+public class MEvotingBooth implements IEVotingBooth_ALL{
     private static MEvotingBooth instance;
-    private static ILogs log;
+    private static IRepo log;
     private final Map<String, Character> votes = new HashMap<>();
     private final ReentrantLock lock_gathering, lock_gettingVote, lock_vote;
     private final Condition simulateCountig, simulateVoting;
@@ -21,7 +21,7 @@ public class MEvotingBooth implements IEvotingBooth{
     private final double partyA_ratio = 0.7;
     private final Random random = new Random();
     
-    private MEvotingBooth(ILogs logs) {
+    private MEvotingBooth(IRepo logs) {
         log = logs;
         lock_gathering = new ReentrantLock();
         simulateCountig = lock_gathering.newCondition();
@@ -32,13 +32,14 @@ public class MEvotingBooth implements IEvotingBooth{
         simulateVoting = lock_vote.newCondition();
     }
 
-    public static IEvotingBooth getInstance(ILogs logs) {
+    public static IEVotingBooth_ALL getInstance(IRepo logs) {
         if (instance == null) {
             instance = new MEvotingBooth(logs);
         }
         return instance;
     }
 
+    @Override
     public void gathering() throws InterruptedException {
         lock_gathering.lock();
         try {
@@ -62,6 +63,7 @@ public class MEvotingBooth implements IEvotingBooth{
         }
     }
 
+    @Override
     public void publishElectionResults(TPollClerk pollClerk) {
         
         
@@ -76,6 +78,7 @@ public class MEvotingBooth implements IEvotingBooth{
         pollClerk.setState(TPollClerk.PollClerkState.PUBLISHING_WINNER);
     }
 
+    @Override
     public void vote(TVoter voter) throws InterruptedException {
         lock_vote.lock();
 
@@ -101,6 +104,7 @@ public class MEvotingBooth implements IEvotingBooth{
         }
     }
 
+    @Override
     public Character getVote(String voterId) {
         lock_gettingVote.lock();
         

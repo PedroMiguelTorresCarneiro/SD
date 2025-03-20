@@ -1,13 +1,13 @@
 package Monitors.EvotingBooth;
 
-import Monitors.Logs.ILogs;
 import Threads.TPollClerk;
 import Threads.TVoter;
+import Monitors.Repository.IRepo;
 
 public interface IEvotingBooth{
     
     // Type-specific getInstance
-    static IEvotingBooth getInstance(ILogs logs) {
+    static IEvotingBooth getInstance(IRepo logs) {
         return MEvotingBooth.getInstance(logs);
     }
 

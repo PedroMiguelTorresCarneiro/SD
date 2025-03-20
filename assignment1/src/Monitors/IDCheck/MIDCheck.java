@@ -1,6 +1,5 @@
 package Monitors.IDCheck;
 
-import Monitors.Logs.ILogs;
 import Threads.TVoter;
 import java.util.Random;
 import java.util.HashSet;
@@ -8,24 +7,27 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
+import Monitors.Repository.IRepo;
 
-public class MIDCheck implements IIDCheck {
+public class MIDCheck implements IIDCheck_ALL {
     private static MIDCheck instance;
-    private static ILogs log;
+    private static IRepo log;
     private final Set<String> idsChecked = new HashSet<>();
-    private final ReentrantLock lock_idCheck, lock_getSize;
+    private final ReentrantLock lock_idCheck, lock_getSize, lock_getVoters;
     private final Condition simulate_idCheck;
     private final Random random = new Random();
 
-    private MIDCheck(ILogs logs) {
+    private MIDCheck(IRepo logs) {
         log = logs;
         lock_idCheck = new ReentrantLock(true);
         simulate_idCheck = lock_idCheck.newCondition();
         
         lock_getSize = new ReentrantLock();
+        
+        lock_getVoters = new ReentrantLock();
     }
 
-    public static IIDCheck getInstance(ILogs logs){
+    public static IIDCheck_ALL getInstance(IRepo logs){
         if (instance == null) {
             instance = new MIDCheck(logs);
         }
@@ -72,5 +74,4 @@ public class MIDCheck implements IIDCheck {
             lock_getSize.unlock();
         }
     }
-    
 }

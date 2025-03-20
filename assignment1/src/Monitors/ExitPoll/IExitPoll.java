@@ -1,13 +1,13 @@
 package Monitors.ExitPoll;
 
 import Monitors.IAll;
-import Monitors.Logs.ILogs;
 import Threads.TPollster;
 import Threads.TVoter;
+import Monitors.Repository.IRepo;
 
 public interface IExitPoll extends IAll{
     
-    static IExitPoll getInstance(ILogs logs) {
+    static IExitPoll getInstance(IRepo logs) {
         return MExitPoll.getInstance(logs);
     }
 

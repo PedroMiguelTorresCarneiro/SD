@@ -1,11 +1,11 @@
-package Monitors.Logs;
+package Monitors.Repository;
 
 import Monitors.IAll;
 
-public interface ILogs extends IAll {
+public interface IRepo extends IAll {
     
-    static ILogs getInstance(int votesNumber, int votersNumber, int fifoLimit){
-        return MLogs.getInstance(votesNumber, votersNumber, fifoLimit);
+    static IRepo getInstance(int votesNumber, int votersNumber, int fifoLimit){
+        return MRepo.getInstance(votesNumber, votersNumber, fifoLimit);
     }
     void logHeader();
     void logPollStation(String state);
