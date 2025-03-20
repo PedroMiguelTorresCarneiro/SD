@@ -11,18 +11,13 @@ import Threads.TVoter;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
-        int numVoters = 10;   // Número de eleitores a serem criados
-        int maxCapacity = 5;  // Capacidade máxima dentro da PollStation
-        int maxVotes = 20;    // Número total de votos antes de fechar a votação
-        
-        /*
-        System.out.println("\n----------------------------------");
-        System.out.println("Starting election simulation...");
-        System.out.println("Total possible votes: " + maxVotes);
-        System.out.println("Total voters: " + numVoters);
-        System.out.println("----------------------------------");
-        */
-        
+        int userArgs[] = GetUserArguments(args);
+
+        int numVoters = userArgs[0];
+        int maxCapacity = userArgs[1];
+ 
+        int maxVotes = 20;    
+    
         // Shared Regions
         ILogs logs = ILogs.getInstance(maxVotes, numVoters, maxCapacity);
         
@@ -38,8 +33,7 @@ public class Main {
         
         pollClerk.start();
         pollster.start();
-        
-        
+              
         TVoter[] voters = new TVoter[numVoters];
         
         for (int i = 0; i < numVoters; i++) {
@@ -53,8 +47,39 @@ public class Main {
         pollClerk.join();
         pollster.join();
 
-        System.out.println("✅ Election simulation finished!");
-        //System.exit(0); // Termina a execução
-        
+        System.out.println("✅ Election simulation finished!");        
+    }
+
+    private static int[] GetUserArguments(String args[]){
+        if (args.length != 2){
+            System.out.println("You must provide 2 arguments: the number of voters and the maximum capacity of the polling station's queue.");
+            System.exit(1);
+        }
+
+        int numVoters;
+        int maxCapacity;
+
+        try {
+            numVoters = Integer.parseInt(args[0]);
+            maxCapacity = Integer.parseInt(args[1]);
+        } catch (NumberFormatException e) {
+            System.out.println("Error: Both arguments must be integers.");
+            System.exit(1);
+            return null; // This return is unreachable but added to satisfy the compiler.
+        }
+
+        if (numVoters < 3){
+            numVoters = 3;
+        }else if (numVoters > 10){
+            numVoters = 10;
+        }
+
+        if (maxCapacity < 2){
+            maxCapacity = 2;
+        }else if (maxCapacity > 5){
+            maxCapacity = 5;
+        }
+
+        return new int[]{numVoters, maxCapacity};
     }
 }
