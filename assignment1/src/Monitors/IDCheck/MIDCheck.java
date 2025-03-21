@@ -7,17 +7,17 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-import Monitors.Repository.IRepo;
+import Monitors.Repository.IRepo_IDChek;
 
 public class MIDCheck implements IIDCheck_ALL {
     private static MIDCheck instance;
-    private static IRepo log;
+    private static IRepo_IDChek log;
     private final Set<String> idsChecked = new HashSet<>();
     private final ReentrantLock lock_idCheck, lock_getSize, lock_getVoters;
     private final Condition simulate_idCheck;
     private final Random random = new Random();
 
-    private MIDCheck(IRepo logs) {
+    private MIDCheck(IRepo_IDChek logs) {
         log = logs;
         lock_idCheck = new ReentrantLock(true);
         simulate_idCheck = lock_idCheck.newCondition();
@@ -27,7 +27,7 @@ public class MIDCheck implements IIDCheck_ALL {
         lock_getVoters = new ReentrantLock();
     }
 
-    public static IIDCheck_ALL getInstance(IRepo logs){
+    public static IIDCheck_ALL getInstance(IRepo_IDChek logs){
         if (instance == null) {
             instance = new MIDCheck(logs);
         }

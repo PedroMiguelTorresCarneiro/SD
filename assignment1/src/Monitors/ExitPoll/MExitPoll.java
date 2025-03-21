@@ -8,13 +8,12 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-import Monitors.Repository.IRepo;
+import Monitors.Repository.IRepo_ExitPoll;
 
 
 public class MExitPoll implements IExitPoll_ALL {
     private static MExitPoll instance = null;
-    private static IRepo log;
-    // Armazena o voto real do votante
+    private static IRepo_ExitPoll log;
     // Votantes que saíram da estação
     // Condition para entrevistas
     private final Random random = new Random();
@@ -28,7 +27,7 @@ public class MExitPoll implements IExitPoll_ALL {
     private final double lieRatio = 0.2;
     private final double beingChosen = 0.1;
     
-    private MExitPoll(IRepo logs) {
+    private MExitPoll(IRepo_ExitPoll logs) {
         log = logs;
         lock_checkingState = new ReentrantLock();
         
@@ -45,7 +44,7 @@ public class MExitPoll implements IExitPoll_ALL {
         
     }
     
-    public static IExitPoll_ALL getInstance(IRepo logs) {
+    public static IExitPoll_ALL getInstance(IRepo_ExitPoll logs) {
         if (instance == null) {
             instance = new MExitPoll(logs);
         }

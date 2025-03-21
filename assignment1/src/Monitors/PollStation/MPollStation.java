@@ -1,7 +1,6 @@
 package Monitors.PollStation;
 
 
-import Monitors.IDCheck.IIDCheck;
 import Monitors.Repository.MRepo;
 import Threads.TPollClerk;
 import Threads.TVoter;
@@ -10,11 +9,11 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-import Monitors.Repository.IRepo;
+import Monitors.Repository.IRepo_PollStation;
 
 public class MPollStation implements IPollStation_ALL {
     private static MPollStation instance = null;
-    private static MRepo log;
+    private static IRepo_PollStation log;
     private final int capacidadeMax;
     private Boolean alreadyClosed = false;
     
@@ -34,7 +33,7 @@ public class MPollStation implements IPollStation_ALL {
 
     private PollStationState state = PollStationState.CLOSED;
     
-    private MPollStation(int capacidadeMax, IRepo logs) {
+    private MPollStation(int capacidadeMax, IRepo_PollStation logs) {
         this.capacidadeMax = capacidadeMax;
         log = (MRepo) logs;
         
@@ -54,7 +53,7 @@ public class MPollStation implements IPollStation_ALL {
         lock_isOpen = new ReentrantLock();         
     }
     
-    public static IPollStation_ALL getInstance(int capacidadeMax, IRepo logs) {
+    public static IPollStation_ALL getInstance(int capacidadeMax, IRepo_PollStation logs) {
         if (instance == null) {
             instance =  new MPollStation(capacidadeMax, logs);
         }

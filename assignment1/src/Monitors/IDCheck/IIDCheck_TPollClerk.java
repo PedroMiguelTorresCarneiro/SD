@@ -1,6 +1,6 @@
 package Monitors.IDCheck;
 
 
-interface IIDCheck_TPollClerk {
+public interface IIDCheck_TPollClerk {
     int getVoterRegisted();
 }

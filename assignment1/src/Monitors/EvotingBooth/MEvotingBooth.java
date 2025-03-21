@@ -9,11 +9,11 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-import Monitors.Repository.IRepo;
+import Monitors.Repository.IRepo_VotingBooth;
 
 public class MEvotingBooth implements IEVotingBooth_ALL{
     private static MEvotingBooth instance;
-    private static IRepo log;
+    private static IRepo_VotingBooth log;
     private final Map<String, Character> votes = new HashMap<>();
     private final ReentrantLock lock_gathering, lock_gettingVote, lock_vote;
     private final Condition simulateCountig, simulateVoting;
@@ -21,7 +21,7 @@ public class MEvotingBooth implements IEVotingBooth_ALL{
     private final double partyA_ratio = 0.7;
     private final Random random = new Random();
     
-    private MEvotingBooth(IRepo logs) {
+    private MEvotingBooth(IRepo_VotingBooth logs) {
         log = logs;
         lock_gathering = new ReentrantLock();
         simulateCountig = lock_gathering.newCondition();
@@ -32,7 +32,7 @@ public class MEvotingBooth implements IEVotingBooth_ALL{
         simulateVoting = lock_vote.newCondition();
     }
 
-    public static IEVotingBooth_ALL getInstance(IRepo logs) {
+    public static IEVotingBooth_ALL getInstance(IRepo_VotingBooth logs) {
         if (instance == null) {
             instance = new MEvotingBooth(logs);
         }
@@ -76,6 +76,7 @@ public class MEvotingBooth implements IEVotingBooth_ALL{
         System.out.print("--------------------------------------------\n");
         */
         pollClerk.setState(TPollClerk.PollClerkState.PUBLISHING_WINNER);
+        log.close();
     }
 
     @Override

@@ -1,19 +1,20 @@
 package Threads;
 
-import Monitors.EvotingBooth.IEvotingBooth;
-import Monitors.ExitPoll.IExitPoll;
-import Monitors.IDCheck.IIDCheck;
-import Monitors.PollStation.IPollStation;
+import Monitors.EvotingBooth.IEVotingBooth_TPollClerk;
+import Monitors.ExitPoll.IExitPoll_TPollClerk;
+import Monitors.IDCheck.IIDCheck_TPollClerk;
+import Monitors.PollStation.IPollStation_TPollClerk;
 
 
-public class TPollClerk extends Thread {
+public class TPollClerk implements Runnable {
     // Shared Regions
-    private final IPollStation pollStation;
-    private final IIDCheck idCheck;
-    private final IEvotingBooth booth;
-    private final IExitPoll exitPoll;
+    private final IPollStation_TPollClerk pollStation;
+    private final IIDCheck_TPollClerk idCheck;
+    private final IEVotingBooth_TPollClerk booth;
+    private final IExitPoll_TPollClerk exitPoll;
     
     // Initiate State
+    private static TPollClerk thread = null;
     private PollClerkState state = PollClerkState.OPEN_PS;
     
     // VARS Initiation
@@ -29,7 +30,7 @@ public class TPollClerk extends Thread {
         PUBLISHING_WINNER
     }
     
-    public TPollClerk(IPollStation pollStation, IIDCheck idCheck, IEvotingBooth booth, IExitPoll exitPoll, int maxVotes) {
+    public TPollClerk(IPollStation_TPollClerk pollStation, IIDCheck_TPollClerk idCheck, IEVotingBooth_TPollClerk booth, IExitPoll_TPollClerk exitPoll, int maxVotes) {
         this.pollStation = pollStation;
         this.idCheck = idCheck;
         this.booth = booth;
@@ -37,8 +38,10 @@ public class TPollClerk extends Thread {
         this.maxVotes = maxVotes;
     }
     
-    public static Runnable getInstace(IPollStation pollStation, IIDCheck idCheck, IEvotingBooth booth, IExitPoll exitPoll, int maxVotes){
-        return new TPollClerk(pollStation, idCheck, booth, exitPoll, maxVotes);
+    public static Runnable getInstance(IPollStation_TPollClerk pollStation, IIDCheck_TPollClerk idCheck, IEVotingBooth_TPollClerk booth, IExitPoll_TPollClerk exitPoll, int maxVotes){
+        if (thread == null)
+            thread = new TPollClerk(pollStation, idCheck, booth, exitPoll, maxVotes);
+        return thread;
     }
 
     @Override
@@ -85,13 +88,12 @@ public class TPollClerk extends Thread {
 
                       //  System.out.println("PollClerk is gathering the votes");
                         booth.publishElectionResults(this);
-                        setState(PollClerkState.PUBLISHING_WINNER);
                     }
                     default -> {}
                 }
             }
 
-            //System.out.println("⏹ TPollClerk terminou o seu trabalho!");
+            System.out.println("⏹ TPollClerk terminou o seu trabalho!");
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }

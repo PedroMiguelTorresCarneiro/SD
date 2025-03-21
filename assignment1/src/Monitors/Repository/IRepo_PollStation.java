@@ -1,6 +1,7 @@
 package Monitors.Repository;
 
-interface IRepo_PollStation {
+
+public interface IRepo_PollStation {
     void logPollStation(String state);
     void logWaiting(String voterId);
     void logInside(String voterId);

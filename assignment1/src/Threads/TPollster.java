@@ -1,12 +1,13 @@
 package Threads;
 
-import Monitors.ExitPoll.IExitPoll;
+import Monitors.ExitPoll.IExitPoll_TPollster;
 
-public class TPollster extends Thread {
+public class TPollster implements Runnable {
     // Shared Regions
-    private final IExitPoll exitPoll;
+    private final IExitPoll_TPollster exitPoll;
     
     // Initiate State
+    private static TPollster thread = null;
     private PollsterState state = PollsterState.WATING_VOTERS;
 
     public static enum PollsterState {
@@ -15,8 +16,14 @@ public class TPollster extends Thread {
         PUBLISHING_RESULTS
     }
     
-    public TPollster(IExitPoll exitPoll) {
+    private TPollster(IExitPoll_TPollster exitPoll) {
         this.exitPoll = exitPoll;
+    }
+    
+    public static Runnable getInstance(IExitPoll_TPollster exitPoll){
+        if (thread == null)
+            thread = new TPollster(exitPoll);
+        return thread;
     }
 
     @Override
@@ -42,7 +49,7 @@ public class TPollster extends Thread {
                 } 
             }
             exitPoll.publishResults(this);
-            //System.out.println("⏹ TPollster has finished its work!");
+            System.out.println("⏹ TPollster has finished its work!");
             
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

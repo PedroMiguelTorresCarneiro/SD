@@ -2,7 +2,7 @@ package Monitors.PollStation;
 
 import Threads.TPollClerk;
 
-interface IPollStation_PollClerk {
+public interface IPollStation_TPollClerk {
     void openPS(TPollClerk pollclerk) throws InterruptedException;
     void callNextVoter(TPollClerk pollclerk);
     void closePS();

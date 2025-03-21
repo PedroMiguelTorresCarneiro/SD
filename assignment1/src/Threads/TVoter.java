@@ -1,16 +1,16 @@
 package Threads;
-import Monitors.EvotingBooth.IEvotingBooth;
-import Monitors.ExitPoll.IExitPoll;
-import Monitors.IDCheck.IIDCheck;
-import Monitors.PollStation.IPollStation;
+import Monitors.EvotingBooth.IEVotingBooth_TVoter;
+import Monitors.ExitPoll.IExitPoll_TVoter;
+import Monitors.IDCheck.IIDCheck_TVoter;
+import Monitors.PollStation.IPollStation_TVoter;
 import java.util.Random;
 
-public class TVoter extends Thread {
+public class TVoter implements Runnable {
     // Shared Regions
-    private final IPollStation pollStation;
-    private final IEvotingBooth booth;
-    private final IIDCheck idCheck;
-    private final IExitPoll exitPoll;
+    private final IPollStation_TVoter pollStation;
+    private final IEVotingBooth_TVoter booth;
+    private final IIDCheck_TVoter idCheck;
+    private final IExitPoll_TVoter exitPoll;
     
     // Initiate State
     private VoterState state = VoterState.WATING_OUTSIDE;
@@ -21,6 +21,7 @@ public class TVoter extends Thread {
     private boolean validID = true;
     private final double diffIdRatio = 0.6;
     private final double chooseToAnwser = 0.6;
+    private final String original_ID;
 
     public static enum VoterState {
         WATING_OUTSIDE,
@@ -32,8 +33,9 @@ public class TVoter extends Thread {
         GO_HOME
     }
     
-    public TVoter(String voterId, IPollStation pollStation,IIDCheck idCheck, IEvotingBooth booth, IExitPoll exitPoll) {
+    private TVoter(String voterId, IPollStation_TVoter pollStation,IIDCheck_TVoter idCheck, IEVotingBooth_TVoter booth, IExitPoll_TVoter exitPoll) {
         this.voterId = voterId;
+        original_ID = voterId;
         this.pollStation = pollStation;
         this.idCheck = idCheck;
         this.booth = booth;
@@ -41,6 +43,12 @@ public class TVoter extends Thread {
 
         //System.out.println("Voter " + voterId + " is waiting outside");
     }
+    
+    // Static factory method
+    public static Runnable getInstance(String voterId, IPollStation_TVoter pollStation,IIDCheck_TVoter idCheck, IEVotingBooth_TVoter booth, IExitPoll_TVoter exitPoll) {
+        return new TVoter(voterId, pollStation, idCheck, booth, exitPoll);
+    }
+    
 
     @Override
     public void run() {
@@ -75,7 +83,7 @@ public class TVoter extends Thread {
                         pollStation.exitingPS(this);
                     }
                     case VoterState.EXIT_PS ->{
-                        //System.out.println("Voter " + voterId + " is exiting the poll station");
+                        //System.out.println("Voter " + original_ID + " is exiting the poll station");
 
                         if(!exitPoll.choosen()){
                             reborn();
@@ -99,6 +107,7 @@ public class TVoter extends Thread {
                 }
                 
             }
+            System.out.println("⏹ TVoter"+ original_ID +"has finished its work!");
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
