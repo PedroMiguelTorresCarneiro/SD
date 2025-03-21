@@ -1,5 +1,6 @@
 package Monitors.Repository;
 
+import Main.mainGUI;
 import java.util.concurrent.locks.ReentrantLock;
 import java.io.FileWriter;
 import java.io.BufferedWriter;
@@ -27,12 +28,15 @@ public class MRepo implements IRepo_ALL {
 
     // File writer for logging to a file
     private BufferedWriter fileWriter;
+    
+    private mainGUI gui;
 
     // Private constructor
-    private MRepo(int votesNumber, int votersNumber, int fifoLimit) {
+    private MRepo(int votesNumber, int votersNumber, int fifoLimit, mainGUI gui) {
         this.votesNumber = votesNumber;
         this.votersNumber = votersNumber;
         this.fifoLimit = fifoLimit;
+        this.gui = gui;
         this.lock = new ReentrantLock();
 
         // Initialize the file writer
@@ -46,9 +50,9 @@ public class MRepo implements IRepo_ALL {
     }
 
     // Singleton getInstance method
-    public static IRepo_ALL getInstance(int votesNumber, int votersNumber, int fifoLimit) {
+    public static IRepo_ALL getInstance(int votesNumber, int votersNumber, int fifoLimit, mainGUI gui) {
         if (instance == null) {
-            instance = new MRepo(votesNumber, votersNumber, fifoLimit);
+            instance = new MRepo(votesNumber, votersNumber, fifoLimit, gui);
         }
         return instance;
     }
@@ -111,6 +115,7 @@ public class MRepo implements IRepo_ALL {
     public void logPollStation(String state) {
         lock.lock(); // Acquire the lock
         try {
+            gui.logPOLLSTATION(state);
             String coloredState = state.equals("OPEN  ") ? GREEN + state + RESET : RED + state + RESET;
             String logMessage = String.format("| %-11s      |         |        |         |        |          |        |%n", coloredState);
             writeLog(logMessage);
@@ -124,6 +129,8 @@ public class MRepo implements IRepo_ALL {
     public void logWaiting(String voterId) {
         lock.lock(); // Acquire the lock
         try {
+            //gui.removeExitPollFIFO(voterId);
+            gui.addExternalFIFO(voterId);
             String logMessage = String.format("|             |   %s%-5s%s |        |         |        |          |        |%n", BOLD, voterId, RESET);
             writeLog(logMessage);
         } finally {
@@ -136,6 +143,8 @@ public class MRepo implements IRepo_ALL {
     public void logInside(String voterId) {
         lock.lock(); // Acquire the lock
         try {
+            gui.removeExternalFIFO(voterId);
+            gui.addInternalFIFO(voterId);
             String logMessage = String.format("|             |         |  %s%-5s%s |         |        |          |        |%n", GREEN, voterId, RESET);
             writeLog(logMessage);
         } finally {
@@ -148,6 +157,11 @@ public class MRepo implements IRepo_ALL {
     public void logIDCheck(String voterId, char accepted) {
         lock.lock(); // Acquire the lock
         try {
+            
+            gui.removeInternalFIFO(voterId);
+            gui.logIDCHECK(voterId+accepted, accepted);
+            gui.addIdcheckFIFO(voterId);
+            
             String color = (accepted == '✔') ? GREEN : RED;
             String logMessage = String.format("|             |         |        |  %s%-4s%c%s  |        |          |        |%n", color, voterId, accepted, RESET);
             writeLog(logMessage);
@@ -161,6 +175,8 @@ public class MRepo implements IRepo_ALL {
     public void logVoting(String voterId, char vote) {
         lock.lock(); // Acquire the lock
         try {
+            //gui.removeIdcheckFIFO(voterId);
+            gui.logVOTING(voterId);
             String voteColor = (vote == 'A') ? CYAN : RED;
             String logMessage = String.format("|             |         |        |         |  %-4s%s%c%s |          |        |%n", voterId, voteColor, vote, RESET);
             writeLog(logMessage);
@@ -174,6 +190,10 @@ public class MRepo implements IRepo_ALL {
     public void logExitPoll(String voterId) {
         lock.lock(); // Acquire the lock
         try {
+            gui.removeIdcheckFIFO(voterId);
+            //gui.logIDCHECK("");
+            //gui.logVOTING("");
+            //gui.addExitPollFIFO(voterId);
             String logMessage = String.format("|             |         |        |         |        |   %s%-5s%s  |        |%n", YELLOW, voterId, RESET);
             writeLog(logMessage);
         } finally {
@@ -186,6 +206,7 @@ public class MRepo implements IRepo_ALL {
     public void logSurvey(String voterId, char lieOrNot) {
         lock.lock(); // Acquire the lock
         try {
+            gui.logSURVEY(voterId);
             String logMessage = String.format("|             |         |        |         |        |          |  %s%-4s%c%s |%n", BOLD, voterId, lieOrNot, RESET);
             writeLog(logMessage);
         } finally {
@@ -194,9 +215,19 @@ public class MRepo implements IRepo_ALL {
     }
 
     // Log the survey results
+    @Override
     public void logSurveyResults(long A, long B, String winner) {
         lock.lock(); // Acquire the lock
         try {
+            
+            double partyA = (A / (double)(A + B)) * 100; // Resultado: 30.0
+            int partyAInt = (int) partyA; 
+            double partyB = (B / (double)(A + B)) * 100; // Resultado: 30.0
+            int partyBInt = (int) partyB;
+            
+            gui.updatePartyA_survey(partyAInt);
+            gui.updatePartyB_survey(partyBInt);
+            
             String logMessage = CYAN + "-------------------------------------------------------------------------" + RESET + "\n" +
                     CYAN + "\n\n----------------------| SURVEY RESULTS" + RESET + "\n" +
                     String.format("Total votes for A: %s%d%s%n", YELLOW, A, RESET) +
@@ -210,9 +241,18 @@ public class MRepo implements IRepo_ALL {
     }
 
     // Log the election results
+    @Override
     public void logElectionResults(long A, long B, String winner) {
         lock.lock(); // Acquire the lock
         try {
+            double partyA = (A / (double)(A + B)) * 100; // Resultado: 30.0
+            int partyAInt = (int) partyA; 
+            double partyB = (B / (double)(A + B)) * 100; // Resultado: 30.0
+            int partyBInt = (int) partyB;
+            
+            gui.updatePartyA(partyAInt);
+            gui.updatePartyB(partyBInt);
+            
             String logMessage = CYAN + "\n----------------------| ELECTION RESULTS" + RESET + "\n" +
                     String.format("Total votes for A: %s%d%s%n", YELLOW, A, RESET) +
                     String.format("Total votes for B: %s%d%s%n", YELLOW, B, RESET) +
@@ -225,6 +265,7 @@ public class MRepo implements IRepo_ALL {
     }
 
     // Close the file writer when done
+    @Override
     public void close() {
         try {
             if (fileWriter != null) {

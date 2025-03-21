@@ -84,7 +84,11 @@ public class TVoter implements Runnable {
                     }
                     case VoterState.EXIT_PS ->{
                         //System.out.println("Voter " + original_ID + " is exiting the poll station");
-
+                        if(!exitPoll.isOpen()){
+                            setState(VoterState.GO_HOME);
+                            break;
+                        }
+                        
                         if(!exitPoll.choosen()){
                             reborn();
                             break;
@@ -107,7 +111,7 @@ public class TVoter implements Runnable {
                 }
                 
             }
-            System.out.println("⏹ TVoter"+ original_ID +"has finished its work!");
+            //System.out.println("⏹ TVoter"+ original_ID +"has finished its work!");
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }

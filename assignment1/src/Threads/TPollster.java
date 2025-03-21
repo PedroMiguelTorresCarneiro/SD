@@ -49,7 +49,7 @@ public class TPollster implements Runnable {
                 } 
             }
             exitPoll.publishResults(this);
-            System.out.println("⏹ TPollster has finished its work!");
+            //System.out.println("⏹ TPollster has finished its work!");
             
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

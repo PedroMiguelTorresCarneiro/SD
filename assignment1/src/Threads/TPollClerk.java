@@ -93,7 +93,7 @@ public class TPollClerk implements Runnable {
                 }
             }
 
-            System.out.println("⏹ TPollClerk terminou o seu trabalho!");
+            //System.out.println("⏹ TPollClerk terminou o seu trabalho!");
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }

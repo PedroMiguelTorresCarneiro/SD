@@ -32,84 +32,54 @@ import Monitors.Repository.IRepo_ExitPoll;
 import Monitors.Repository.IRepo_VotingBooth;
 import Monitors.Repository.MRepo;
 
-public class Main {
-    public static void main(String[] args) throws InterruptedException {
-        int userArgs[] = GetUserArguments(args);
+import javax.swing.SwingUtilities;
 
-        int numVoters = userArgs[0];
-        int maxCapacity = userArgs[1];
- 
-        int maxVotes = 20;    
-    
+public class Main {
+    private static mainGUI gui;
+
+    public static void startSimulation(int numVoters, int maxCapacity) throws InterruptedException {
+        int maxVotes = 20;
+
         // Shared Regions
-        IRepo_ALL logs = MRepo.getInstance(maxVotes, numVoters, maxCapacity);
-        
-        IPollStation_ALL pollStation = MPollStation.getInstance(maxCapacity, (IRepo_PollStation)logs);
-        IIDCheck_ALL idCheck = MIDCheck.getInstance((IRepo_IDChek)logs);
-        IEVotingBooth_ALL booth = MEvotingBooth.getInstance((IRepo_VotingBooth)logs);
-        IExitPoll_ALL exitPoll = MExitPoll.getInstance((IRepo_ExitPoll)logs);
-        
-        
-        // Threads 
-        Thread pollClerk = null; 
+        IRepo_ALL logs = MRepo.getInstance(maxVotes, numVoters, maxCapacity, gui);
+
+        IPollStation_ALL pollStation = MPollStation.getInstance(maxCapacity, (IRepo_PollStation) logs);
+        IIDCheck_ALL idCheck = MIDCheck.getInstance((IRepo_IDChek) logs);
+        IEVotingBooth_ALL booth = MEvotingBooth.getInstance((IRepo_VotingBooth) logs);
+        IExitPoll_ALL exitPoll = MExitPoll.getInstance((IRepo_ExitPoll) logs);
+
+        // Threads
+        Thread pollClerk = null;
         Thread pollster = null;
         Thread voter = null;
-        
-        pollClerk = new Thread(TPollClerk.getInstance((IPollStation_TPollClerk)pollStation, (IIDCheck_TPollClerk)idCheck, (IEVotingBooth_TPollClerk)booth, (IExitPoll_TPollClerk)exitPoll, maxVotes));
-        pollster = new Thread(TPollster.getInstance((IExitPoll_TPollster)exitPoll));
-        
-        
+
+        pollClerk = new Thread(TPollClerk.getInstance((IPollStation_TPollClerk) pollStation, (IIDCheck_TPollClerk) idCheck, (IEVotingBooth_TPollClerk) booth, (IExitPoll_TPollClerk) exitPoll, maxVotes));
+        pollster = new Thread(TPollster.getInstance((IExitPoll_TPollster) exitPoll));
+
         pollClerk.start();
         pollster.start();
-              
+
         Thread[] voters = new Thread[numVoters];
-        
+
         for (int i = 0; i < numVoters; i++) {
-            voters[i] = new Thread(TVoter.getInstance("V" + (i+1), (IPollStation_TVoter) pollStation,(IIDCheck_TVoter) idCheck, (IEVotingBooth_TVoter) booth, (IExitPoll_TVoter) exitPoll));
+            voters[i] = new Thread(TVoter.getInstance("V" + (i + 1), (IPollStation_TVoter) pollStation, (IIDCheck_TVoter) idCheck, (IEVotingBooth_TVoter) booth, (IExitPoll_TVoter) exitPoll));
             voters[i].start();
         }
-        
-        
+
         pollClerk.join();
         pollster.join();
-        for (Thread v : voters){
+        for (Thread v : voters) {
             v.join();
         }
 
-        System.out.println("✅ Election simulation finished!");        
-        
+        System.out.println("✅ Election simulation finished!");
     }
 
-    private static int[] GetUserArguments(String args[]){
-        if (args.length != 2){
-            System.out.println("You must provide 2 arguments: the number of voters and the maximum capacity of the polling station's queue.");
-            System.exit(1);
-        }
-
-        int numVoters;
-        int maxCapacity;
-
-        try {
-            numVoters = Integer.parseInt(args[0]);
-            maxCapacity = Integer.parseInt(args[1]);
-        } catch (NumberFormatException e) {
-            System.out.println("Error: Both arguments must be integers.");
-            System.exit(1);
-            return null; // This return is unreachable but added to satisfy the compiler.
-        }
-
-        if (numVoters < 3){
-            numVoters = 3;
-        }else if (numVoters > 10){
-            numVoters = 10;
-        }
-
-        if (maxCapacity < 2){
-            maxCapacity = 2;
-        }else if (maxCapacity > 5){
-            maxCapacity = 5;
-        }
-
-        return new int[]{numVoters, maxCapacity};
+    public static void main(String[] args) {
+        // Create and display the GUI
+        SwingUtilities.invokeLater(() -> {
+            gui = new mainGUI();
+            gui.setVisible(true);
+        });
     }
 }

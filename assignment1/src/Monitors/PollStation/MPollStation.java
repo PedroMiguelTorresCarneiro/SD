@@ -61,6 +61,7 @@ public class MPollStation implements IPollStation_ALL {
         return instance;
     }
 
+    @Override
     public void openPS(TPollClerk pollclerk) throws InterruptedException {
         lock_changeState.lock();
         try{
@@ -83,6 +84,7 @@ public class MPollStation implements IPollStation_ALL {
         }
     }
     
+    @Override
     public void enterPS(TVoter voter) throws InterruptedException {
         lock_externalFifo.lock();
         try{
@@ -115,6 +117,7 @@ public class MPollStation implements IPollStation_ALL {
         }
     }
 
+    @Override
     public void callNextVoter(TPollClerk pollclerk) {
         lock_externalFifo.lock();
         
@@ -137,6 +140,7 @@ public class MPollStation implements IPollStation_ALL {
         }
     }
 
+    @Override
     public void closePS() {
         lock_changeState.lock();
 
@@ -154,6 +158,7 @@ public class MPollStation implements IPollStation_ALL {
         }
     }
 
+    @Override
     public boolean isCLosedAfterElection() {
         lock_isOpen.lock();
 
@@ -166,6 +171,7 @@ public class MPollStation implements IPollStation_ALL {
 
     
 
+    @Override
     public void exitingPS(TVoter voter) throws InterruptedException {
         // para deixar entrar uma pessoa
         lock_exitingPS.lock();
@@ -182,6 +188,7 @@ public class MPollStation implements IPollStation_ALL {
         }
     }
     
+    @Override
     public boolean isEmpty(){
         lock_isEmpty.lock();
 
@@ -192,6 +199,7 @@ public class MPollStation implements IPollStation_ALL {
         }
     }
 
+    @Override
     public boolean maxVotes(int maxVotes, int votersRegistered) {
         lock_maxedVotes.lock();
 
