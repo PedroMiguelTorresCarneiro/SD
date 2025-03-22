@@ -11,6 +11,22 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import Monitors.Repository.IRepo_VotingBooth;
 
+/**
+ * Class MEvotingBooth implements IEVotingBooth_ALL interface with the methods necessary to simulate the voting booth.
+ * The class is responsible for the synchronization of the threads and the access to the shared memory.
+ * The class has the following attributes:
+ * - votes: a map with the votes of the voters;
+ * - countA: the number of votes for party A;
+ * - countB: the number of votes for party B;
+ * - partyA_ratio: the ratio of votes for party A;
+ * - random: a random number generator;
+ * - lock_gathering: a reentrant lock for the gathering method;
+ * - simulateCountig: a condition for the gathering method;
+ * - lockSize: a reentrant lock for the getSize method;
+ * - lock_gettingVote: a reentrant lock for the getVote method;
+ * - lock_vote: a reentrant lock for the vote method;
+ * - simulateVoting: a condition for the vote method.
+ */
 public class MEvotingBooth implements IEVotingBooth_ALL{
     private static MEvotingBooth instance;
     private static IRepo_VotingBooth log;
@@ -21,6 +37,10 @@ public class MEvotingBooth implements IEVotingBooth_ALL{
     private final double partyA_ratio = 0.7;
     private final Random random = new Random();
     
+    /**
+     * Constructor for MEvotingBooth.
+     * @param logs repository of the voting booth.
+     */
     private MEvotingBooth(IRepo_VotingBooth logs) {
         log = logs;
         lock_gathering = new ReentrantLock();
@@ -34,6 +54,11 @@ public class MEvotingBooth implements IEVotingBooth_ALL{
         simulateVoting = lock_vote.newCondition();
     }
 
+    /**
+     * Method to get the instance of MEvotingBooth.
+     * @param logs repository of the voting booth.
+     * @return instance of MEvotingBooth.
+     */
     public static IEVotingBooth_ALL getInstance(IRepo_VotingBooth logs) {
         if (instance == null) {
             instance = new MEvotingBooth(logs);
@@ -41,13 +66,14 @@ public class MEvotingBooth implements IEVotingBooth_ALL{
         return instance;
     }
 
+    /**
+     * Method to simulate the gathering of the votes.
+     * @throws InterruptedException exception.
+     */
     @Override
     public void gathering() throws InterruptedException {
         lock_gathering.lock();
         try {
-            //System.out.println("Starting vote counting...");
-
-            // Contar os votos
             countA = votes.values().stream()
                     .filter(valor -> valor == 'A')
                     .count();
@@ -56,8 +82,6 @@ public class MEvotingBooth implements IEVotingBooth_ALL{
                     .filter(valor -> valor == 'B')
                     .count();
 
-       
-            // Sinalizar que a contagem foi concluída
             simulateCountig.await(2000, TimeUnit.MILLISECONDS);
 
         } finally {
@@ -65,6 +89,10 @@ public class MEvotingBooth implements IEVotingBooth_ALL{
         }
     }
 
+    /**
+     * Method to publish the election results.
+     * @param pollClerk poll clerk thread.
+     */
     @Override
     public void publishElectionResults(TPollClerk pollClerk) {
         log.logElectionResults(countA, countB, (countA > countB ? "A" : (countB > countA ? "B" : "TIE")));
@@ -73,26 +101,25 @@ public class MEvotingBooth implements IEVotingBooth_ALL{
         log.close();
     }
 
+    /**
+     * Method to simulate the vote of a voter.
+     * @param voter voter thread.
+     * @throws InterruptedException exception.
+     */
     @Override
     public void vote(TVoter voter) throws InterruptedException {
         lock_vote.lock();
 
         try{      
-            // Determinar o voto baseado na percentagem
             Character vote = Math.random() < partyA_ratio ? 'A' : 'B';
         
-            // Simular o voto uma duração random entre 0,5s e 2s
             long randomDuration = 500 + random.nextInt(1501);
             simulateVoting.await(randomDuration, TimeUnit.MILLISECONDS);
 
-            //Registar o voto
             votes.put(voter.getID(), vote);
 
-            //System.out.println("Voter " + voter.getID() + " voted for " + vote);
             log.logVoting(voter.getID(), vote);
             
-            
-            // Mudar o State
             voter.setState(TVoter.VoterState.VOTING);
             
         } finally {

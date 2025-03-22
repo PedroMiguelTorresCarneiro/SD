@@ -75,7 +75,7 @@ public class TVoter implements Runnable {
     /**
      * The chooseToAnswerProb attribute stores the probability of the voter choosing to answer the exit poll survey.
      */
-    private final double chooseToAnswerProb = 0.6;
+    private final double chooseToAnswerProb = 0.7;
 
 
     private int test = 0;
@@ -147,10 +147,10 @@ public class TVoter implements Runnable {
      * EXIT_PS:
      * The voter exits the polling station, if the exit poll is closed, the voter goes home.
      * If the voter is chosen to answer the survey and decides to answer, the voter answers the survey.
-     * Otherwise, the voter reborns and will wait outside the polling station.
+     * Otherwise, the voter reborn and will wait outside the polling station.
      * 
      * ANWSER_SURVEY:
-     * The voter answers the survey (it can lie in its answer) and reborns, waiting outside the polling station.
+     * The voter answers the survey (it can lie in its answer) and reborn, waiting outside the polling station.
      *
      * @throws InterruptedException If any thread is interrupted during the simulation.
      */
@@ -159,33 +159,29 @@ public class TVoter implements Runnable {
         try {
             while (state != VoterState.GO_HOME) {
                 switch (state) {
-                    case WAITING_OUTSIDE:
+                    case WAITING_OUTSIDE -> {
                         if (pollStation.isCLosedAfterElection()) {
                             setState(VoterState.GO_HOME);
                             break;
                         }
 
                         pollStation.enterPS(this);
-                        break;
+                    }
 
-                    case WAITING_INSIDE:
-                        validID = idCheck.checkID(this);
-                        break;
+                    case WAITING_INSIDE -> validID = idCheck.checkID(this);
 
-                    case CHECKING_ID:
+                    case CHECKING_ID -> {
                         if (!validID) {
                             pollStation.exitingPS(this);
                             break;
                         }
 
                         booth.vote(this);
-                        break;
+                    }
 
-                    case VOTING:
-                        pollStation.exitingPS(this);
-                        break;
+                    case VOTING -> pollStation.exitingPS(this);
 
-                    case EXIT_PS:
+                    case EXIT_PS -> {
                         if (!exitPoll.isOpen()) {
                             setState(VoterState.GO_HOME);
                             break;
@@ -201,15 +197,12 @@ public class TVoter implements Runnable {
                         } else {
                             reborn();
                         }
+                    }
 
-                        break;
+                    case ANSWER_SURVEY -> reborn();
 
-                    case ANSWER_SURVEY:
-                        reborn();
-                        break;
-
-                    default:
-                        break;
+                    default -> {
+                    }
                 }
             }
         } catch (InterruptedException e) {

@@ -103,6 +103,21 @@ public class Main {
             v.join();
         }
 
-        System.out.println("✅ Election simulation finished!");
+        System.out.println("✅ Election simulation finished!\n");
+        
+        System.out.println("Program will terminate in 5 seconds...");
+        for (int i = 10; i > 0; i--) {
+            System.out.println(i + "...");
+            try {
+                Thread.sleep(1000); // Pause for 1 second
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Terminate the program
+        System.out.println("Terminating program now!");
+        System.exit(0);
+        
     }
 }

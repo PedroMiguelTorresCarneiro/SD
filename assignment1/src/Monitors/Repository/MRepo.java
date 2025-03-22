@@ -87,7 +87,7 @@ public class MRepo implements IRepo_ALL {
                     CYAN + "-------------------------------------------------------------------------" + RESET + "\n" +
                     RED + "Probabilities:" + RESET + "\n" +
                     "   - PARTY A wins              : " + YELLOW + "70%" + RESET + "\n" +
-                    "   - Voter being chosen        : " + YELLOW + "10%" + RESET + "\n" +
+                    "   - Voter being chosen        : " + YELLOW + "50%" + RESET + "\n" +
                     "   - Voter answers             : " + YELLOW + "60%" + RESET + "\n" +
                     "   - Voter lies on survey      : " + YELLOW + "20%" + RESET + "\n" +
                     "   - Voter reborn a new ID     : " + YELLOW + "60%" + RESET + "\n" +
@@ -228,6 +228,14 @@ public class MRepo implements IRepo_ALL {
             gui.updatePartyA_survey(partyAInt);
             gui.updatePartyB_survey(partyBInt);
             
+            if(partyAInt > partyBInt){
+                gui.setSurveyPartyAwinner();
+            }else if(partyAInt < partyBInt){
+                gui.setSurveyPartyBwinner();
+            }else{
+                gui.setSurveyTie();
+            }
+            
             String logMessage = CYAN + "-------------------------------------------------------------------------" + RESET + "\n" +
                     CYAN + "\n\n----------------------| SURVEY RESULTS" + RESET + "\n" +
                     String.format("Total votes for A: %s%d%s%n", YELLOW, A, RESET) +
@@ -245,10 +253,20 @@ public class MRepo implements IRepo_ALL {
     public void logElectionResults(long A, long B, String winner) {
         lock.lock(); // Acquire the lock
         try {
+            
+            gui.clean();
             double partyA = (A / (double)(A + B)) * 100; // Resultado: 30.0
             int partyAInt = (int) partyA; 
             double partyB = (B / (double)(A + B)) * 100; // Resultado: 30.0
             int partyBInt = (int) partyB;
+            
+            if(partyAInt > partyBInt){
+                gui.setElecPartyAwinner();
+            }else if(partyAInt < partyBInt){
+                gui.setElecPartyBwinner();
+            }else{
+                gui.setElecTie();
+            }
             
             gui.updatePartyA(partyAInt);
             gui.updatePartyB(partyBInt);

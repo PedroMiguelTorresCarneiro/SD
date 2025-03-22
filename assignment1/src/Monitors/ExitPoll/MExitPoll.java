@@ -25,7 +25,7 @@ public class MExitPoll implements IExitPoll_ALL {
     private boolean open = true;
     private long countA, countB;
     private final double lieRatio = 0.2;
-    private final double beingChosen = 0.1;
+    private final double beingChosen = 0.50;
 
     private MExitPoll(IRepo_ExitPoll logs) {
         log = logs;

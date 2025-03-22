@@ -70,7 +70,6 @@ public class TPollClerk implements Runnable {
      * The TPollClerk constructor initializes the poll clerk object with the specified attributes.
      *
      * @param pollStation The polling station shared region.
-     * @param idCheck The ID check shared region.
      * @param booth The voting booth shared region.
      * @param exitPoll The exit poll shared region.
      * @param maxVotes The maximum number of votes required to trigger the end of the elections.
@@ -83,11 +82,9 @@ public class TPollClerk implements Runnable {
     }
 
     /**
-     * The getInstance method returns the unique instance of the TPollClerk class.
-     * If the instance does not exist, it creates a new one.
+     * The getInstance method returns the unique instance of the TPollClerk class.If the instance does not exist, it creates a new one.
      *
      * @param pollStation The polling station shared region.
-     * @param idCheck The ID check shared region.
      * @param booth The voting booth shared region.
      * @param exitPoll The exit poll shared region.
      * @param maxVotes The maximum number of votes required to trigger the end of the elections.
@@ -122,15 +119,11 @@ public class TPollClerk implements Runnable {
         try {
             while (state != PollClerkState.PUBLISHING_WINNER) {
                 switch (state) {
-                    case OPEN_PS:
-                        pollStation.openPS(this);
-                        break;
+                    case OPEN_PS -> pollStation.openPS(this);
 
-                    case ID_CHECK_WAIT:
-                        pollStation.callNextVoter(this);
-                        break;
+                    case ID_CHECK_WAIT -> pollStation.callNextVoter(this);
 
-                    case ID_CHECK:
+                    case ID_CHECK -> {
                         if (booth.getSize() >= maxVotes) {
                             pollStation.closePS();
                         }
@@ -141,20 +134,18 @@ public class TPollClerk implements Runnable {
                         }
 
                         setState(PollClerkState.ID_CHECK_WAIT);
-                        break;
+                    }
 
-                    case INFORMING_EP:
+                    case INFORMING_EP -> {
                         exitPoll.close();
                         booth.gathering();
                         setState(PollClerkState.GATHERING_VOTES);
-                        break;
+                    }
 
-                    case GATHERING_VOTES:
-                        booth.publishElectionResults(this);
-                        break;
+                    case GATHERING_VOTES -> booth.publishElectionResults(this);
 
-                    default:
-                        break;
+                    default -> {
+                    }
                 }
             }
         } catch (InterruptedException e) {

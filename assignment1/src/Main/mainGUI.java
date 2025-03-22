@@ -62,7 +62,7 @@ public class mainGUI extends javax.swing.JFrame {
         internalFIFO = new javax.swing.JList<>();
         jScrollPane5 = new javax.swing.JScrollPane();
         idcheckFIFO = new javax.swing.JList<>();
-        jLabel3 = new javax.swing.JLabel();
+        elecpartyB = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         partyA_progress = new javax.swing.JProgressBar();
         partyB_progress = new javax.swing.JProgressBar();
@@ -70,13 +70,13 @@ public class mainGUI extends javax.swing.JFrame {
         SURVEY = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
         externalFIFO = new javax.swing.JList<>();
-        jLabel8 = new javax.swing.JLabel();
+        elecpartyA = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         partyB_survey = new javax.swing.JProgressBar();
-        jLabel11 = new javax.swing.JLabel();
+        surveypartyB = new javax.swing.JLabel();
         partyA_survey = new javax.swing.JProgressBar();
-        jLabel12 = new javax.swing.JLabel();
+        surveypartyA = new javax.swing.JLabel();
         spinnerMaxVotes = new javax.swing.JSpinner();
         jLabel13 = new javax.swing.JLabel();
 
@@ -230,8 +230,8 @@ public class mainGUI extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jLabel3.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
-        jLabel3.setText("B Party");
+        elecpartyB.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
+        elecpartyB.setText("B Party");
 
         jLabel5.setFont(new java.awt.Font("Helvetica Neue", 0, 36)); // NOI18N
         jLabel5.setText("ELECTION DAY");
@@ -246,8 +246,8 @@ public class mainGUI extends javax.swing.JFrame {
 
         jScrollPane4.setViewportView(externalFIFO);
 
-        jLabel8.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
-        jLabel8.setText("A Party");
+        elecpartyA.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
+        elecpartyA.setText("A Party");
 
         jLabel9.setFont(new java.awt.Font("Helvetica Neue", 1, 30)); // NOI18N
         jLabel9.setText("SURVEY RESULTS");
@@ -255,13 +255,13 @@ public class mainGUI extends javax.swing.JFrame {
         jLabel10.setFont(new java.awt.Font("Helvetica Neue", 1, 30)); // NOI18N
         jLabel10.setText("ELECTION RESULTS");
 
-        jLabel11.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
-        jLabel11.setText("B Party");
+        surveypartyB.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
+        surveypartyB.setText("B Party");
 
         partyA_survey.setForeground(new java.awt.Color(255, 51, 51));
 
-        jLabel12.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
-        jLabel12.setText("A Party");
+        surveypartyA.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
+        surveypartyA.setText("A Party");
 
         spinnerMaxVotes.setModel(new javax.swing.SpinnerNumberModel(20, 10, 100, 5));
 
@@ -279,11 +279,11 @@ public class mainGUI extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel9)
-                                    .addComponent(jLabel11)
+                                    .addComponent(surveypartyB)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                         .addComponent(partyA_survey, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(partyB_survey, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(jLabel12))
+                                    .addComponent(surveypartyA))
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
@@ -293,11 +293,11 @@ public class mainGUI extends javax.swing.JFrame {
                         .addGap(31, 31, 31))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(elecpartyB, javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(partyA_progress, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)
                                 .addComponent(partyB_progress, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(elecpartyA, javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addComponent(jLabel5)
                                 .addGap(58, 58, 58)
@@ -358,11 +358,11 @@ public class mainGUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel8)
+                        .addComponent(elecpartyA)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(partyA_progress, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel3)
+                        .addComponent(elecpartyB)
                         .addGap(18, 18, 18)
                         .addComponent(partyB_progress, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -376,11 +376,11 @@ public class mainGUI extends javax.swing.JFrame {
                                 .addGap(38, 38, 38)
                                 .addComponent(jLabel9)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel12)
+                                .addComponent(surveypartyA)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(partyA_survey, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel11)
+                                .addComponent(surveypartyB)
                                 .addGap(18, 18, 18)
                                 .addComponent(partyB_survey, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
@@ -455,7 +455,7 @@ public class mainGUI extends javax.swing.JFrame {
     
     // update the fifo with the voters inside of Polling Station
     public void logIDCHECK(String voter, char accepted){
-        Color color = (accepted == '✔') ? Color.GREEN : Color.RED;
+        Color color = (accepted == '✔') ? Color.GREEN.darker() : Color.RED;
         IDCHECK.setForeground(color);
         IDCHECK.setText(voter);
     }
@@ -533,27 +533,41 @@ public class mainGUI extends javax.swing.JFrame {
         partyB_survey.repaint(); // Force the progress bar to repaint
     }
     
-    // updating the voter answering to pollster
-    public void updateVoterPollster(){
-        //answeringVoter.setText();
+    public void setElecPartyAwinner(){
+        elecpartyA.setText("A Party 🏆");
+        elecpartyA.setForeground(Color.green.darker());
     }
     
-    // updating the votes of A party
-    public void updatePartyA(){
-        // partyA_progress
+    public void setElecPartyBwinner(){
+        elecpartyB.setText("B Party 🏆");
+        elecpartyB.setForeground(Color.green.darker());
     }
     
-    // updating the votes of A party
-    public void updatePartyB(){
-        // partyB_progress
+    public void setSurveyPartyAwinner(){
+        surveypartyA.setText("A Party 🏆");
+        surveypartyA.setForeground(Color.green.darker());
     }
     
-    // update the table showing all places and where the voters are
-    public void updateGeneralStatus(){
-        // generalStatus
+    public void setSurveyPartyBwinner(){
+        surveypartyB.setText("B Party 🏆");
+        surveypartyB.setForeground(Color.green.darker());
     }
     
+    public void setElecTie(){
+        elecpartyA.setForeground(Color.yellow.darker());
+        elecpartyB.setForeground(Color.yellow.darker());
+    }
     
+    public void setSurveyTie(){
+        surveypartyA.setForeground(Color.yellow.darker());
+        surveypartyB.setForeground(Color.yellow.darker());
+    }
+    
+    public void clean(){
+        VOTINGBOOTH.setText(" ");
+        IDCHECK.setText(" ");
+        SURVEY.setText(" ");
+    }
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -561,22 +575,20 @@ public class mainGUI extends javax.swing.JFrame {
     private javax.swing.JLabel SURVEY;
     private javax.swing.JLabel VOTINGBOOTH;
     private javax.swing.JLabel clerk;
+    private javax.swing.JLabel elecpartyA;
+    private javax.swing.JLabel elecpartyB;
     public javax.swing.JList<String> externalFIFO;
     private javax.swing.JPanel idCheck;
     private javax.swing.JList<String> idcheckFIFO;
     private javax.swing.JList<String> internalFIFO;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane4;
@@ -592,6 +604,8 @@ public class mainGUI extends javax.swing.JFrame {
     private javax.swing.JLabel psStatus;
     private javax.swing.JSpinner spinnerMaxVotes;
     private javax.swing.JButton startButton;
+    private javax.swing.JLabel surveypartyA;
+    private javax.swing.JLabel surveypartyB;
     private javax.swing.JSpinner votersSpinner;
     // End of variables declaration//GEN-END:variables
 }

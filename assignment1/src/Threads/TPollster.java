@@ -84,21 +84,19 @@ public class TPollster implements Runnable {
         try {
             while (state != PollsterState.PUBLISHING_RESULTS) {
                 switch (state) {
-                    case WAITING_VOTERS:
+                    case WAITING_VOTERS -> {
                         if (!exitPoll.isOpen()) {
                             setState(PollsterState.PUBLISHING_RESULTS);
                             break;
                         }
 
                         exitPoll.conductSurvey(this);
-                        break;
+                    }
 
-                    case SELECT_VOTER:
-                        exitPoll.waitForVoters(this);
-                        break;
+                    case SELECT_VOTER -> exitPoll.waitForVoters(this);
 
-                    default:
-                        break;
+                    default -> {
+                    }
                 }
             }
             
