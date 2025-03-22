@@ -62,14 +62,4 @@ public class MIDCheck implements IIDCheck_ALL {
            lock_idCheck.unlock();
         }
     }
-
-    @Override
-    public int getVoterRegisted() {
-        lock_getSize.lock();
-        try{
-            return idsChecked.size();
-        } finally {
-            lock_getSize.unlock();
-        }
-    }
 }
