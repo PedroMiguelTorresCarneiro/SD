@@ -37,8 +37,8 @@ import javax.swing.SwingUtilities;
 public class Main {
     private static mainGUI gui;
 
-    public static void startSimulation(int numVoters, int maxCapacity) throws InterruptedException {
-        int maxVotes = 20;
+    public static void startSimulation(int numVoters, int maxCapacity, int maxVotes) throws InterruptedException {
+        //int maxVotes = 20;
 
         // Shared Regions
         IRepo_ALL logs = MRepo.getInstance(maxVotes, numVoters, maxCapacity, gui);

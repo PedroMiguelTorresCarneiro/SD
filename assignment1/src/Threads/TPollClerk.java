@@ -63,10 +63,17 @@ public class TPollClerk implements Runnable {
                         // Control para fechar a PollStation
 
                         //  System.out.println("PollClerk is checking the ID")
-                        int maxVoters = idCheck.getVoterRegisted();
+                        /*int maxVoters = idCheck.getVoterRegisted();
+                        
                         if(pollStation.maxVotes(maxVotes, maxVoters)){
                             pollStation.closePS();
                         }
+                        */
+                        
+                        if(booth.getSize() >= maxVotes){
+                            pollStation.closePS();
+                        }
+                        
                         
                         // flag para dizer quadno já não ha ninguem na PollStation
                         if(pollStation.isEmpty()){

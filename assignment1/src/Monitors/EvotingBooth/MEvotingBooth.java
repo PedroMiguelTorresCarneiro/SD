@@ -115,4 +115,9 @@ public class MEvotingBooth implements IEVotingBooth_ALL{
             lock_gettingVote.unlock();
         }
     }
+    
+    @Override
+    public int getSize(){
+        return votes.size();
+    }
 }

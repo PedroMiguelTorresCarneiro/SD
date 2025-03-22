@@ -6,4 +6,6 @@ public interface IEVotingBooth_TPollClerk {
     void gathering() throws InterruptedException;
 
     void publishElectionResults(TPollClerk pollClerk);
+
+    int getSize();
 }
