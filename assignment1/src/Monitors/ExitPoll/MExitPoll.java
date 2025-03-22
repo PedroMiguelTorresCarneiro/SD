@@ -20,19 +20,20 @@ public class MExitPoll implements IExitPoll_ALL {
     
     
     private final LinkedList<Character> votes = new LinkedList<>();
-    private final ReentrantLock lock_checkingState, lock_publishResults, lockSurvey, lock_VoterAnswer;
+    private final ReentrantLock lock_checkingState, lock_publishResults, lockSurvey, lock_VoterAnswer, closeLock;
     private final Condition simulate_publishing, waitingForPollster, simulate_Voting;
     private boolean open = true;
     private long countA, countB;
     private final double lieRatio = 0.2;
     private final double beingChosen = 0.1;
-    
+
     private MExitPoll(IRepo_ExitPoll logs) {
         log = logs;
         lock_checkingState = new ReentrantLock();
         
         lock_publishResults = new ReentrantLock();
         simulate_publishing = lock_publishResults.newCondition();
+        closeLock = new ReentrantLock();
         
 
         
@@ -54,7 +55,20 @@ public class MExitPoll implements IExitPoll_ALL {
     @Override
     public boolean isOpen() {
         lock_checkingState.lock();
+
         try{
+            if (!open){  
+               
+                lockSurvey.lock();
+                try{
+                    waitingForPollster.signalAll();
+                } finally {
+                    lockSurvey.unlock();
+                }
+            }else{
+                
+            }
+
             return open;
         } finally{
             lock_checkingState.unlock();
@@ -66,8 +80,6 @@ public class MExitPoll implements IExitPoll_ALL {
         lockSurvey.lock();
 
         try{
-          //  simulate_Voting.signal();
-
             waitingForPollster.signal();
 
             pollster.setState(TPollster.PollsterState.SELECT_VOTER);
@@ -79,12 +91,13 @@ public class MExitPoll implements IExitPoll_ALL {
 
     @Override
     public void waitForVoters(TPollster pollster) {
-        pollster.setState(TPollster.PollsterState.WATING_VOTERS);
+        pollster.setState(TPollster.PollsterState.WAITING_VOTERS);
     }
 
     @Override
     public void publishResults(TPollster pollster) throws InterruptedException {
         lock_publishResults.lock();
+
         try{
             
             for (Character vote : votes){
@@ -100,13 +113,7 @@ public class MExitPoll implements IExitPoll_ALL {
             simulate_publishing.await(randomDuration, TimeUnit.MILLISECONDS);
             
             log.logSurveyResults(countA, countB, (countA > countB ? "A" : (countB > countA ? "B" : "TIE")));
-            /*
-            System.out.println("\n ----------------------|SURVEY RESULTS");
-            System.out.println("Total votes for A: " + countA);
-            System.out.println("Total votes for B: " + countB);
-            System.out.println("\n *WINNER* -> " + (countA > countB ? "A" : (countB > countA ? "B" : "TIE")));
-            System.out.print("--------------------------------------------\n");
-            */
+
             pollster.setState(TPollster.PollsterState.PUBLISHING_RESULTS);
             
         } finally {
@@ -116,12 +123,12 @@ public class MExitPoll implements IExitPoll_ALL {
 
     @Override
     public void close() {
-        lock_checkingState.lock();
+        closeLock.lock();
+
         try{
             open = false;
-            //System.out.println("Clerk closed the ExitPoll");
         } finally{
-            lock_checkingState.unlock();
+            closeLock.unlock();
         }
     }
 
@@ -163,7 +170,7 @@ public class MExitPoll implements IExitPoll_ALL {
             long randomDuration = 500 + random.nextInt(1501);
             simulate_Voting.await(randomDuration, TimeUnit.MILLISECONDS);
             
-            voter.setState(TVoter.VoterState.ANWSER_SURVEY);
+            voter.setState(TVoter.VoterState.ANSWER_SURVEY);
             
         } finally {
             lock_VoterAnswer.unlock();

@@ -15,7 +15,7 @@ public class MEvotingBooth implements IEVotingBooth_ALL{
     private static MEvotingBooth instance;
     private static IRepo_VotingBooth log;
     private final Map<String, Character> votes = new HashMap<>();
-    private final ReentrantLock lock_gathering, lock_gettingVote, lock_vote;
+    private final ReentrantLock lock_gathering, lock_gettingVote, lock_vote, lockSize;
     private final Condition simulateCountig, simulateVoting;
     private long countA, countB;
     private final double partyA_ratio = 0.7;
@@ -25,6 +25,8 @@ public class MEvotingBooth implements IEVotingBooth_ALL{
         log = logs;
         lock_gathering = new ReentrantLock();
         simulateCountig = lock_gathering.newCondition();
+
+        lockSize = new ReentrantLock();
         
         lock_gettingVote = new ReentrantLock();
         
@@ -65,16 +67,8 @@ public class MEvotingBooth implements IEVotingBooth_ALL{
 
     @Override
     public void publishElectionResults(TPollClerk pollClerk) {
-        
-        
         log.logElectionResults(countA, countB, (countA > countB ? "A" : (countB > countA ? "B" : "TIE")));
-        /*
-        System.out.println("\n ----------------------|ELECTION RESULTS");
-        System.out.println("Total votes for A: " + countA);
-        System.out.println("Total votes for B: " + countB);
-        System.out.println("\n *WINNER* -> " + (countA > countB ? "A" : (countB > countA ? "B" : "TIE")) );
-        System.out.print("--------------------------------------------\n");
-        */
+
         pollClerk.setState(TPollClerk.PollClerkState.PUBLISHING_WINNER);
         log.close();
     }
@@ -86,12 +80,13 @@ public class MEvotingBooth implements IEVotingBooth_ALL{
         try{      
             // Determinar o voto baseado na percentagem
             Character vote = Math.random() < partyA_ratio ? 'A' : 'B';
-            //Registar o voto
-            votes.put(voter.getID(), vote);
-                
+        
             // Simular o voto uma duração random entre 0,5s e 2s
             long randomDuration = 500 + random.nextInt(1501);
             simulateVoting.await(randomDuration, TimeUnit.MILLISECONDS);
+
+            //Registar o voto
+            votes.put(voter.getID(), vote);
 
             //System.out.println("Voter " + voter.getID() + " voted for " + vote);
             log.logVoting(voter.getID(), vote);
@@ -118,6 +113,12 @@ public class MEvotingBooth implements IEVotingBooth_ALL{
     
     @Override
     public int getSize(){
-        return votes.size();
+        lockSize.lock();
+
+        try{
+            return votes.size();
+        } finally {
+            lockSize.unlock();
+        }
     }
 }

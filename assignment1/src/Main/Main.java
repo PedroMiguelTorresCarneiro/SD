@@ -12,7 +12,6 @@ import Monitors.ExitPoll.IExitPoll_TVoter;
 import Monitors.ExitPoll.MExitPoll;
 
 import Monitors.IDCheck.IIDCheck_ALL;
-import Monitors.IDCheck.IIDCheck_TPollClerk;
 import Monitors.IDCheck.IIDCheck_TVoter;
 import Monitors.IDCheck.MIDCheck;
 
@@ -34,27 +33,58 @@ import Monitors.Repository.MRepo;
 
 import javax.swing.SwingUtilities;
 
+/**
+ * The main class of the program is responsible for starting the simulation (creating the threads and shared regions) and initializing the GUI.
+ * This class starts the election simulation's GUI and provides the method applied  when the user clicks the "Start" button.
+ * The method mentioned before, includes the creation of voters, poll clerks, and pollsters, as well as the shared regions
+ * such as the polling station, ID check, voting booth, and exit poll.
+ * 
+ * @authors David Palricas 
+ *          Inês Águia
+ *          Pedro Carneiro 
+ */
 public class Main {
+    /**
+     * The gui attribute stores a reference to the program's GUI object.
+     */
     private static mainGUI gui;
 
-    public static void startSimulation(int numVoters, int maxCapacity, int maxVotes) throws InterruptedException {
-        //int maxVotes = 20;
+    /**
+     * The main method of the program is responsible for creating and displaying the GUI.
+     * This method is the entry point of the application.
+     * 
+     * @param args Command-line arguments (not used in this application).
+     */
+    public static void main(String[] args) {
+        // Create and display the GUI
+        SwingUtilities.invokeLater(() -> {
+            gui = new mainGUI();
+            gui.setVisible(true);
+        });
+    }
 
-        // Shared Regions
+    /**
+     * The startSimulation method is responsible for starting the simulation by creating the threads and shared regions.
+     * This method is called by the GUI when the user clicks the "Start Simulation" button.
+     * 
+     * @param numVoters The number of voters participating in the simulation.
+     * @param maxCapacity The maximum capacity of voters in the inside queue of the polling station.
+     * @param maxVotes The maximum number of votes required to trigger the end of the election.
+     * @throws InterruptedException If any thread is interrupted during the simulation.
+     */
+    public static void startSimulation(int numVoters, int maxCapacity, int maxVotes) throws InterruptedException {
+        // Repository
         IRepo_ALL logs = MRepo.getInstance(maxVotes, numVoters, maxCapacity, gui);
 
+        // Shared regions
         IPollStation_ALL pollStation = MPollStation.getInstance(maxCapacity, (IRepo_PollStation) logs);
         IIDCheck_ALL idCheck = MIDCheck.getInstance((IRepo_IDChek) logs);
         IEVotingBooth_ALL booth = MEvotingBooth.getInstance((IRepo_VotingBooth) logs);
         IExitPoll_ALL exitPoll = MExitPoll.getInstance((IRepo_ExitPoll) logs);
 
         // Threads
-        Thread pollClerk = null;
-        Thread pollster = null;
-        Thread voter = null;
-
-        pollClerk = new Thread(TPollClerk.getInstance((IPollStation_TPollClerk) pollStation, (IIDCheck_TPollClerk) idCheck, (IEVotingBooth_TPollClerk) booth, (IExitPoll_TPollClerk) exitPoll, maxVotes));
-        pollster = new Thread(TPollster.getInstance((IExitPoll_TPollster) exitPoll));
+        Thread pollClerk = new Thread(TPollClerk.getInstance((IPollStation_TPollClerk) pollStation, (IEVotingBooth_TPollClerk) booth, (IExitPoll_TPollClerk) exitPoll, maxVotes));
+        Thread pollster = new Thread(TPollster.getInstance((IExitPoll_TPollster) exitPoll));
 
         pollClerk.start();
         pollster.start();
@@ -68,18 +98,11 @@ public class Main {
 
         pollClerk.join();
         pollster.join();
+
         for (Thread v : voters) {
             v.join();
         }
 
         System.out.println("✅ Election simulation finished!");
-    }
-
-    public static void main(String[] args) {
-        // Create and display the GUI
-        SwingUtilities.invokeLater(() -> {
-            gui = new mainGUI();
-            gui.setVisible(true);
-        });
     }
 }

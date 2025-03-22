@@ -110,7 +110,7 @@ public class MPollStation implements IPollStation_ALL {
                 break;        
             }
 
-            voter.setState(TVoter.VoterState.WATING_INSIDE);
+            voter.setState(TVoter.VoterState.WAITING_INSIDE);
     
         } finally {
             lock_externalFifo.unlock();
@@ -124,7 +124,11 @@ public class MPollStation implements IPollStation_ALL {
         try {
             // deixa entrar uma pessoa porque já saiu alguem do fifo!
 
-            if (votersInside == 0) {
+            if (isEmpty()) {
+                if (state.equals(PollStationState.CLOSED_AFTER)) {
+                    pollclerk.setState(TPollClerk.PollClerkState.INFORMING_EP);
+                }
+
                 return;
             }
 
