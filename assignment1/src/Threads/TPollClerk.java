@@ -123,7 +123,7 @@ public class TPollClerk implements Runnable {
                     case ID_CHECK_WAIT -> pollStation.callNextVoter(this);
 
                     case ID_CHECK -> {
-                        if (booth.getSize() >= maxVotes) {
+                        if (booth.getVotesCount() >= maxVotes) {
                             pollStation.closePS();
                         }
 

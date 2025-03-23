@@ -12,50 +12,84 @@ import java.util.concurrent.locks.ReentrantLock;
 import Monitors.Repository.IRepo_VotingBooth;
 
 /**
- * Class MEvotingBooth implements IEVotingBooth_ALL interface with the methods necessary to simulate the voting booth.
- * The class is responsible for the synchronization of the threads and the access to the shared memory.
- * The class has the following attributes:
- * - votes: a map with the votes of the voters;
- * - countA: the number of votes for party A;
- * - countB: the number of votes for party B;
- * - partyA_ratio: the ratio of votes for party A;
- * - random: a random number generator;
- * - lock_gathering: a reentrant lock for the gathering method;
- * - simulateCountig: a condition for the gathering method;
- * - lockSize: a reentrant lock for the getSize method;
- * - lock_gettingVote: a reentrant lock for the getVote method;
- * - lock_vote: a reentrant lock for the vote method;
- * - simulateVoting: a condition for the vote method.
+ * The MEvotingBooth class implements the IEVotingBooth_ALL interface and represents the evoting booth shared region.
+ * The evooting booth shared region is responsible for the voter to vote and 
+ * the poll clerk to gather and count all the votes and also publish the election results.
+ * 
+ * @see IEVotingBooth_ALL
+ * 
+ * @author David Palricas
+ * @author Inês Águia
+ * @author Pedro Carneiro
  */
 public class MEvotingBooth implements IEVotingBooth_ALL{
+    /**
+     * The instance atributte represents the singleton instance of the MEvotingBooth.
+     */
     private static MEvotingBooth instance;
+
+    /**
+     * The log atributte represents the repository shared region.
+     * The evoting booth shared region shares information to the repository
+     * to be logged (log file and on the terminal) and displayed in the GUI.
+     */
     private static IRepo_VotingBooth log;
+
+    /**
+     * The votes atributte represents the set of the votes.
+     * The votes are stored in a map where the key is the voter ID and the value is the vote.
+     */
     private final Map<String, Character> votes = new HashMap<>();
-    private final ReentrantLock lock_gathering, lock_gettingVote, lock_vote, lockSize;
+    
+    /**
+     * The lockGathering, lockGettingVote, lockVote and lockSize atributtes represent 
+     * the locks for the gathering, getting vote, vote and size operations, respectively.
+     */
+    private final ReentrantLock lockGathering, lockGettingVote, lockVote, lockSize;
+
+    /**
+     * The simulateCountig and simulateVoting atributtes represent the lock conditions 
+     * for the gathering and voting operations, respectively.
+     */
     private final Condition simulateCountig, simulateVoting;
+
+    /**
+     * The countA and countB atributtes represent the number of votes for party A and party B, respectively.
+     */
     private long countA, countB;
-    private final double partyA_ratio = 0.7;
+
+   /**
+    * The PARTY_A_PROB constant atributte represents the probability of a voter to vote in party A.
+    */
+    private final static double PARTY_A_PROB = 0.7;
+
+    /**
+     * The random atributte represents the random number generator.
+     */
     private final Random random = new Random();
     
     /**
-     * Constructor for MEvotingBooth.
-     * @param logs repository of the voting booth.
+     * The MEvotingBooth constructor initializes the evoting booth shared region and its atributtes.
+     * 
+     * @param logs the repository shared region.
      */
     private MEvotingBooth(IRepo_VotingBooth logs) {
         log = logs;
-        lock_gathering = new ReentrantLock();
-        simulateCountig = lock_gathering.newCondition();
+        lockGathering = new ReentrantLock();
+        simulateCountig = lockGathering.newCondition();
 
         lockSize = new ReentrantLock();
         
-        lock_gettingVote = new ReentrantLock();
+        lockGettingVote = new ReentrantLock();
         
-        lock_vote = new ReentrantLock();
-        simulateVoting = lock_vote.newCondition();
+        lockVote = new ReentrantLock();
+        simulateVoting = lockVote.newCondition();
     }
 
     /**
-     * Method to get the instance of MEvotingBooth.
+     * The getInstance method returns the singleton instance of the MEvotingBooth.
+     * If the instance is null, a new instance is created.
+     * 
      * @param logs repository of the voting booth.
      * @return instance of MEvotingBooth.
      */
@@ -63,16 +97,21 @@ public class MEvotingBooth implements IEVotingBooth_ALL{
         if (instance == null) {
             instance = new MEvotingBooth(logs);
         }
+
         return instance;
     }
 
     /**
-     * Method to simulate the gathering of the votes.
+     * The gathering method is called by the poll clerk to gather all the votes 
+     * and count them.
+     * A time delay is created to simulate the gathering of the votes.
+     * 
      * @throws InterruptedException exception.
      */
     @Override
     public void gathering() throws InterruptedException {
-        lock_gathering.lock();
+        lockGathering.lock();
+
         try {
             countA = votes.values().stream()
                     .filter(valor -> valor == 'A')
@@ -85,12 +124,14 @@ public class MEvotingBooth implements IEVotingBooth_ALL{
             simulateCountig.await(2000, TimeUnit.MILLISECONDS);
 
         } finally {
-            lock_gathering.unlock();
+            lockGathering.unlock();
         }
     }
 
     /**
-     * Method to publish the election results.
+     * The publishElectionResults method is called by the poll clerk to publish the election results.
+     * The election results are logged in the repository.
+     *  
      * @param pollClerk poll clerk thread.
      */
     @Override
@@ -98,20 +139,23 @@ public class MEvotingBooth implements IEVotingBooth_ALL{
         log.logElectionResults(countA, countB, (countA > countB ? "A" : (countB > countA ? "B" : "TIE")));
 
         pollClerk.setState(TPollClerk.PollClerkState.PUBLISHING_WINNER);
+
         log.close();
     }
 
     /**
-     * Method to simulate the vote of a voter.
+     * The vote method is called by the voter to vote in a party.
+     * A time delay is created to simulate the voting process.
+     * 
      * @param voter voter thread.
      * @throws InterruptedException exception.
      */
     @Override
     public void vote(TVoter voter) throws InterruptedException {
-        lock_vote.lock();
+        lockVote.lock();
 
         try{      
-            Character vote = Math.random() < partyA_ratio ? 'A' : 'B';
+            Character vote = Math.random() < PARTY_A_PROB ? 'A' : 'B';
         
             long randomDuration = 500 + random.nextInt(1501);
             simulateVoting.await(randomDuration, TimeUnit.MILLISECONDS);
@@ -123,23 +167,34 @@ public class MEvotingBooth implements IEVotingBooth_ALL{
             voter.setState(TVoter.VoterState.VOTING);
             
         } finally {
-            lock_vote.unlock();
+            lockVote.unlock();
         }
     }
-
+   
+    /**
+     * The getVote method is called by the voter to get its vote.
+     * 
+     * @param voterId voter ID.
+     * @return the vote of the voter.
+     */
     @Override
     public Character getVote(String voterId) {
-        lock_gettingVote.lock();
+        lockGettingVote.lock();
         
         try{
             return votes.get(voterId);
         } finally {
-            lock_gettingVote.unlock();
+            lockGettingVote.unlock();
         }
     }
     
+    /**
+     * The getVotesCount method returns the number of votes.
+     * 
+     * @return the number of votes.
+     */
     @Override
-    public int getSize(){
+    public int getVotesCount(){
         lockSize.lock();
 
         try{

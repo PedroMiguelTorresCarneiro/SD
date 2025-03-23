@@ -35,7 +35,7 @@ public class MPollStation implements IPollStation_ALL {
     /**
      * The log attribute represents the repository shared region.
      * The polling station shared region shares information to the repository, 
-     * to be logged (log file and on the terminal) or displayed in the GUI
+     * to be logged (log file and on the terminal) and displayed in the GUI
      */
     private static IRepo_PollStation log;
 
