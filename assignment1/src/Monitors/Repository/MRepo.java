@@ -5,6 +5,9 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.io.FileWriter;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * The MRepo class implements the IRepo_ALL interface and represents the repository .
@@ -99,13 +102,9 @@ public class MRepo implements IRepo_ALL {
         this.insideQueueMaxCapacity = insideQueueMaxCapacity;
         this.gui = gui;
         this.lock = new ReentrantLock();
-
-        // Initialize the file writer
-        try {
-            fileWriter = new BufferedWriter(new FileWriter("./logs.txt", true)); // Append mode
-        } catch (IOException e) {
-            System.err.println("Failed to initialize file writer: " + e.getMessage());
-        }
+    
+        // Initialize the file writer with unique log file in /logs
+        initializeLogFileWriter();
 
         logHeader();
     }
@@ -127,33 +126,64 @@ public class MRepo implements IRepo_ALL {
 
         return instance;
     }
+    
+    /**
+     * The initializeLogFileWriter method initializes the file writer to log the state of the shared region.
+     * If the file writer is not null, the method creates a new log file in the /logs directory.
+     */
+    private void initializeLogFileWriter() {
+        String baseName = "log";
+        String extension = ".txt";
+        var logsDir = Paths.get("logs");
+        int index = 0;
+        Path logFilePath;
 
+        try {
+            if (!Files.exists(logsDir)) {
+                Files.createDirectories(logsDir);
+            }
+
+            // Find the next available log file name
+            do {
+                String fileName = (index == 0) ? baseName + extension : baseName + index + extension;
+                logFilePath = logsDir.resolve(fileName);
+                index++;
+            } while (Files.exists(logFilePath));
+
+            // Create and assign the BufferedWriter
+            fileWriter = new BufferedWriter(new FileWriter(logFilePath.toFile(), false)); // overwrite just in case
+        } catch (IOException e) {
+            System.err.println("Failed to initialize log file: " + e.getMessage());
+            fileWriter = null;
+        }
+    }
+
+    
+    
     /**
      * The writeLog method writes the specified message to the terminal and the log file.
      * 
      * @param message The message to be written
      */
     private void writeLog(String message) {
-        lock.lock(); 
+        lock.lock();
 
         try {
             // Print to the terminal
             System.out.print(message);
 
-            // Write to file
             if (fileWriter != null) {
                 // Remove ANSI codes for file
-                fileWriter.write(message.replaceAll("\u001B\\[[;\\d]*m", "")); 
-
-                // Ensure the message is written immediately
-                fileWriter.flush(); 
+                fileWriter.write(message.replaceAll("\u001B\\[[;\\d]*m", ""));
+                fileWriter.flush();
             }
         } catch (IOException e) {
             System.err.println("Failed to write to log file: " + e.getMessage());
         } finally {
-            lock.unlock(); 
+            lock.unlock();
         }
     }
+
 
    /**
     * The logHeader method  creates the header of the log file with the configuration details.
