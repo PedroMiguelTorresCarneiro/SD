@@ -229,13 +229,13 @@ public class TVoter implements Runnable {
 
     /**
      * The generateNewID method generates a new random ID for the voter.
-     * The new ID is a random number between 0 and 64, prefixed with "V".
+     * The new ID is a random number between 0 and 200, prefixed with "V".
      */
     private void generateNewID() {
         String newId;
        
         do {
-            newId = "V" + random.nextInt(0, 100);
+            newId = "V" + random.nextInt(0, 200);
         } while (voterId.equals(newId));
 
         voterId = newId;
