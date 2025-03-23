@@ -10,10 +10,12 @@ import Monitors.ExitPoll.IExitPoll_TPollster;
  * This class also provides a method to change the pollster's state.
  *
  * The TPollster class follows the Singleton design pattern, ensuring that only one instance of the pollster exists in the simulation.
+ * 
+ * @author David Palricas
+ * @author Inês Águia
+ * @author Pedro Carneiro
  */
 public class TPollster implements Runnable {
-    // Shared Regions
-
     /**
      * The exitPoll attribute stores a reference to the exit poll shared region.
      * This is the interface that the pollster uses to interact with the exit poll.

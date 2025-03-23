@@ -13,7 +13,7 @@ public class MIDCheck implements IIDCheck_ALL {
     private static MIDCheck instance;
     private static IRepo_IDChek log;
     private final Set<String> idsChecked = new HashSet<>();
-    private final ReentrantLock lock_idCheck, lock_getSize;
+    private final ReentrantLock lock_idCheck;
     private final Condition simulate_idCheck;
     private final Random random = new Random();
 
@@ -21,8 +21,6 @@ public class MIDCheck implements IIDCheck_ALL {
         log = logs;
         lock_idCheck = new ReentrantLock(true);
         simulate_idCheck = lock_idCheck.newCondition();
-        
-        lock_getSize = new ReentrantLock();
     }
 
     public static IIDCheck_ALL getInstance(IRepo_IDChek logs){

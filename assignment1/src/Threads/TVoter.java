@@ -18,8 +18,6 @@ import java.util.Random;
  * @author Pedro Carneiro
  */
 public class TVoter implements Runnable {
-    // Shared Regions
-
     /**
      * The pollStation attribute stores a reference to the polling station shared region.
      * This is the interface that the voter uses to interact with the polling station.
@@ -67,18 +65,15 @@ public class TVoter implements Runnable {
     private boolean validID = true;
 
     /**
-     * The diffIDProb attribute stores the probability of the voter being reborn with a new ID.
+     * The DIFFIDPROB constant attribute stores the probability of the voter being reborn with a new ID.
      * This is used to simulate voters returning to the polling station with a different identity.
      */
-    private final double diffIDProb = 0.6;
+    private static final double DIFF_ID_PROB = 0.6;
 
     /**
-     * The chooseToAnswerProb attribute stores the probability of the voter choosing to answer the exit poll survey.
+     * The CHOOSE_TO_ANSWER_PROB constant attribute stores the probability of the voter choosing to answer the exit poll survey.
      */
-    private final double chooseToAnswerProb = 0.7;
-
-
-    private int test = 0;
+    private static final double CHOOSE_TO_ANSWER_PROB = 0.7;
 
     /**
      * The VoterState enum defines the possible states of the voter during the simulation.
@@ -192,7 +187,7 @@ public class TVoter implements Runnable {
                             break;
                         }
                         
-                        if (Math.random() < chooseToAnswerProb) {
+                        if (Math.random() < CHOOSE_TO_ANSWER_PROB) {
                             exitPoll.callForSurvey(booth.getVote(voterId), this);
                         } else {
                             reborn();
@@ -224,7 +219,7 @@ public class TVoter implements Runnable {
      * The voter has a probability of being reborn with a new ID, as defined by diffIDProb.
      */
     private void reborn() {
-        boolean diffID = Math.random() < diffIDProb;
+        boolean diffID = Math.random() < DIFF_ID_PROB;
         if (diffID) {
             generateNewID();
         }
@@ -239,9 +234,8 @@ public class TVoter implements Runnable {
     private void generateNewID() {
         String newId;
        
-        test = test + 10;
         do {
-            newId = "V" + random.nextInt(test, 64 + test);
+            newId = "V" + random.nextInt(0, 100);
         } while (voterId.equals(newId));
 
         voterId = newId;

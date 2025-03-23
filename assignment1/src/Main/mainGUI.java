@@ -3,7 +3,6 @@ package Main;
 import java.awt.Color;
 import javax.swing.DefaultListModel;
 
-
 /**
  *
  * @author pedrocarneiro

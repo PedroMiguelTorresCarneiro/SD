@@ -11,48 +11,123 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import Monitors.Repository.IRepo_PollStation;
 
+/**
+ * The MPollStation class implements the IPollStation_ALL interface and represents the polling station shared region.
+ * The polling station shared region is responsible for managing the voters that are inside the polling station.
+ * The polling station shared region is accessed by the poll clerk and the voters.
+ * The poll clerk interacts with the polling station to open and close the polling station and to call the next voter.
+ * The voters interact with the polling station to enter and exit the polling station.
+ * The polling station shared region is implemented using the monitor pattern.
+ * 
+ * @see IPollStation_ALL
+ * 
+ * @author David Palricas
+ * @author Inês Águia
+ * @author Pedro Carneiro
+ * 
+ */
 public class MPollStation implements IPollStation_ALL {
+    /**
+     * The instance attribute reprsents the singleton instance of the polling station shared region.
+     */
     private static MPollStation instance = null;
+
+    /**
+     * The log attribute represents the repository shared region.
+     * The polling station shared region shares information to the repository, 
+     * to be logged (log file and on the terminal) or displayed in the GUI
+     */
     private static IRepo_PollStation log;
+
+    /**
+     * The capacidadeMax attribute represents the maximum capacity of voters in
+     * the pollstation's inside queue.
+     */
     private final int capacidadeMax;
+
+    /**
+     * The alreadyClosed attribute represents a flag that indicates if the polling station
+     * has already been closed after the election.
+     */
     private Boolean alreadyClosed = false;
     
+    /**
+     * The random attribute represents a random number generator.
+     */
     private final Random random = new Random();
+    
+    /**
+     * The lockChangeState, lockExternalFifo, lockExitingPS, lockIsEmpty, 
+     * lockMaxedVotes, and lockIsOpen attributes represent 
+     * the locks used to control the access to the shared region.
+     * Their lock funcionalities are described in their variable names.
+     */
+    private final ReentrantLock lockChangeState, lockExternalFifo, lockExitingPS, lockIsEmpty, lockMaxedVotes, lockIsOpen;
 
-    private final ReentrantLock lock_changeState, lock_externalFifo, lock_exitingPS, lock_isEmpty, lock_maxedVotes, lock_isOpen;
-    private final Condition simulate_Open,internalQueue;
+    /**
+     * The simulate_Open, internalQueue atributs represent lock conditions used to control
+     *  the access to the shared region.
+     */
+    private final Condition simulateOpen,internalQueue;
+
+    /**
+     * The votersInside attribute represents the number of voters in the quue inside the polling station.
+     */
     private int votersInside = 0;
     
+    /**
+     * The externalQueue attribute represents the queue of voters waiting outside the polling station.  
+     */
     private static final LinkedList<String> externalQueue = new LinkedList<>();
-
+    
+    /**
+     * The PollStationState enum represents the possible states of the polling station shared region.
+     */
     private enum PollStationState {
         CLOSED,
         OPEN ,
         CLOSED_AFTER
     }
-
+    
+    /**
+     * The state attribute represents the current state of the polling station.
+     */
     private PollStationState state = PollStationState.CLOSED;
     
+    /**
+     * The MPollStation constructor initializes the polling station shared region and its attributes.
+     * 
+     * @param capacidadeMax the maximum capacity of voters in the pollstation's inside queue
+     * @param logs the repository shared region
+     */
     private MPollStation(int capacidadeMax, IRepo_PollStation logs) {
         this.capacidadeMax = capacidadeMax;
         log = (MRepo) logs;
         
-        lock_changeState = new ReentrantLock();
-        simulate_Open = lock_changeState.newCondition();
+        lockChangeState = new ReentrantLock();
+        simulateOpen = lockChangeState.newCondition();
         
-        lock_externalFifo = new ReentrantLock(true);
-        internalQueue = lock_externalFifo.newCondition();
+        lockExternalFifo = new ReentrantLock(true);
+        internalQueue = lockExternalFifo.newCondition();
 
         
-        lock_exitingPS = new ReentrantLock();
+        lockExitingPS = new ReentrantLock();
         
-        lock_isEmpty = new ReentrantLock();
+        lockIsEmpty = new ReentrantLock();
         
-        lock_maxedVotes = new ReentrantLock();
+        lockMaxedVotes = new ReentrantLock();
         
-        lock_isOpen = new ReentrantLock();         
+        lockIsOpen = new ReentrantLock();         
     }
     
+    /**
+     * The getInstance method returns the singleton instance of the polling station shared region.
+     * If the polling station shared region has not been initialized, it initializes it.s
+     * 
+     * @param capacidadeMax the maximum capacity of voters in the pollstation's inside queue
+     * @param logs the repository shared region
+     * @return the singleton instance of the polling station shared region
+     */
     public static IPollStation_ALL getInstance(int capacidadeMax, IRepo_PollStation logs) {
         if (instance == null) {
             instance =  new MPollStation(capacidadeMax, logs);
@@ -61,33 +136,50 @@ public class MPollStation implements IPollStation_ALL {
         return instance;
     }
 
+    /**
+     * The openPs method simulates the opening of the polling station.
+     * The polling station is opened for a random duration between 0.5s and 2s.
+     * And the poll clerk after opening it, its state is changed to ID_CHECK_WAIT.
+     * 
+     * @param pollclerk the poll clerk thread that opens the polling station
+     * @throws InterruptedException if the thread is interrupted
+     */
     @Override
     public void openPS(TPollClerk pollclerk) throws InterruptedException {
-        lock_changeState.lock();
-        try{
-            
+        lockChangeState.lock();
+
+        try{      
             log.logPollStation("CLOSED");
-            // Simular o voto uma duração random entre 0,5s e 2s
+
+            // Simulate voting with a random duration between 0.5s and 2s
             long randomDuration = 500 + random.nextInt(1501);
-            simulate_Open.await(randomDuration, TimeUnit.MILLISECONDS);
+            simulateOpen.await(randomDuration, TimeUnit.MILLISECONDS);
             
            state = PollStationState.OPEN;
            
            log.logPollStation("OPEN  ");
-           
-           //System.out.println("The Clerk opened the PollStation");
-           
-
+        
             pollclerk.setState(TPollClerk.PollClerkState.ID_CHECK_WAIT);
         } finally {
-            lock_changeState.unlock();
+            lockChangeState.unlock();
         }
     }
     
+    /**
+     * The enterPS method simulates the voters waiting outside and trying to enter the polling station.
+     * A voter can only enter the polling station if there is space available and the polling station is open.
+     * When a voter enters the polling station, the voters enters in the polling station inside queue
+     * and waits for the poll clerk to call him to the ID check.
+     * 
+     * @param voter the voter thread that tries to enter the polling station
+     * @throws InterruptedException if the thread is interrupted
+     */
     @Override
     public void enterPS(TVoter voter) throws InterruptedException {
-        lock_externalFifo.lock();
+        lockExternalFifo.lock();
+
         try{
+            // Adds a voter to the external queue
             if(!externalQueue.contains(voter.getID())){
                 externalQueue.add(voter.getID());
                 log.logWaiting(voter.getID());
@@ -99,10 +191,7 @@ public class MPollStation implements IPollStation_ALL {
 
             votersInside++;
             
-            while(true){
-                // internal Queue
-                //System.out.println("Voter " + voter.getID() + " is waiting inside");
-                
+            while(true){          
                 log.logInside(voter.getID());
                 externalQueue.remove(voter.getID());
                 internalQueue.await();
@@ -113,17 +202,23 @@ public class MPollStation implements IPollStation_ALL {
             voter.setState(TVoter.VoterState.WAITING_INSIDE);
     
         } finally {
-            lock_externalFifo.unlock();
+            lockExternalFifo.unlock();
         }
     }
-
+   
+    /**
+     * The callNextVoter method simulates the poll clerk calling the next voter to the ID check.
+     * The poll clerk can only call the next voter if there is a voter in the polling station inside queue.
+     * If the polling station is closed after the election, the poll clerk informs the exit poll,
+     * that the polling station is closed after the election.
+     * 
+     * @param pollclerk the poll clerk thread that calls the next voter
+     */
     @Override
     public void callNextVoter(TPollClerk pollclerk) {
-        lock_externalFifo.lock();
+        lockExternalFifo.lock();
         
         try {
-            // deixa entrar uma pessoa porque já saiu alguem do fifo!
-
             if (isEmpty()) {
                 if (state.equals(PollStationState.CLOSED_AFTER)) {
                     pollclerk.setState(TPollClerk.PollClerkState.INFORMING_EP);
@@ -133,52 +228,57 @@ public class MPollStation implements IPollStation_ALL {
             }
 
             internalQueue.signal(); 
-            
-
-
+    
             pollclerk.setState(TPollClerk.PollClerkState.ID_CHECK);
-            
-
         } finally {
-            lock_externalFifo.unlock();
+            lockExternalFifo.unlock();
         }
     }
-
+    
+    /**
+     * The closePS method simulates the closing of the polling station (it is called by the poll clerk).
+     * And updates the repository with the polling station state.
+     */
     @Override
     public void closePS() {
-        lock_changeState.lock();
+        lockChangeState.lock();
 
         try{
             state = PollStationState.CLOSED_AFTER;
             
+            // If the t polling station is already closed, it does not log again
             if(!alreadyClosed){
                 log.logPollStation("CLOSED");
                 alreadyClosed = true;
             }
-            
-
         } finally {
-            lock_changeState.unlock();
+            lockChangeState.unlock();
         }
     }
-
+    
+    /**
+     * The isCLosedAfterElection method returns a flag that indicates if the polling station is closed after the election.
+     * 
+     * @return true if the polling station is closed after the election, false otherwise
+     */
     @Override
     public boolean isCLosedAfterElection() {
-        lock_isOpen.lock();
+        lockIsOpen.lock();
 
         try{
             return state.equals(PollStationState.CLOSED_AFTER);
         } finally{
-            lock_isOpen.unlock();
+            lockIsOpen.unlock();
         }
     }
 
-    
-
+    /**
+     * The exitingPS method simulates the voter going to to the exit poll after voting.
+     * The repository updates the voter to show that he is in the exit poll.
+     */
     @Override
     public void exitingPS(TVoter voter) throws InterruptedException {
-        // para deixar entrar uma pessoa
-        lock_exitingPS.lock();
+        lockExitingPS.lock();
 
         try{
           votersInside--;
@@ -188,34 +288,39 @@ public class MPollStation implements IPollStation_ALL {
           log.logExitPoll(voter.getID());
         
         } finally {
-            lock_exitingPS.unlock();
+            lockExitingPS.unlock();
         }
     }
     
+    /**
+     * The isEmpty method returns a flag that indicates if the polling station inside queue is empty.
+     * @return true if the polling station inside queue is empty, false otherwise
+     */
     @Override
     public boolean isEmpty(){
-        lock_isEmpty.lock();
+        lockIsEmpty.lock();
 
         try{
             return votersInside == 0;
         } finally {
-            lock_isEmpty.unlock();
+            lockIsEmpty.unlock();
         }
     }
-
+    
+    /**
+     * The maxVotes method returns a flag that indicates if the maximum number of votes has been reached.
+     * @param maxVotes the maximum number of votes
+     * @param votersRegistered the number of voters that have registered
+     * @return true if the maximum number of votes has been reached, false otherwise
+     */
     @Override
     public boolean maxVotes(int maxVotes, int votersRegistered) {
-        lock_maxedVotes.lock();
+        lockMaxedVotes.lock();
 
         try{
-            if(votersRegistered >= maxVotes) {
-                return true;
-            }
-            return false;
-        
+            return votersRegistered >= maxVotes; 
         } finally{
-            lock_maxedVotes.unlock();
+            lockMaxedVotes.unlock();
         }
     }
-
 }
