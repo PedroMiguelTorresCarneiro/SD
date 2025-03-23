@@ -39,9 +39,9 @@ import javax.swing.SwingUtilities;
  * The method mentioned before, includes the creation of voters, poll clerks, and pollsters, as well as the shared regions
  * such as the polling station, ID check, voting booth, and exit poll.
  * 
- * @authors David Palricas 
- *          Inês Águia
- *          Pedro Carneiro 
+ * @author David Palricas 
+ * @author Inês Águia
+ * @author Pedro Carneiro 
  */
 public class Main {
     /**
@@ -104,10 +104,20 @@ public class Main {
         }
 
         System.out.println("✅ Election simulation finished!\n");
-        
-        System.out.println("Program will terminate in 5 seconds...");
+
+        endSimulation();    
+    }
+
+    /**
+     * The endSimulation method is responsible for terminating the program after 10 seconds.
+     * It displays a countdown message  on the terminal and then terminates the program.
+     */
+    private static void endSimulation() {
+        System.out.println("Program will terminate in 10 seconds...");
+
         for (int i = 10; i > 0; i--) {
             System.out.println(i + "...");
+
             try {
                 Thread.sleep(1000); // Pause for 1 second
             } catch (InterruptedException e) {
@@ -115,9 +125,9 @@ public class Main {
             }
         }
 
-        // Terminate the program
-        System.out.println("Terminating program now!");
-        System.exit(0);
+        System.out.println("Terminating program now!");   
         
+        // Close the GUI
+        gui.dispose();
     }
 }
