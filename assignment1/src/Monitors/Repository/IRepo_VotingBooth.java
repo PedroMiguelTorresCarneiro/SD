@@ -16,6 +16,17 @@ public interface IRepo_VotingBooth {
      * @param vote The candidate the voter voted for.
      */
     void logVoting(String voterId, char vote);
+
+    /**
+     * The logElectionResults method logs the results of the election in the voting booth shared region.
+     * @param A The number of votes for party A.
+     * @param B The number of votes for party B.
+     * @param winner The winner of the election.
+     */
     void logElectionResults(long A, long B, String winner);
+
+    /**
+     * The close method closes the repository shared region after the election is over. 
+     */
     void close();
 }

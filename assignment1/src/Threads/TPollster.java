@@ -38,8 +38,17 @@ public class TPollster implements Runnable {
      * The PollsterState enum defines the possible states of the pollster during the simulation.
      */
     public static enum PollsterState {
+        /**
+         * The WAITING_VOTERS state represents the state where the pollster waits for voters to conduct the survey.
+         */
         WAITING_VOTERS,
+        /**
+         * The SELECT_VOTER state represents the state where the pollster waits for the exit poll to select a voter to answer the survey.
+         */
         SELECT_VOTER,
+        /**
+         * The PUBLISHING_RESULTS state represents the state where the pollster publishes the results of the survey and ends its life cycle.
+         */
         PUBLISHING_RESULTS
     }
 
@@ -79,7 +88,6 @@ public class TPollster implements Runnable {
      * SELECT_VOTER: 
      *      The pollster waits for the exit poll to select a voter to answer the survey.
      *
-     * @throws InterruptedException If any thread is interrupted during the simulation.
      */
     @Override
     public void run() {

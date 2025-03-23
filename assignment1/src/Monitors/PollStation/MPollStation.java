@@ -84,8 +84,17 @@ public class MPollStation implements IPollStation_ALL {
      * The PollStationState enum represents the possible states of the polling station shared region.
      */
     private enum PollStationState {
+        /**
+         * The CLOSED state represents the state where the polling station is closed.
+         */
         CLOSED,
+        /**
+         * The OPEN state represents the state where the polling station is open.
+         */
         OPEN ,
+        /**
+         * The CLOSED_AFTER state represents the state where the polling station is closed after the election.
+         */
         CLOSED_AFTER
     }
     

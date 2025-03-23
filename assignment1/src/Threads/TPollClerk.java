@@ -56,12 +56,33 @@ public class TPollClerk implements Runnable {
      * The PollClerkState enum defines the possible states of the poll clerk during the simulation.
      */
     public static enum PollClerkState {
-        ID_CHECK_WAIT,
+        /**
+         * The ID_CHECK_WAIT state represents the state where the poll clerk waits for the next voter to check their ID.
+         */
+        ID_CHECK_WAIT, 
+        /**
+         * The CLOSING_PS state represents the state where the poll clerk closes the polling station.
+         */
         CLOSING_PS,
+        /**
+         * The OPEN_PS state represents the state where the poll clerk opens the polling station.
+         */
         OPEN_PS,
+        /**
+         * The ID_CHECK state represents the state where the poll clerk checks the voter's ID.
+         */
         ID_CHECK,
+        /**
+         * The INFORMING_EP state represents the state where the poll clerk informs the exit poll that the election is over.
+         */
         INFORMING_EP,
+        /**
+         * The GATHERING_VOTES state represents the state where the poll clerk gathers the votes from the voting booth.
+         */
         GATHERING_VOTES,
+        /**
+         * The PUBLISHING_WINNER state represents the state where the poll clerk publishes the winner of the elections.
+         */
         PUBLISHING_WINNER
     }
 
@@ -110,8 +131,6 @@ public class TPollClerk implements Runnable {
      *             If the polling station is empty, the poll clerk informs the exit poll that the election is over.
      * - INFORMING_EP: The poll clerk closes the exit poll and gathers the votes from the voting booth.
      * - GATHERING_VOTES: The poll clerk publishes the election results.
-     *
-     * @throws InterruptedException If any thread is interrupted during the simulation.
      */
     @Override
     public void run() {

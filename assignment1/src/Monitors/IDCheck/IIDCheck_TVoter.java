@@ -15,7 +15,7 @@ public interface IIDCheck_TVoter {
      * The checkID method is called by the voter threads to check their ID.
      * @param voter The voter thread that is checking its ID.
      * @return boolean Returns true if the voter's ID is valid, false otherwise.
-     * @throws InterruptedException
+     * @throws InterruptedException Throws an InterruptedException if an error occurs.
      */
     boolean checkID(TVoter voter) throws InterruptedException;
 }

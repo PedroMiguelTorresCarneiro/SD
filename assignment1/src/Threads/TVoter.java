@@ -79,12 +79,33 @@ public class TVoter implements Runnable {
      * The VoterState enum defines the possible states of the voter during the simulation.
      */
     public static enum VoterState {
+        /**
+         * The WAITING_OUTSIDE state represents the state where the voter waits outside the polling station.
+         */
         WAITING_OUTSIDE, 
+        /**
+         * The WAITING_INSIDE state represents the state where the voter waits inside the polling station.
+         */
         WAITING_INSIDE, 
+        /**
+         * The ANSWER_SURVEY state represents the state where the voter answers the exit poll survey.
+         */
         ANSWER_SURVEY, 
+        /**
+         * The CHECKING_ID state represents the state where the voter checks their ID.
+         */
         CHECKING_ID, 
+        /**
+         * The EXIT_PS state represents the state where the voter exits the polling station.
+         */
         EXIT_PS, 
+        /**
+         * The VOTING state represents the state where the voter votes.
+         */
         VOTING, 
+        /**
+         * The GO_HOME state represents the state where the voter goes home and ends their life cycle.  
+         */
         GO_HOME 
     }
 
@@ -147,7 +168,6 @@ public class TVoter implements Runnable {
      * ANWSER_SURVEY:
      * The voter answers the survey (it can lie in its answer) and reborn, waiting outside the polling station.
      *
-     * @throws InterruptedException If any thread is interrupted during the simulation.
      */
     @Override
     public void run() {
