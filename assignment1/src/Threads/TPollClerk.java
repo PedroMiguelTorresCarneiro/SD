@@ -94,7 +94,7 @@ public class TPollClerk implements Runnable {
      * @param exitPoll The exit poll shared region.
      * @param maxVotes The maximum number of votes required to trigger the end of the elections.
      */
-    public TPollClerk(IPollStation_TPollClerk pollStation, IEVotingBooth_TPollClerk booth, IExitPoll_TPollClerk exitPoll, int maxVotes) {
+    private TPollClerk(IPollStation_TPollClerk pollStation, IEVotingBooth_TPollClerk booth, IExitPoll_TPollClerk exitPoll, int maxVotes) {
         this.pollStation = pollStation;
         this.booth = booth;
         this.exitPoll = exitPoll;
@@ -137,9 +137,22 @@ public class TPollClerk implements Runnable {
         try {
             while (state != PollClerkState.PUBLISHING_WINNER) {
                 switch (state) {
-                    case OPEN_PS -> pollStation.openPS(this);
+                    
+                    case OPEN_PS ->{
+                        pollStation.openPS();
+                        setState(PollClerkState.ID_CHECK_WAIT);
+                    } 
 
-                    case ID_CHECK_WAIT -> pollStation.callNextVoter(this);
+                    case ID_CHECK_WAIT -> {
+                        
+                        if(pollStation.isPSclosedAfter()){
+                            setState(PollClerkState.INFORMING_EP);
+                            break;
+                        } 
+                        pollStation.callNextVoter();
+                        setState(PollClerkState.ID_CHECK);
+                    
+                    }
 
                     case ID_CHECK -> {
                         if (booth.getVotesCount() >= maxVotes) {
@@ -160,12 +173,17 @@ public class TPollClerk implements Runnable {
                         setState(PollClerkState.GATHERING_VOTES);
                     }
 
-                    case GATHERING_VOTES -> booth.publishElectionResults(this);
+                    case GATHERING_VOTES ->{
+                        booth.publishElectionResults();
+                        setState(PollClerkState.PUBLISHING_WINNER);
+                    }
 
                     default -> {
                     }
                 }
             }
+            resetInstance();
+            
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
@@ -188,5 +206,9 @@ public class TPollClerk implements Runnable {
      */
     public PollClerkState getClerkState() {
         return state;
+    }
+    
+    public static void resetInstance(){
+        instance = null;
     }
 }

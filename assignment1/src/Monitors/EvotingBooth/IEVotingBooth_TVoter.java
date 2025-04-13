@@ -16,7 +16,7 @@ public interface IEVotingBooth_TVoter{
      * @param voter the voter thread.
      * @throws InterruptedException if the thread is interrupted.
      */
-    void vote(TVoter voter) throws InterruptedException;
+    void vote(String voterId) throws InterruptedException;
 
    /**
     * The getVote method is called by the voter to get the vote.

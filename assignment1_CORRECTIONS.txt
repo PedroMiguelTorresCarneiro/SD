@@ -1,0 +1,28 @@
+WHAT WE MUST ALTER IN SD PROJECT
+
+> [POLLCLERK]
+
+	- pollStation.openPS(this) 				-----> DONE
+	- pollStation.callNextVoter(this)		-----> DONE
+
+	- booth.publishElectionResults(this)	-----> DONE
+
+
+> [POLLSTER]
+
+	- exitPoll.conductSurvey(this)			-----> DONE
+	- exitPoll.waitForVoters(this)			-----> REMOVED
+	- exitPoll.publishResults(this)			-----> DONE
+
+> [VOTER]
+
+	- pollStation.canEnterPS(this)			-----> DONE
+	- pollStation.exitingPS(this)			-----> DONE
+
+
+	- idCheck.checkID(this)					-----> DONE
+
+	- booth.vote(this)						-----> DONE
+
+	- exitPoll.callForSurvey( .. , this)	-----> DONE
+

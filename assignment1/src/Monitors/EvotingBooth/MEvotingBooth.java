@@ -68,6 +68,7 @@ public class MEvotingBooth implements IEVotingBooth_ALL{
      */
     private final Random random = new Random();
     
+    
     /**
      * The MEvotingBooth constructor initializes the evoting booth shared region and its atributtes.
      * 
@@ -97,7 +98,6 @@ public class MEvotingBooth implements IEVotingBooth_ALL{
         if (instance == null) {
             instance = new MEvotingBooth(logs);
         }
-
         return instance;
     }
 
@@ -135,10 +135,10 @@ public class MEvotingBooth implements IEVotingBooth_ALL{
      * @param pollClerk poll clerk thread.
      */
     @Override
-    public void publishElectionResults(TPollClerk pollClerk) {
+    public void publishElectionResults() {
         log.logElectionResults(countA, countB, (countA > countB ? "A" : (countB > countA ? "B" : "TIE")));
 
-        pollClerk.setState(TPollClerk.PollClerkState.PUBLISHING_WINNER);
+        //pollClerk.setState(TPollClerk.PollClerkState.PUBLISHING_WINNER);
 
         log.close();
     }
@@ -151,7 +151,7 @@ public class MEvotingBooth implements IEVotingBooth_ALL{
      * @throws InterruptedException exception.
      */
     @Override
-    public void vote(TVoter voter) throws InterruptedException {
+    public void vote(String voterId) throws InterruptedException {
         lockVote.lock();
 
         try{      
@@ -160,11 +160,11 @@ public class MEvotingBooth implements IEVotingBooth_ALL{
             long randomDuration = 500 + random.nextInt(1501);
             simulateVoting.await(randomDuration, TimeUnit.MILLISECONDS);
 
-            votes.put(voter.getID(), vote);
+            votes.put(voterId, vote);
 
-            log.logVoting(voter.getID(), vote);
+            log.logVoting(voterId, vote);
             
-            voter.setState(TVoter.VoterState.VOTING);
+            //voter.setState(TVoter.VoterState.VOTING);
             
         } finally {
             lockVote.unlock();
@@ -203,4 +203,17 @@ public class MEvotingBooth implements IEVotingBooth_ALL{
             lockSize.unlock();
         }
     }
+    
+    /**
+    * Resets the singleton instance of the MEvotingBooth monitor.
+    * This method is intended solely for infrastructure-level use (e.g., from Main)
+    * to allow the simulation to be restarted cleanly.
+    *
+    * Should never be used by any functional thread (TVoter, TPollClerk, etc).
+    */
+   public static void resetInstance() {
+       instance = null;
+       log = null;
+   }
+
 }

@@ -107,7 +107,6 @@ public class MExitPoll implements IExitPoll_ALL {
         if (instance == null) {
             instance = new MExitPoll(logs);
         }
-
         return instance;
     }
      
@@ -147,13 +146,13 @@ public class MExitPoll implements IExitPoll_ALL {
      *  the SELECT_VOTER state.
      */
     @Override
-    public void conductSurvey(TPollster pollster) throws InterruptedException {
+    public void conductSurvey() throws InterruptedException {
         lockSurvey.lock();
 
         try{
             waitingForPollster.signal();
 
-            pollster.setState(TPollster.PollsterState.SELECT_VOTER);
+            //pollster.setState(TPollster.PollsterState.SELECT_VOTER);
         } finally {
             lockSurvey.unlock();
         }
@@ -161,23 +160,12 @@ public class MExitPoll implements IExitPoll_ALL {
     }
     
     /**
-     * The waitForVoters method is called by the pollster to wait for the voters to answer the survey.
-     * The pollster is set to the WAITING_VOTERS state.
-     */
-    @Override
-    public void waitForVoters(TPollster pollster) {
-        pollster.setState(TPollster.PollsterState.WAITING_VOTERS);
-    }
-    
-    /**
-     * The publishResults method is called by the pollster to publish the results of the survey.
-     * The pollster is set to the PUBLISHING_RESULTS state.
+     * The publishResults method is called by the pollster to publish the results of the survey.The pollster is set to the PUBLISHING_RESULTS state.
      * The results of the survey are logged (in the log file and on the terminal) and displayed on the GUI.
      * 
-     * @param pollster The pollster that calls this method
      */
     @Override
-    public void publishResults(TPollster pollster) throws InterruptedException {
+    public void publishResults() throws InterruptedException {
         lockPublishResults.lock();
 
         try{   
@@ -195,7 +183,7 @@ public class MExitPoll implements IExitPoll_ALL {
             
             log.logSurveyResults(countA, countB, (countA > countB ? "A" : (countB > countA ? "B" : "TIE")));
 
-            pollster.setState(TPollster.PollsterState.PUBLISHING_RESULTS);
+            //pollster.setState(TPollster.PollsterState.PUBLISHING_RESULTS);
             
         } finally {
             lockPublishResults.unlock();
@@ -238,15 +226,13 @@ public class MExitPoll implements IExitPoll_ALL {
     }
    
     /**
-     * The callForSurvey method is called by the voter to answer the survey.
-     * The voter may chose to lie in the survey with a probability of LIE_PROB.
-     * The voter answers are logged (in the log file and on the terminal) and displayed on the GUI.
+     * The callForSurvey method is called by the voter to answer the survey.The voter may chose to lie in the survey with a probability of LIE_PROB.The voter answers are logged (in the log file and on the terminal) and displayed on the GUI.
      * 
      * @param vote The vote of the voter
-     * @param voter The voter that calls this method
+     * @param voterId
      */
     @Override
-    public void callForSurvey(Character vote, TVoter voter) throws InterruptedException{
+    public void callForSurvey(Character vote, String voterId) throws InterruptedException{
         lockVoterAnswer.lock();
 
         try{
@@ -258,17 +244,30 @@ public class MExitPoll implements IExitPoll_ALL {
                 votes.add(vote == 'B' ? 'A' : 'B');
             }
              
-            log.logSurvey(voter.getID(),lieOrNot);
+            log.logSurvey(voterId,lieOrNot);
             
             // Simulate the survey response with a random duration between 0.5s and 2s
             long randomDuration = 500 + random.nextInt(1501);
             simulateVoting.await(randomDuration, TimeUnit.MILLISECONDS);
             
-            voter.setState(TVoter.VoterState.ANSWER_SURVEY);
+            //voter.setState(TVoter.VoterState.ANSWER_SURVEY);
             
         } finally {
             lockVoterAnswer.unlock();
         }
         
     }
+    
+    /**
+    * Resets the singleton instance of the MExitPoll monitor.
+    * This method is intended solely for infrastructure-level use (e.g., from Main)
+    * to allow the simulation to be restarted cleanly.
+    *
+    * Should never be used by any functional thread (TVoter, TPollClerk, etc).
+    */
+   public static void resetInstance() {
+       instance = null;
+       log = null;
+   }
+
 }

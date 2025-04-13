@@ -21,7 +21,7 @@ public interface IEVotingBooth_TPollClerk {
      * The publishElectionResults method is called by the poll clerk to publish the election results.
      * @param pollClerk the poll clerk thread.
      */
-    void publishElectionResults(TPollClerk pollClerk);
+    void publishElectionResults();
     
     /**
      * The getVotesCount method is called by the poll clerk to get the number of voters.

@@ -15,23 +15,24 @@ public interface IPollStation_TVoter {
     /**
      * The isCLosedAfterElection method is called by the voter to check if the polling station is closed after the election.
      * 
-     * @return boolean The boolean that indicates if the polling station is closed after the election.
+     * @return Boolean The Boolean that indicates if the polling station is closed after the election.
      */
     boolean isCLosedAfterElection();
 
     /**
      * The enterPS method is called by the voter to try to enter in the polling station.
      * 
-     * @param voter The voter thread.
+     * @param voterId The Voter ID
+     * @return 
      * @throws InterruptedException The exception thrown when a thread is waiting, sleeping, or otherwise occupied, and the thread is interrupted, either before or during the activity.
      * 
      */
-    void enterPS(TVoter voter) throws InterruptedException;
+    boolean canEnterPS(String voterId) throws InterruptedException;
 
     /**
      * The exitingPS method is called by the voter to exit the polling station.
      * @param voter The voter thread.
      * @throws InterruptedException The exception thrown when a thread is waiting, sleeping, or otherwise occupied, and the thread is interrupted, either before or during the activity.
      */
-    void exitingPS(TVoter voter) throws InterruptedException;
+    void exitingPS(String voterId) throws InterruptedException;
 }

@@ -9,6 +9,7 @@ assignment1/*.ear
 # Logs
 assignment1/*.log
 assignment1/logs.txt
+assignment1/logs/
 
 # NetBeans-specific files
 assignment1/nbproject/private/

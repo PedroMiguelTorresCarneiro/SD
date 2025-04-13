@@ -17,5 +17,5 @@ public interface IIDCheck_TVoter {
      * @return boolean Returns true if the voter's ID is valid, false otherwise.
      * @throws InterruptedException Throws an InterruptedException if an error occurs.
      */
-    boolean checkID(TVoter voter) throws InterruptedException;
+    boolean checkID(String voterId) throws InterruptedException;
 }

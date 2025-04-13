@@ -43,10 +43,6 @@ public class TPollster implements Runnable {
          */
         WAITING_VOTERS,
         /**
-         * The SELECT_VOTER state represents the state where the pollster waits for the exit poll to select a voter to answer the survey.
-         */
-        SELECT_VOTER,
-        /**
          * The PUBLISHING_RESULTS state represents the state where the pollster publishes the results of the survey and ends its life cycle.
          */
         PUBLISHING_RESULTS
@@ -100,17 +96,16 @@ public class TPollster implements Runnable {
                             break;
                         }
 
-                        exitPoll.conductSurvey(this);
+                        exitPoll.conductSurvey();
                     }
-
-                    case SELECT_VOTER -> exitPoll.waitForVoters(this);
-
                     default -> {
                     }
                 }
             }
             
-            exitPoll.publishResults(this);
+            exitPoll.publishResults();
+            setState(PollsterState.PUBLISHING_RESULTS);
+            resetInstance();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
@@ -123,5 +118,9 @@ public class TPollster implements Runnable {
      */
     public void setState(PollsterState state) {
         this.state = state;
+    }
+    
+    public static void resetInstance(){
+        instance = null;
     }
 }

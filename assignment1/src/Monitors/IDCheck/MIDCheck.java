@@ -52,6 +52,7 @@ public class MIDCheck implements IIDCheck_ALL {
      */
     private final Random random = new Random();
     
+    
     /**
      * The MIDCheck constructor initializes the ID Check shared region and its atributtes.
      * 
@@ -74,7 +75,6 @@ public class MIDCheck implements IIDCheck_ALL {
         if (instance == null) {
             instance = new MIDCheck(logs);
         }
-
         return instance;
     }
     
@@ -87,13 +87,13 @@ public class MIDCheck implements IIDCheck_ALL {
      * @return True if the voter is accepted, false otherwise
      */
     @Override
-    public boolean checkID(TVoter voter) throws InterruptedException{
+    public boolean checkID(String voterId) throws InterruptedException{
         lock_idCheck.lock();
 
         try{
-            voter.setState(TVoter.VoterState.CHECKING_ID);
+            //voter.setState(TVoter.VoterState.CHECKING_ID);
 
-            String voterId = voter.getID();
+            //String voterId = voter.getID();
             char accepted;
             
             long randomDuration = 500 + random.nextInt(1001);
@@ -101,7 +101,7 @@ public class MIDCheck implements IIDCheck_ALL {
             
             if(!idsChecked.contains(voterId)){
                 accepted = '✔';
-                log.logIDCheck(voter.getID(), accepted);
+                log.logIDCheck(voterId, accepted);
 
                 idsChecked.add(voterId);
                return true;
@@ -109,11 +109,24 @@ public class MIDCheck implements IIDCheck_ALL {
                 accepted = '✖';
             }
             
-            log.logIDCheck(voter.getID(), accepted);
+            log.logIDCheck(voterId, accepted);
             
             return false;
         }finally{
            lock_idCheck.unlock();
         }
     }
+    
+    /**
+     * Resets the singleton instance of the MIDCheck monitor.
+     * This method is intended solely for infrastructure-level use (e.g., from Main)
+     * to allow the simulation to be restarted cleanly.
+     *
+     * Should never be used by any functional thread (TVoter, TPollClerk, etc).
+     */
+    public static void resetInstance() {
+        instance = null;
+        log = null;
+    }
+
 }

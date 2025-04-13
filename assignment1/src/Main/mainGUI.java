@@ -1,7 +1,10 @@
 package Main;
 
 import java.awt.Color;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
+import javax.swing.SwingUtilities;
 
 /**
  * The mainGUI class represents the main graphical user interface of the application.
@@ -415,13 +418,14 @@ public class mainGUI extends javax.swing.JFrame {
             try {
                 // Call the startSimulation method in Main with the spinner values
                 Main.startSimulation(numVoters, maxCapacity, maxVotes);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(mainGUI.class.getName()).log(Level.SEVERE, null, ex);
             }
         }).start();
     }//GEN-LAST:event_startButtonActionPerformed
 
     /**
+     * This is the main method
      * @param args the command line arguments
      */
     public static void main(String args[]) {
@@ -534,8 +538,8 @@ public class mainGUI extends javax.swing.JFrame {
     
     /**
      * The addIdcheckFIFO method adds a voter to the queue inside the ID check.
-     * @param voter
-     */
+     * @param voter the id of the voter.
+     */ 
     public void addIdcheckFIFO(String voter){
         DefaultListModel<String> model = (DefaultListModel<String>) idcheckFIFO.getModel();
         model.addElement(voter);
@@ -652,6 +656,15 @@ public class mainGUI extends javax.swing.JFrame {
         IDCHECK.setText(" ");
         SURVEY.setText(" ");
     }
+    
+    /**
+     * 
+     * @param enabled 
+     */
+    public void setStartButtonEnabled(boolean enabled) {
+        SwingUtilities.invokeLater(() -> startButton.setEnabled(enabled));
+    }
+
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

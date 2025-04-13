@@ -5,9 +5,13 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.io.FileWriter;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.SwingUtilities;
 
 /**
  * The MRepo class implements the IRepo_ALL interface and represents the repository .
@@ -85,6 +89,7 @@ public class MRepo implements IRepo_ALL {
      * The gui atributte is used to store the reference to the simulation GUI
      */
     private mainGUI gui;
+    
 
    /**
     * The MRepo constructor initializes a new MRepo object with the specified attributes.
@@ -123,7 +128,6 @@ public class MRepo implements IRepo_ALL {
         if (instance == null) {
             instance = new MRepo(votesNumber, votersNumber, insideQueueMaxCapacity, gui);
         }
-
         return instance;
     }
     
@@ -235,12 +239,20 @@ public class MRepo implements IRepo_ALL {
 
         try {
 
-            gui.logPOLLSTATION(state);
-
+            //gui.logPOLLSTATION(state);
+               
+            SwingUtilities.invokeAndWait(() -> {
+                gui.logPOLLSTATION(state);
+            });
+            
             String coloredState = state.equals("OPEN  ") ? GREEN + state + RESET : RED + state + RESET;
             String logMessage = String.format("| %-11s      |         |        |         |        |          |        |%n", coloredState);
 
             writeLog(logMessage);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             lock.unlock(); 
         }
@@ -257,11 +269,18 @@ public class MRepo implements IRepo_ALL {
         lock.lock(); 
 
         try {
-            gui.addExternalFIFO(voterId);
+            SwingUtilities.invokeAndWait(() -> {
+                gui.addExternalFIFO(voterId);
+            });
+            //gui.addExternalFIFO(voterId);
 
             String logMessage = String.format("|             |   %s%-5s%s |        |         |        |          |        |%n", BOLD, voterId, RESET);
 
             writeLog(logMessage);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             lock.unlock(); // Release the lock
         }
@@ -278,12 +297,23 @@ public class MRepo implements IRepo_ALL {
         lock.lock(); 
 
         try {
-            gui.removeExternalFIFO(voterId);
-            gui.addInternalFIFO(voterId);
+            SwingUtilities.invokeAndWait(() -> {
+              gui.removeExternalFIFO(voterId);
+            });
+            
+            SwingUtilities.invokeAndWait(() -> {
+              gui.addInternalFIFO(voterId);  
+            });
+            //gui.removeExternalFIFO(voterId);
+            //gui.addInternalFIFO(voterId);
             
             String logMessage = String.format("|             |         |  %s%-5s%s |         |        |          |        |%n", GREEN, voterId, RESET);
 
             writeLog(logMessage);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             lock.unlock();
         }
@@ -301,15 +331,27 @@ public class MRepo implements IRepo_ALL {
         lock.lock(); 
 
         try {
-            
-            gui.removeInternalFIFO(voterId);
-            gui.logIDCHECK(voterId+accepted, accepted);
-            gui.addIdcheckFIFO(voterId);
+            SwingUtilities.invokeAndWait(() -> {
+                gui.removeInternalFIFO(voterId);
+            });
+            SwingUtilities.invokeAndWait(() -> {
+                gui.logIDCHECK(voterId+accepted, accepted);  
+            });
+            SwingUtilities.invokeAndWait(() -> {
+                gui.addIdcheckFIFO(voterId);
+            });
+            //gui.removeInternalFIFO(voterId);
+            //gui.logIDCHECK(voterId+accepted, accepted);
+            //gui.addIdcheckFIFO(voterId);
             
             String color = (accepted == '✔') ? GREEN : RED;
             String logMessage = String.format("|             |         |        |  %s%-4s%c%s  |        |          |        |%n", color, voterId, accepted, RESET);
 
             writeLog(logMessage);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             lock.unlock(); 
         }
@@ -327,12 +369,19 @@ public class MRepo implements IRepo_ALL {
         lock.lock();
 
         try {
-            gui.logVOTING(voterId);
+            SwingUtilities.invokeAndWait(() -> {
+                gui.logVOTING(voterId);
+            });
+            //gui.logVOTING(voterId);
 
             String voteColor = (vote == 'A') ? CYAN : RED;
             String logMessage = String.format("|             |         |        |         |  %-4s%s%c%s |          |        |%n", voterId, voteColor, vote, RESET);
 
             writeLog(logMessage);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             lock.unlock(); 
         }
@@ -349,11 +398,18 @@ public class MRepo implements IRepo_ALL {
         lock.lock();
 
         try {
-            gui.removeIdcheckFIFO(voterId);
+            SwingUtilities.invokeAndWait(() -> {
+                gui.removeIdcheckFIFO(voterId);
+            });
+            //gui.removeIdcheckFIFO(voterId);
 
             String logMessage = String.format("|             |         |        |         |        |   %s%-5s%s  |        |%n", YELLOW, voterId, RESET);
 
             writeLog(logMessage);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             lock.unlock(); 
         }
@@ -371,11 +427,18 @@ public class MRepo implements IRepo_ALL {
         lock.lock(); 
 
         try {
-            gui.logSURVEY(voterId);
+            SwingUtilities.invokeAndWait(() -> {
+                gui.logSURVEY(voterId);
+            });
+            //gui.logSURVEY(voterId);
 
             String logMessage = String.format("|             |         |        |         |        |          |  %s%-4s%c%s |%n", BOLD, voterId, lieOrNot, RESET);
 
             writeLog(logMessage);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             lock.unlock(); 
         }
@@ -401,15 +464,30 @@ public class MRepo implements IRepo_ALL {
             double partyBRatio = (B / (double)(A + B)) * 100; 
             int partyBPercentage = (int) partyBRatio;
             
-            gui.updatePartyA_survey(partyAPercentage);
-            gui.updatePartyB_survey(partyBPercentage);
+            SwingUtilities.invokeAndWait(() -> {
+                gui.updatePartyA_survey(partyAPercentage);
+            });
+            //gui.updatePartyA_survey(partyAPercentage);
+            SwingUtilities.invokeAndWait(() -> {
+                gui.updatePartyB_survey(partyBPercentage);
+            });
+            //gui.updatePartyB_survey(partyBPercentage);
             
             if(partyAPercentage > partyBPercentage){
-                gui.setSurveyPartyAwinner();
+                SwingUtilities.invokeAndWait(() -> {
+                    gui.setSurveyPartyAwinner();
+                });
+                //gui.setSurveyPartyAwinner();
             }else if(partyAPercentage < partyBPercentage){
-                gui.setSurveyPartyBwinner();
+                SwingUtilities.invokeAndWait(() -> {
+                    gui.setSurveyPartyBwinner();
+                });
+                //gui.setSurveyPartyBwinner();
             }else{
-                gui.setSurveyTie();
+                SwingUtilities.invokeAndWait(() -> {
+                    gui.setSurveyTie();
+                });
+                //gui.setSurveyTie();
             }
             
             String logMessage = CYAN + "-------------------------------------------------------------------------" + RESET + "\n" +
@@ -420,6 +498,10 @@ public class MRepo implements IRepo_ALL {
                     CYAN + "----------------------" + RESET + "\n";
 
             writeLog(logMessage);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             lock.unlock(); 
         }
@@ -439,7 +521,10 @@ public class MRepo implements IRepo_ALL {
 
         try {
             // Clears the GUI
-            gui.clean();
+            SwingUtilities.invokeAndWait(() -> {
+                gui.clean();
+            });
+            //gui.clean();
 
             double partyARatio = (A / (double)(A + B)) * 100; 
             int partyAPercentage = (int) partyARatio; 
@@ -448,15 +533,30 @@ public class MRepo implements IRepo_ALL {
             int partyBPercentage = (int) partyBRatio;
             
             if(partyAPercentage > partyBPercentage){
-                gui.setElecPartyAwinner();
+                SwingUtilities.invokeAndWait(() -> {
+                    gui.setElecPartyAwinner();
+                });
+                //gui.setElecPartyAwinner();
             }else if(partyAPercentage < partyBPercentage){
-                gui.setElecPartyBwinner();
+                SwingUtilities.invokeAndWait(() -> {
+                    gui.setElecPartyBwinner();
+                });
+                //gui.setElecPartyBwinner();
             }else{
-                gui.setElecTie();
+                SwingUtilities.invokeAndWait(() -> {
+                    gui.setElecTie();
+                });
+                //gui.setElecTie();
             }
             
-            gui.updatePartyA(partyAPercentage);
-            gui.updatePartyB(partyBPercentage);
+            SwingUtilities.invokeAndWait(() -> {
+                gui.updatePartyA(partyAPercentage);
+            });
+            //gui.updatePartyA(partyAPercentage);
+            SwingUtilities.invokeAndWait(() -> {
+                gui.updatePartyB(partyBPercentage);
+            });
+            //gui.updatePartyB(partyBPercentage);
             
             String logMessage = CYAN + "\n----------------------| ELECTION RESULTS" + RESET + "\n" +
                     String.format("Total votes for A: %s%d%s%n", YELLOW, A, RESET) +
@@ -465,6 +565,10 @@ public class MRepo implements IRepo_ALL {
                     CYAN + "----------------------" + RESET + "\n";
 
             writeLog(logMessage);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             lock.unlock(); 
         }
@@ -483,4 +587,16 @@ public class MRepo implements IRepo_ALL {
             System.err.println("Failed to close file writer: " + e.getMessage());
         }
     }
+    
+    /**
+    * Resets the singleton instance of the MRepo monitor.
+    * This method is intended solely for infrastructure-level use (e.g., from Main)
+    * to allow the simulation to be restarted cleanly.
+    *
+    * Should never be used by any functional thread (TVoter, TPollClerk, etc).
+    */
+   public static void resetInstance() {
+       instance = null;
+   }
+
 }

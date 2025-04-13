@@ -17,13 +17,13 @@ public interface IPollStation_TPollClerk {
      * @param pollclerk The poll clerk thread.
      * @throws InterruptedException The exception thrown when a thread is waiting, sleeping, or otherwise occupied, and the thread is interrupted, either before or during the activity.
      */
-    void openPS(TPollClerk pollclerk) throws InterruptedException;
+    void openPS() throws InterruptedException;
 
     /**
      * The callNextVoter method is called by the poll clerk to call the next voter in the polling station inside queue.
      * @param pollclerk The poll clerk thread.
      */
-    void callNextVoter(TPollClerk pollclerk);
+    void callNextVoter();
 
     /**
      * The closePS method is called by the poll clerk to close the polling station.
@@ -45,4 +45,7 @@ public interface IPollStation_TPollClerk {
      * @return boolean The boolean that indicates if the maximum number of votes has been reached.
      */
     public boolean maxVotes(int maxVotes, int maxVoters);
+    
+    
+    public boolean isPSclosedAfter();
 }

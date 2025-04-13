@@ -180,21 +180,31 @@ public class TVoter implements Runnable {
                             break;
                         }
 
-                        pollStation.enterPS(this);
+                        if(pollStation.canEnterPS(voterId)){
+                            setState(VoterState.WAITING_INSIDE);
+                        }   
                     }
 
-                    case WAITING_INSIDE -> validID = idCheck.checkID(this);
+                    case WAITING_INSIDE -> {
+                        validID = idCheck.checkID(voterId);
+                        setState(VoterState.CHECKING_ID);
+                    }
 
                     case CHECKING_ID -> {
                         if (!validID) {
-                            pollStation.exitingPS(this);
+                            pollStation.exitingPS(voterId);
+                            setState(VoterState.EXIT_PS);
                             break;
                         }
 
-                        booth.vote(this);
+                        booth.vote(voterId);
+                        setState(VoterState.VOTING);
                     }
 
-                    case VOTING -> pollStation.exitingPS(this);
+                    case VOTING -> {
+                        pollStation.exitingPS(voterId);
+                        setState(VoterState.EXIT_PS);
+                    }
 
                     case EXIT_PS -> {
                         if (!exitPoll.isOpen()) {
@@ -208,7 +218,8 @@ public class TVoter implements Runnable {
                         }
                         
                         if (Math.random() < CHOOSE_TO_ANSWER_PROB) {
-                            exitPoll.callForSurvey(booth.getVote(voterId), this);
+                            exitPoll.callForSurvey(booth.getVote(voterId), voterId);
+                            setState(VoterState.ANSWER_SURVEY);
                         } else {
                             reborn();
                         }
@@ -269,4 +280,5 @@ public class TVoter implements Runnable {
     public String getID() {
         return voterId;
     }
+
 }
