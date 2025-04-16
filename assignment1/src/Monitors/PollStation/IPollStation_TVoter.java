@@ -1,7 +1,5 @@
 package Monitors.PollStation;
 
-import Threads.TVoter;
-
 /**
  * The IPollStation_TVoter interface contains the methods that the polling station shared region
  * should implement to interact with the voter threads.
@@ -20,10 +18,10 @@ public interface IPollStation_TVoter {
     boolean isCLosedAfterElection();
 
     /**
-     * The enterPS method is called by the voter to try to enter in the polling station.
+     * The canEnterPS method is called by the voter to try to enter in the polling station.
      * 
-     * @param voterId The Voter ID
-     * @return 
+     * @param voterId The ID of the voter.
+     * @return true if the voter entered the polling station, false otherwise.
      * @throws InterruptedException The exception thrown when a thread is waiting, sleeping, or otherwise occupied, and the thread is interrupted, either before or during the activity.
      * 
      */
@@ -31,7 +29,7 @@ public interface IPollStation_TVoter {
 
     /**
      * The exitingPS method is called by the voter to exit the polling station.
-     * @param voter The voter thread.
+     * @param voterId The ID of the voter.
      * @throws InterruptedException The exception thrown when a thread is waiting, sleeping, or otherwise occupied, and the thread is interrupted, either before or during the activity.
      */
     void exitingPS(String voterId) throws InterruptedException;

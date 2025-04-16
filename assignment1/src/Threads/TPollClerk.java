@@ -124,34 +124,35 @@ public class TPollClerk implements Runnable {
      * This cycle ends when the poll clerk publishes the winner of the elections (PUBLISHING_WINNER state).
      *
      * The poll clerk can be in one of the following states:
-     * - OPEN_PS: The poll clerk opens the polling station.
-     * - ID_CHECK_WAIT: The poll clerk calls the next voter to the ID check.
-     * - ID_CHECK: The poll clerk checks the voter's ID and waits for a new one.
+     * - OPEN_PS: The poll clerk opens the polling station and its state is set to ID_CHECK_WAIT.
+     * 
+     * - ID_CHECK_WAIT: The poll clerk calls the next voter to the ID check and its state is set to ID_CHECK.
+     *                  But before that it checks if the polling station is closed, if it is, its state is set to INFORMING_EP.
+     * 
+     * - ID_CHECK: The poll clerk checks the voter's ID and waits for a new one, its state is set to ID_CHECK_WAIT.
      *             If the voting booth is full, the poll clerk closes the polling station.
-     *             If the polling station is empty, the poll clerk informs the exit poll that the election is over.
-     * - INFORMING_EP: The poll clerk closes the exit poll and gathers the votes from the voting booth.
-     * - GATHERING_VOTES: The poll clerk publishes the election results.
+     *             If the polling station is empty, the poll clerk informs the exit poll that the election is over and its state is changed to INFORMING_EP.
+     *
+     * - INFORMING_EP: The poll clerk closes the exit poll and gathers the votes from the voting booth, its state is set to GATHERING_VOTES.
+     * - GATHERING_VOTES: The poll clerk publishes the election results and its state is set to PUBLISHING_WINNER.
      */
     @Override
     public void run() {
         try {
             while (state != PollClerkState.PUBLISHING_WINNER) {
-                switch (state) {
-                    
+                switch (state) {   
                     case OPEN_PS ->{
                         pollStation.openPS();
                         setState(PollClerkState.ID_CHECK_WAIT);
                     } 
 
-                    case ID_CHECK_WAIT -> {
-                        
+                    case ID_CHECK_WAIT -> {           
                         if(pollStation.isPSclosedAfter()){
                             setState(PollClerkState.INFORMING_EP);
                             break;
                         } 
                         pollStation.callNextVoter();
                         setState(PollClerkState.ID_CHECK);
-                    
                     }
 
                     case ID_CHECK -> {
@@ -182,8 +183,8 @@ public class TPollClerk implements Runnable {
                     }
                 }
             }
-            resetInstance();
-            
+
+            resetInstance();     
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }

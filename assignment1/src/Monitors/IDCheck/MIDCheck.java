@@ -1,6 +1,5 @@
 package Monitors.IDCheck;
 
-import Threads.TVoter;
 import java.util.Random;
 import java.util.HashSet;
 import java.util.Set;
@@ -82,8 +81,10 @@ public class MIDCheck implements IIDCheck_ALL {
      * The checkID method simulates the voter checking his ID.
      * The voter waits for a random duration and then checks if his ID has already been checked.
      * If the ID has not been checked, the voter is accepted and the ID is added to the set of checked IDs.
+     * This information is logged in the repository.
      * 
-     * @param voter The voter that calls this method and whose ID will be checked
+     * @param voterId The ID of the voter
+     * @return boolean Returns true if the voter's ID is valid, false otherwise.
      * @return True if the voter is accepted, false otherwise
      */
     @Override
@@ -91,9 +92,6 @@ public class MIDCheck implements IIDCheck_ALL {
         lock_idCheck.lock();
 
         try{
-            //voter.setState(TVoter.VoterState.CHECKING_ID);
-
-            //String voterId = voter.getID();
             char accepted;
             
             long randomDuration = 500 + random.nextInt(1001);

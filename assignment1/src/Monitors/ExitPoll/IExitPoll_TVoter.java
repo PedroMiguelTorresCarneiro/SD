@@ -15,6 +15,7 @@ public interface IExitPoll_TVoter {
     /**
      * The callForSurvey method is called by the voter to vote in the survey.
      * @param vote The vote of the voter
+     * @param voterId The ID of the voter
      * @throws InterruptedException if the thread is interrupted
      */
     void callForSurvey(Character vote, String voterId) throws InterruptedException;

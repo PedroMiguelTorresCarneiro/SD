@@ -1,7 +1,5 @@
 package Monitors.PollStation;
 
-import Threads.TPollClerk;
-
 /**
  * The IPollStation_TPollClerk interface contains the methods that the polling station shared region
  * should implement to interact with the poll clerk thread.
@@ -14,14 +12,12 @@ public interface IPollStation_TPollClerk {
     /**
      * The openPS method is called by the poll clerk to open the polling station.
      * 
-     * @param pollclerk The poll clerk thread.
      * @throws InterruptedException The exception thrown when a thread is waiting, sleeping, or otherwise occupied, and the thread is interrupted, either before or during the activity.
      */
     void openPS() throws InterruptedException;
 
     /**
      * The callNextVoter method is called by the poll clerk to call the next voter in the polling station inside queue.
-     * @param pollclerk The poll clerk thread.
      */
     void callNextVoter();
 

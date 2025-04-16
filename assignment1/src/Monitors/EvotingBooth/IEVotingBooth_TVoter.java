@@ -1,7 +1,5 @@
 package Monitors.EvotingBooth;
 
-import Threads.TVoter;
-
 /**
  * The IEVotingBooth_TVoter interface contains the methods that the evoting booth shared region
  * should implement to interact with the voter threads.
@@ -13,7 +11,7 @@ import Threads.TVoter;
 public interface IEVotingBooth_TVoter{
     /**
      * The vote method is called by the voter to vote.
-     * @param voter the voter thread.
+     * @param voterId the voter id.
      * @throws InterruptedException if the thread is interrupted.
      */
     void vote(String voterId) throws InterruptedException;
