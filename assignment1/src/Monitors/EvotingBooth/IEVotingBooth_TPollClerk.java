@@ -1,7 +1,5 @@
 package Monitors.EvotingBooth;
 
-import Threads.TPollClerk;
-
 /**
  * The IEVotingBooth_TPollClerk interface contains the methods that the evoting booth shared region
  * should implement to interact with the poll clerk thread.
@@ -19,7 +17,6 @@ public interface IEVotingBooth_TPollClerk {
     
     /**
      * The publishElectionResults method is called by the poll clerk to publish the election results.
-     * @param pollClerk the poll clerk thread.
      */
     void publishElectionResults();
     

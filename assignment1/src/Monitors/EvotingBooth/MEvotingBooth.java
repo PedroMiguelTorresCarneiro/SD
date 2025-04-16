@@ -1,8 +1,5 @@
 package Monitors.EvotingBooth;
 
-import Threads.TPollClerk;
-import Threads.TVoter;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -131,23 +128,19 @@ public class MEvotingBooth implements IEVotingBooth_ALL{
     /**
      * The publishElectionResults method is called by the poll clerk to publish the election results.
      * The election results are logged in the repository.
-     *  
-     * @param pollClerk poll clerk thread.
      */
     @Override
     public void publishElectionResults() {
         log.logElectionResults(countA, countB, (countA > countB ? "A" : (countB > countA ? "B" : "TIE")));
-
-        //pollClerk.setState(TPollClerk.PollClerkState.PUBLISHING_WINNER);
-
         log.close();
     }
 
     /**
      * The vote method is called by the voter to vote in a party.
      * A time delay is created to simulate the voting process.
+     * The vote is stored in the votes map and is logged in the repository.
      * 
-     * @param voter voter thread.
+     * @param voterId the voter ID.
      * @throws InterruptedException exception.
      */
     @Override
@@ -162,10 +155,7 @@ public class MEvotingBooth implements IEVotingBooth_ALL{
 
             votes.put(voterId, vote);
 
-            log.logVoting(voterId, vote);
-            
-            //voter.setState(TVoter.VoterState.VOTING);
-            
+            log.logVoting(voterId, vote);            
         } finally {
             lockVote.unlock();
         }

@@ -78,12 +78,8 @@ public class TPollster implements Runnable {
      *
      * The pollster can be in one of the following states:
      * WAITING_VOTERS: 
-     *      The pollster waits for voters to conduct the survey if the exit poll is open.
-     *      If the exit poll is closed, the pollster publishes the results and ends its life cycle.
-
-     * SELECT_VOTER: 
-     *      The pollster waits for the exit poll to select a voter to answer the survey.
-     *
+     *      If the exit poll is open The pollster waits for voters and when a voter arrives, it conducts the survey, then waits for new one
+     *      Otherwise , the pollster state is set to the PUBLISHNG_RESULTS and ends its life cycle.
      */
     @Override
     public void run() {

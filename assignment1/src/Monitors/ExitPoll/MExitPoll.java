@@ -1,8 +1,5 @@
 package Monitors.ExitPoll;
 
-
-import Threads.TPollster;
-import Threads.TVoter;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -142,8 +139,7 @@ public class MExitPoll implements IExitPoll_ALL {
    
     /**
      * The conductSurvey method is called by the pollster to conduct a survey.
-     * The voter is notified that the pollster is waiting for him and the pollster is set to
-     *  the SELECT_VOTER state.
+     * The voter is notified that the pollster is waiting for him.
      */
     @Override
     public void conductSurvey() throws InterruptedException {
@@ -151,8 +147,6 @@ public class MExitPoll implements IExitPoll_ALL {
 
         try{
             waitingForPollster.signal();
-
-            //pollster.setState(TPollster.PollsterState.SELECT_VOTER);
         } finally {
             lockSurvey.unlock();
         }
@@ -226,10 +220,11 @@ public class MExitPoll implements IExitPoll_ALL {
     }
    
     /**
-     * The callForSurvey method is called by the voter to answer the survey.The voter may chose to lie in the survey with a probability of LIE_PROB.The voter answers are logged (in the log file and on the terminal) and displayed on the GUI.
+     * The callForSurvey method is called by the voter to answer the survey.The voter may chose to lie in the survey with a probability of LIE_PROB.
+     * The voter answers are logged (in the log file and on the terminal) and displayed on the GUI.
      * 
      * @param vote The vote of the voter
-     * @param voterId
+     * @param voterId The ID of the voter
      */
     @Override
     public void callForSurvey(Character vote, String voterId) throws InterruptedException{

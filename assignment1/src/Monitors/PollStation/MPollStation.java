@@ -1,12 +1,8 @@
 package Monitors.PollStation;
 
-
 import Monitors.Repository.MRepo;
-import Threads.TPollClerk;
-import Threads.TVoter;
 import java.util.LinkedList;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import Monitors.Repository.IRepo_PollStation;
@@ -65,10 +61,9 @@ public class MPollStation implements IPollStation_ALL {
     private final ReentrantLock lockChangeState, lockExternalFifo, lockExitingPS, lockIsEmpty, lockMaxedVotes, lockIsOpen;
 
     /**
-     * The simulate_Open, internalQueue atributs represent lock conditions used to control
-     *  the access to the shared region.
+     * The internalQueue atribut represent lock conditions used to control the polling station inside queue.
      */
-    private final Condition simulateOpen,internalQueue;
+    private final Condition internalQueue;
 
     /**
      * The votersInside attribute represents the number of voters in the quue inside the polling station.
@@ -114,7 +109,6 @@ public class MPollStation implements IPollStation_ALL {
         log = (MRepo) logs;
         
         lockChangeState = new ReentrantLock();
-        simulateOpen = lockChangeState.newCondition();
         
         lockExternalFifo = new ReentrantLock(true);
         internalQueue = lockExternalFifo.newCondition();
@@ -146,10 +140,8 @@ public class MPollStation implements IPollStation_ALL {
 
     /**
      * The openPs method simulates the opening of the polling station.
-     * The polling station is opened for a random duration between 0.5s and 2s.
-     * And the poll clerk after opening it, its state is changed to ID_CHECK_WAIT.
-     * 
-     * @param pollclerk the poll clerk thread that opens the polling station
+     * The polling station is opened for a random duration between 0.5s and 2s, its state is updated to OPEN,
+     * and the repository is updated with the polling station state.
      * @throws InterruptedException if the thread is interrupted
      */
     @Override
@@ -175,10 +167,13 @@ public class MPollStation implements IPollStation_ALL {
     }
     
     /**
-     * The enterPS method simulates the voters waiting outside and trying to enter the polling station.A voter can only enter the polling station if there is space available and the polling station is open.
-     * When a voter enters the polling station, the voters enters in the polling station inside queue
- and waits for the poll clerk to call him to the ID check.
+     * The canEnterPS method simulates the voters waiting outside and trying to enter the polling station.
+     * A voter can only enter the polling station if there is space available and if the polling station is open.
+     * When a voter enters the polling station, the voters enters in the polling station inside queue (votersIsinde varaible incremented).
+     *  and waits for the poll clerk to call him to the ID check, this interaction is logged on the repository.
      * 
+     * @param voterId the ID of the voter
+     * @return true if the voter entered the polling station, false otherwise.
      * @throws InterruptedException if the thread is interrupted
      */
     @Override
@@ -204,11 +199,7 @@ public class MPollStation implements IPollStation_ALL {
                 internalQueue.await();
 
                 return true;
-            }
-            
-            
-            //voter.setState(TVoter.VoterState.WAITING_INSIDE);
-    
+            }    
         } finally {
             lockExternalFifo.unlock();
         }
@@ -226,10 +217,8 @@ public class MPollStation implements IPollStation_ALL {
     }
     
     /**
-     * The callNextVoter method simulates the poll clerk calling the next voter to the ID check.The poll clerk can only call the next voter if there is a voter in the polling station inside queue.
-     * If the polling station is closed after the election, the poll clerk informs the exit poll,
- that the polling station is closed after the election.
-     * 
+     * The callNextVoter method simulates the poll clerk calling the next voter to the ID check.
+     * The poll clerk can only call the next voter if there is a voter in the polling station inside queue.
      */
     @Override
     public void callNextVoter() {
@@ -237,8 +226,6 @@ public class MPollStation implements IPollStation_ALL {
         
         try {
             internalQueue.signal(); 
-    
-            //pollclerk.setState(TPollClerk.PollClerkState.ID_CHECK);
         } finally {
             lockExternalFifo.unlock();
         }
@@ -282,8 +269,9 @@ public class MPollStation implements IPollStation_ALL {
     }
 
     /**
-     * The exitingPS method simulates the voter going to to the exit poll after voting.The repository updates the voter to show that he is in the exit poll.
-     * @param voterId
+     * The exitingPS method simulates the voter going to to the exit poll after voting.The repository updates the voter to show that he is in the exit poll and
+     * the number of voters inside the polling station is decremented.
+     * @param voterId the ID of the voter
      */
     @Override
     public void exitingPS(String voterId) throws InterruptedException {
@@ -291,9 +279,7 @@ public class MPollStation implements IPollStation_ALL {
 
         try{
           votersInside--;
-          
-          //voter.setState(TVoter.VoterState.EXIT_PS);
-          
+                    
           log.logExitPoll(voterId);
         
         } finally {
