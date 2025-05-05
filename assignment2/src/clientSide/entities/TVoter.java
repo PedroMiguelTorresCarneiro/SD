@@ -1,10 +1,15 @@
 package clientSide.entities;
 
-import Monitors.EvotingBooth.IEVotingBooth_TVoter;
-import Monitors.ExitPoll.IExitPoll_TVoter;
-import Monitors.IDCheck.IIDCheck_TVoter;
-import Monitors.PollStation.IPollStation_TVoter;
+import stubs.EvotingBooth.IEVotingBooth_TVoter;
+import stubs.ExitPoll.IExitPoll_TVoter;
+import stubs.IDCheck.IIDCheck_TVoter;
+import stubs.PollStation.IPollStation_TVoter;
 import java.util.Random;
+
+import clientSide.stubs.EvotingBooth.STEVotingBooth_TVoter;
+import clientSide.stubs.ExitPoll.STExitPoll_TVoter;
+import clientSide.stubs.IDCheck.STIDCheck_TVoter;
+import clientSide.stubs.PollStation.STPollStation_TVoter;
 
 /**
  * The TVoter class implements the Runnable interface and represents the life cycle of a voter in the election simulation.
@@ -118,7 +123,7 @@ public class TVoter implements Runnable {
      * @param booth       The voting booth shared region.
      * @param exitPoll    The exit poll shared region.
      */
-    private TVoter(String voterId, IPollStation_TVoter pollStation, IIDCheck_TVoter idCheck, IEVotingBooth_TVoter booth, IExitPoll_TVoter exitPoll) {
+    private TVoter(String voterId, STPollStation_TVoter pollStation, STIDCheck_TVoter idCheck, STEVotingBooth_TVoter booth, STExitPoll_TVoter exitPoll) {
         this.voterId = voterId;
         this.pollStation = pollStation;
         this.idCheck = idCheck;
@@ -136,7 +141,7 @@ public class TVoter implements Runnable {
      * @param exitPoll    The exit poll shared region.
      * @return A new TVoter object.
      */
-    public static Runnable getInstance(String voterId, IPollStation_TVoter pollStation, IIDCheck_TVoter idCheck, IEVotingBooth_TVoter booth, IExitPoll_TVoter exitPoll) {
+    public static Runnable getInstance(String voterId, STPollStation_TVoter pollStation, STIDCheck_TVoter idCheck, STEVotingBooth_TVoter booth, STExitPoll_TVoter exitPoll) {
         return new TVoter(voterId, pollStation, idCheck, booth, exitPoll);
     }
 

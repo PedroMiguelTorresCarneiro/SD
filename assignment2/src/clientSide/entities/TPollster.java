@@ -1,6 +1,7 @@
 package clientSide.entities;
 
-import Monitors.ExitPoll.IExitPoll_TPollster;
+import clientSide.stubs.ExitPoll.STExitPoll_TPollster;
+import stubs.ExitPoll.IExitPoll_TPollster;
 
 /**
  * The TPollster class implements the Runnable interface and represents the life cycle of a pollster in the election simulation.
@@ -53,7 +54,7 @@ public class TPollster implements Runnable {
      *
      * @param exitPoll The exit poll shared region.
      */
-    private TPollster(IExitPoll_TPollster exitPoll) {
+    private TPollster(STExitPoll_TPollster exitPoll) {
         this.exitPoll = exitPoll;
     }
 
@@ -64,7 +65,7 @@ public class TPollster implements Runnable {
      * @param exitPoll The exit poll shared region.
      * @return The unique instance of the TPollster class.
      */
-    public static Runnable getInstance(IExitPoll_TPollster exitPoll) {
+    public static Runnable getInstance(STExitPoll_TPollster exitPoll) {
         if (instance == null) {
             instance = new TPollster(exitPoll);
         }

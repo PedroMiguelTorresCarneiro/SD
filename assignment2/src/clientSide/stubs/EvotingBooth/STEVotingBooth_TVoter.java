@@ -1,4 +1,4 @@
-package Monitors.EvotingBooth;
+package stubs.EvotingBooth;
 
 /**
  * The IEVotingBooth_TVoter interface contains the methods that the evoting booth shared region
@@ -8,7 +8,7 @@ package Monitors.EvotingBooth;
  * @author Inês Águia
  * @author Pedro Carneiro   
  */
-public interface EVotingBooth_TVoter{
+public interface STEVotingBooth_TVoter{
     /**
      * The vote method is called by the voter to vote.
      * @param voterId the voter id.

@@ -1,11 +1,11 @@
-package Monitors.PollStation;
+package stubs.PollStation;
 
-import Monitors.Repository.MRepo;
+import stubs.Repository.MRepo;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-import Monitors.Repository.IRepo_PollStation;
+import stubs.Repository.IRepo_PollStation;
 
 /**
  * The MPollStation class implements the IPollStation_ALL interface and represents the polling station shared region.

@@ -1,4 +1,4 @@
-package Monitors.PollStation;
+package stubs.PollStation;
 
 /**
  * The IPollStation_TPollClerk interface contains the methods that the polling station shared region
@@ -8,7 +8,7 @@ package Monitors.PollStation;
  * @author Inês Águia
  * @author Pedro Carneiro
  */
-public interface IPollStation_TPollClerk {
+public interface STPollStation_TPollClerk {
     /**
      * The openPS method is called by the poll clerk to open the polling station.
      * 

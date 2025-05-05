@@ -1,35 +1,35 @@
 package Main;
 
-import Monitors.EvotingBooth.IEVotingBooth_ALL;
-import Monitors.EvotingBooth.IEVotingBooth_TPollClerk;
-import Monitors.EvotingBooth.IEVotingBooth_TVoter;
-import Monitors.EvotingBooth.MEvotingBooth;
+import stubs.EvotingBooth.IEVotingBooth_ALL;
+import stubs.EvotingBooth.IEVotingBooth_TPollClerk;
+import stubs.EvotingBooth.IEVotingBooth_TVoter;
+import stubs.EvotingBooth.MEvotingBooth;
 
-import Monitors.ExitPoll.IExitPoll_ALL;
-import Monitors.ExitPoll.IExitPoll_TPollClerk;
-import Monitors.ExitPoll.IExitPoll_TPollster;
-import Monitors.ExitPoll.IExitPoll_TVoter;
-import Monitors.ExitPoll.MExitPoll;
+import stubs.ExitPoll.IExitPoll_ALL;
+import stubs.ExitPoll.IExitPoll_TPollClerk;
+import stubs.ExitPoll.IExitPoll_TPollster;
+import stubs.ExitPoll.IExitPoll_TVoter;
+import stubs.ExitPoll.MExitPoll;
 
-import Monitors.IDCheck.IIDCheck_ALL;
-import Monitors.IDCheck.IIDCheck_TVoter;
-import Monitors.IDCheck.MIDCheck;
+import stubs.IDCheck.IIDCheck_ALL;
+import stubs.IDCheck.IIDCheck_TVoter;
+import stubs.IDCheck.MIDCheck;
 
-import Monitors.PollStation.IPollStation_ALL;
-import Monitors.PollStation.IPollStation_TPollClerk;
-import Monitors.PollStation.IPollStation_TVoter;
-import Monitors.PollStation.MPollStation;
+import stubs.PollStation.IPollStation_ALL;
+import stubs.PollStation.IPollStation_TPollClerk;
+import stubs.PollStation.IPollStation_TVoter;
+import stubs.PollStation.MPollStation;
 
 import Threads.TPollClerk;
 import Threads.TPollster;
 import Threads.TVoter;
 
-import Monitors.Repository.IRepo_ALL;
-import Monitors.Repository.IRepo_PollStation;
-import Monitors.Repository.IRepo_IDChek;
-import Monitors.Repository.IRepo_ExitPoll;
-import Monitors.Repository.IRepo_VotingBooth;
-import Monitors.Repository.MRepo;
+import stubs.Repository.IRepo_ALL;
+import stubs.Repository.IRepo_PollStation;
+import stubs.Repository.IRepo_IDChek;
+import stubs.Repository.IRepo_ExitPoll;
+import stubs.Repository.IRepo_VotingBooth;
+import stubs.Repository.MRepo;
 
 import javax.swing.SwingUtilities;
 

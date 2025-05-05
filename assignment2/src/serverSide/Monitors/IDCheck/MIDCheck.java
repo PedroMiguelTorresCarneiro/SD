@@ -1,4 +1,4 @@
-package Monitors.IDCheck;
+package stubs.IDCheck;
 
 import java.util.Random;
 import java.util.HashSet;
@@ -6,19 +6,19 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-import Monitors.Repository.IRepo_IDChek;
+import stubs.Repository.IRepo_IDChek;
 
 /**
  * The MIDCheck class implements the ID check shared region.
  * The ID check shared region is used by the voters to check their ID.
  * 
- * @see IIDCheck_ALL
+ * @see STIDCheck_ALL
  * 
  * @author David Palricas
  * @author Inês Águia
  * @author Pedro Carneiro
  */
-public class MIDCheck implements IIDCheck_ALL {
+public class MIDCheck implements STIDCheck_ALL {
     /**
      * The instance atributte represents the singleton instance of this class.   
      */
@@ -70,7 +70,7 @@ public class MIDCheck implements IIDCheck_ALL {
      * @param logs The repository shared region
      * @return The singleton instance of this class
      */
-    public static IIDCheck_ALL getInstance(IRepo_IDChek logs){
+    public static STIDCheck_ALL getInstance(IRepo_IDChek logs){
         if (instance == null) {
             instance = new MIDCheck(logs);
         }

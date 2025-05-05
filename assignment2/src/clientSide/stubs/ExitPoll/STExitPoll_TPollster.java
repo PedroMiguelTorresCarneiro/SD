@@ -1,11 +1,11 @@
-package Monitors.ExitPoll;
+package stubs.ExitPoll;
 
 /**
  * The IExitPoll_TPollster interface contains the methods that the exit poll shared region
  * should implement to interact with the pollster thread.
  */
 
-public interface IExitPoll_TPollster {
+public interface STExitPoll_TPollster {
     /**
      * The isOpen method is called by the pollster to check if the exit poll is open.
      * @return Boolean value that indicates if the exit poll is open.

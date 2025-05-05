@@ -1,11 +1,11 @@
-package Monitors.PollStation;
+package stubs.PollStation;
 
-import Monitors.Repository.MRepo;
+import stubs.Repository.MRepo;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-import Monitors.Repository.IRepo_PollStation;
+import stubs.Repository.IRepo_PollStation;
 
 /**
  * The MPollStation class implements the IPollStation_ALL interface and represents the polling station shared region.
@@ -15,14 +15,14 @@ import Monitors.Repository.IRepo_PollStation;
  * The voters interact with the polling station to enter and exit the polling station.
  * The polling station shared region is implemented using the monitor pattern.
  * 
- * @see IPollStation_ALL
+ * @see STPollStation_ALL
  * 
  * @author David Palricas
  * @author Inês Águia
  * @author Pedro Carneiro
  * 
  */
-public class MPollStation implements IPollStation_ALL {
+public class MPollStation implements STPollStation_ALL {
     /**
      * The instance attribute reprsents the singleton instance of the polling station shared region.
      */
@@ -131,7 +131,7 @@ public class MPollStation implements IPollStation_ALL {
      * @param logs the repository shared region
      * @return the singleton instance of the polling station shared region
      */
-    public static IPollStation_ALL getInstance(int capacidadeMax, IRepo_PollStation logs) {
+    public static STPollStation_ALL getInstance(int capacidadeMax, IRepo_PollStation logs) {
         if (instance == null) {
             instance =  new MPollStation(capacidadeMax, logs);
         }

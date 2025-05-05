@@ -1,9 +1,9 @@
 package Threads;
 
-import Monitors.EvotingBooth.IEVotingBooth_TVoter;
-import Monitors.ExitPoll.IExitPoll_TVoter;
-import Monitors.IDCheck.IIDCheck_TVoter;
-import Monitors.PollStation.IPollStation_TVoter;
+import stubs.EvotingBooth.IEVotingBooth_TVoter;
+import stubs.ExitPoll.IExitPoll_TVoter;
+import stubs.IDCheck.IIDCheck_TVoter;
+import stubs.PollStation.IPollStation_TVoter;
 import java.util.Random;
 
 /**

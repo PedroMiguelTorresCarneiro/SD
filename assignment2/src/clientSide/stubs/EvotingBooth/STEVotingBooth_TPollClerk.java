@@ -1,4 +1,4 @@
-package Monitors.EvotingBooth;
+package stubs.EvotingBooth;
 
 /**
  * The IEVotingBooth_TPollClerk interface contains the methods that the evoting booth shared region
@@ -8,7 +8,7 @@ package Monitors.EvotingBooth;
  * @author Inês Águia
  * @author Pedro Carneiro
  */
-public interface IEVotingBooth_TPollClerk {
+public interface STEVotingBooth_TPollClerk {
     /**
      * The gathering method is called by the poll clerk to gather all the votes.
      * @throws InterruptedException if the thread is interrupted.

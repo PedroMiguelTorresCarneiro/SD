@@ -1,8 +1,8 @@
 package clientSide.entities;
 
-import Monitors.EvotingBooth.IEVotingBooth_TPollClerk;
-import Monitors.ExitPoll.IExitPoll_TPollClerk;
-import Monitors.PollStation.IPollStation_TPollClerk;
+import stubs.EvotingBooth.IEVotingBooth_TPollClerk;
+import stubs.ExitPoll.IExitPoll_TPollClerk;
+import stubs.PollStation.IPollStation_TPollClerk;
 
 /**
  * The TPollClerk class implements the Runnable interface and represents the life cycle of a poll clerk in the election simulation.
@@ -94,7 +94,7 @@ public class TPollClerk implements Runnable {
      * @param exitPoll The exit poll shared region.
      * @param maxVotes The maximum number of votes required to trigger the end of the elections.
      */
-    private TPollClerk(IPollStation_TPollClerk pollStation, IEVotingBooth_TPollClerk booth, IExitPoll_TPollClerk exitPoll, int maxVotes) {
+    private TPollClerk(STPollStation_TPollClerk pollStation, STEVotingBooth_TPollClerk booth, STExitPoll_TPollClerk exitPoll, int maxVotes) {
         this.pollStation = pollStation;
         this.booth = booth;
         this.exitPoll = exitPoll;
@@ -110,7 +110,7 @@ public class TPollClerk implements Runnable {
      * @param maxVotes The maximum number of votes required to trigger the end of the elections.
      * @return The unique instance of the TPollClerk class.
      */
-    public static Runnable getInstance(IPollStation_TPollClerk pollStation, IEVotingBooth_TPollClerk booth, IExitPoll_TPollClerk exitPoll, int maxVotes) {
+    public static Runnable getInstance(STPollStation_TPollClerk pollStation, STEVotingBooth_TPollClerk booth, STExitPoll_TPollClerk exitPoll, int maxVotes) {
         if (instance == null) {
             instance = new TPollClerk(pollStation, booth, exitPoll, maxVotes);
         }

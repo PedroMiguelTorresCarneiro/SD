@@ -1,10 +1,10 @@
-package Monitors.ExitPoll;
+package stubs.ExitPoll;
 
 /**
  * The IExitPoll_TVoter interface contains the methods that the exit poll shared region
  * should implement to interact with the voter threads.
  */
-public interface IExitPoll_TVoter {
+public interface STExitPoll_TVoter {
     /**
      * The choosen method is called by the voter to see if he was choosed for the survey.
      * @return true if the voter was choosen for the survey, false otherwise.

@@ -1,4 +1,4 @@
-package Monitors.PollStation;
+package stubs.PollStation;
 
 /**
  * The IPollStation_TVoter interface contains the methods that the polling station shared region
@@ -9,7 +9,7 @@ package Monitors.PollStation;
  * @author Pedro Carneiro
  * 
  */
-public interface IPollStation_TVoter {
+public interface STPollStation_TVoter {
     /**
      * The isCLosedAfterElection method is called by the voter to check if the polling station is closed after the election.
      * 

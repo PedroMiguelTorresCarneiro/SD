@@ -1,4 +1,4 @@
-package Monitors.IDCheck;
+package stubs.IDCheck;
 
 /**
  * The IIDCheck_TVoter interface contains the methods that 
@@ -8,7 +8,7 @@ package Monitors.IDCheck;
  * @author Inês Águia
  * @author Pedro Carneiro
  */
-public interface IIDCheck_TVoter {
+public interface STIDCheck_TVoter {
     /**
      * The checkID method is called by the voter threads to check their ID.
      * @param voterId The ID of the voter.

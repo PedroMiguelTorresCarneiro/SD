@@ -1,4 +1,4 @@
-package Monitors.EvotingBooth;
+package stubs.EvotingBooth;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,20 +6,20 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-import Monitors.Repository.IRepo_VotingBooth;
+import stubs.Repository.IRepo_VotingBooth;
 
 /**
  * The MEvotingBooth class implements the IEVotingBooth_ALL interface and represents the evoting booth shared region.
  * The evooting booth shared region is responsible for the voter to vote and 
  * the poll clerk to gather and count all the votes and also publish the election results.
  * 
- * @see IEVotingBooth_ALL
+ * @see STEVotingBooth_ALL
  * 
  * @author David Palricas
  * @author Inês Águia
  * @author Pedro Carneiro
  */
-public class MEvotingBooth implements IEVotingBooth_ALL{
+public class MEvotingBooth implements STEVotingBooth_ALL{
     /**
      * The instance atributte represents the singleton instance of the MEvotingBooth.
      */
@@ -91,7 +91,7 @@ public class MEvotingBooth implements IEVotingBooth_ALL{
      * @param logs repository of the voting booth.
      * @return instance of MEvotingBooth.
      */
-    public static IEVotingBooth_ALL getInstance(IRepo_VotingBooth logs) {
+    public static STEVotingBooth_ALL getInstance(IRepo_VotingBooth logs) {
         if (instance == null) {
             instance = new MEvotingBooth(logs);
         }

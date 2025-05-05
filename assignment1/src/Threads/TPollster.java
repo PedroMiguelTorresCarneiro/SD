@@ -1,6 +1,6 @@
 package Threads;
 
-import Monitors.ExitPoll.IExitPoll_TPollster;
+import stubs.ExitPoll.IExitPoll_TPollster;
 
 /**
  * The TPollster class implements the Runnable interface and represents the life cycle of a pollster in the election simulation.

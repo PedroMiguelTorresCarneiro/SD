@@ -1,24 +1,24 @@
-package Monitors.ExitPoll;
+package stubs.ExitPoll;
 
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-import Monitors.Repository.IRepo_ExitPoll;
+import stubs.Repository.IRepo_ExitPoll;
 
 /**
  * The MExitPoll class implements the IExitPoll_ALL interface and represents the Exit Poll shared region.
  * The exit poll shared region is responsible for simulating the surveys lead by the pollster, and the voters' answers.
  * and also for the clerk publishing the results of the survey.   
  * 
- * @see IExitPoll_ALL
+ * @see STExitPoll_ALL
  * 
  * @author David Palricas
  * @author Inês Águia
  * @author Pedro Carneiro
  */
-public class MExitPoll implements IExitPoll_ALL {
+public class MExitPoll implements STExitPoll_ALL {
 
     /**
      * The instance atributte represents the singleton instance of this class.
@@ -100,7 +100,7 @@ public class MExitPoll implements IExitPoll_ALL {
      * @param logs The repository shared region
      * @return The singleton instance of this class
      */
-    public static IExitPoll_ALL getInstance(IRepo_ExitPoll logs) {
+    public static STExitPoll_ALL getInstance(IRepo_ExitPoll logs) {
         if (instance == null) {
             instance = new MExitPoll(logs);
         }

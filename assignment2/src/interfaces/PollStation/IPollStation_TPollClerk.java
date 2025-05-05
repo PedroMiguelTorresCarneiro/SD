@@ -1,4 +1,4 @@
-package Monitors.PollStation;
+package stubs.PollStation;
 
 /**
  * The IPollStation_TPollClerk interface contains the methods that the polling station shared region
