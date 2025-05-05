@@ -241,7 +241,7 @@ public class TVoter implements Runnable {
      *
      * @param state The new state of the voter.
      */
-    public void setState(VoterState state) {
+    private void setState(VoterState state) {
         this.state = state;
     }
 
@@ -271,14 +271,4 @@ public class TVoter implements Runnable {
 
         voterId = newId;
     }
-
-    /**
-     * The getID method returns the voter's current ID.
-     *
-     * @return The voter's ID.
-     */
-    public String getID() {
-        return voterId;
-    }
-
 }

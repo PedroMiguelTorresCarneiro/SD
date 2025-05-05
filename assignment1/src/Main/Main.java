@@ -114,6 +114,7 @@ public class Main {
 
             pollClerk.join();
             pollster.join();
+            
             for (Thread v : voters) {
                 v.join();
             }
@@ -125,39 +126,10 @@ public class Main {
             MIDCheck.resetInstance();
             MEvotingBooth.resetInstance();
             MExitPoll.resetInstance();
-            
-            
-            System.out.println("✅ Reseted all instances!!!!\n");
-
-            //endSimulation();
-
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
             gui.setStartButtonEnabled(true); // Re-enable button after simulation
         }
-    }
-
-    /**
-     * The endSimulation method is responsible for performing final actions after the simulation ends.
-     * It displays a countdown message on the terminal before releasing the interface for another simulation.
-     * The GUI is not closed to allow new simulation rounds.
-     */
-    private static void endSimulation() {
-        System.out.println("Program will terminate in 10 seconds...");
-
-        for (int i = 10; i > 0; i--) {
-            System.out.println(i + "...");
-            try {
-                Thread.sleep(1000); // Pause for 1 second
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        System.out.println("Simulation ended. Ready to run again!");
-
-        // GUI remains open for subsequent simulation runs
-        // gui.dispose(); ← removed
     }
 }

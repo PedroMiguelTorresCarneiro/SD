@@ -112,11 +112,15 @@ public class TPollster implements Runnable {
      *
      * @param state The new state of the pollster.
      */
-    public void setState(PollsterState state) {
+    private void setState(PollsterState state) {
         this.state = state;
     }
     
-    public static void resetInstance(){
+      /**
+     * The resetInstance method resets the instance of the TPollClerk class to null.
+     * So this thread can be reused in the next election.
+     */
+    private static void resetInstance(){
         instance = null;
     }
 }

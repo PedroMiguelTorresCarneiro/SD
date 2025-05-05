@@ -195,21 +195,15 @@ public class TPollClerk implements Runnable {
      *
      * @param state The new state of the poll clerk.
      */
-    public void setState(PollClerkState state) {
+    private void setState(PollClerkState state) {
         this.state = state;
     }
 
     /**
-     * The getClerkState method returns the current state of the poll clerk.
-     * This method is useful for monitoring the poll clerk's progress during the simulation.
-     *
-     * @return The current state of the poll clerk.
+     * The resetInstance method resets the instance of the TPollClerk class to null.
+     * So this thread can be reused in the next election.
      */
-    public PollClerkState getClerkState() {
-        return state;
-    }
-    
-    public static void resetInstance(){
+    private static void resetInstance(){
         instance = null;
     }
 }
