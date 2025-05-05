@@ -18,7 +18,7 @@ public interface IExitPoll_TVoter {
      * @param voterId The ID of the voter
      * @throws InterruptedException if the thread is interrupted
      */
-    void callForSurvey(Character vote, String voterId) throws InterruptedException;
+    void callForSurvey(char vote, String voterId) throws InterruptedException;
     
     /**
      * The isOpen method is called by the voter to see if the exit poll is open.

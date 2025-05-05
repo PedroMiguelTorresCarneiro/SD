@@ -21,5 +21,5 @@ public interface IEVotingBooth_TVoter{
     * @param voterId the voter id.
     * @return the vote of the voter.
     */
-    Character getVote(String voterId);
+    char getVote(String voterId);
 }

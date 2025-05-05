@@ -168,7 +168,7 @@ public class MEvotingBooth implements IEVotingBooth_ALL{
      * @return the vote of the voter.
      */
     @Override
-    public Character getVote(String voterId) {
+    public char getVote(String voterId) {
         lockGettingVote.lock();
         
         try{

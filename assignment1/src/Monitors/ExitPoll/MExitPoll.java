@@ -227,7 +227,7 @@ public class MExitPoll implements IExitPoll_ALL {
      * @param voterId The ID of the voter
      */
     @Override
-    public void callForSurvey(Character vote, String voterId) throws InterruptedException{
+    public void callForSurvey(char vote, String voterId) throws InterruptedException{
         lockVoterAnswer.lock();
 
         try{
