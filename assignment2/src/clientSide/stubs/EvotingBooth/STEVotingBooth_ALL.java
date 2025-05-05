@@ -1,4 +1,4 @@
-package stubs.EvotingBooth;
+package clientSide.stubs.EvotingBooth;
 
 /**
  * The interface IEVotingBooth_ALL contains the methods that the evoting booth shared region
@@ -13,6 +13,6 @@ package stubs.EvotingBooth;
  * @author Inês Águia
  * @author Pedro Carneiro
  */
-public interface STEVotingBooth_ALL extends IEVotingBooth_TVoter, STEVotingBooth_TPollClerk{
+public interface STEVotingBooth_ALL extends STEVotingBooth_TVoter, STEVotingBooth_TPollClerk{
     
 }

@@ -1,4 +1,4 @@
-package stubs.IDCheck;
+package clientSide.stubs.IDCheck;
 
 /**
  * The IIDCheck_TVoter interface contains the methods that 

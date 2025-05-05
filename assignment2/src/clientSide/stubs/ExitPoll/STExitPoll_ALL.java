@@ -1,4 +1,4 @@
-package stubs.ExitPoll;
+package clientSide.stubs.ExitPoll;
 
 /**
  * The IExitPoll_ALL interface contains the methods that the exit poll shared region

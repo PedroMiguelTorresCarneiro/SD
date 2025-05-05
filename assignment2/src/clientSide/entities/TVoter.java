@@ -1,15 +1,10 @@
 package clientSide.entities;
 
-import stubs.EvotingBooth.IEVotingBooth_TVoter;
-import stubs.ExitPoll.IExitPoll_TVoter;
-import stubs.IDCheck.IIDCheck_TVoter;
-import stubs.PollStation.IPollStation_TVoter;
-import java.util.Random;
-
 import clientSide.stubs.EvotingBooth.STEVotingBooth_TVoter;
 import clientSide.stubs.ExitPoll.STExitPoll_TVoter;
 import clientSide.stubs.IDCheck.STIDCheck_TVoter;
 import clientSide.stubs.PollStation.STPollStation_TVoter;
+import java.util.Random;
 
 /**
  * The TVoter class implements the Runnable interface and represents the life cycle of a voter in the election simulation.
@@ -27,25 +22,25 @@ public class TVoter implements Runnable {
      * The pollStation attribute stores a reference to the polling station shared region.
      * This is the interface that the voter uses to interact with the polling station.
      */
-    private final IPollStation_TVoter pollStation;
+    private final STPollStation_TVoter pollStation;
 
     /**
      * The booth attribute stores a reference to the voting booth shared region.
      * This is the interface that the voter uses to interact with the voting booth.
      */
-    private final IEVotingBooth_TVoter booth;
+    private final STEVotingBooth_TVoter booth;
 
     /**
      * The idCheck attribute stores a reference to the ID check shared region.
      * This is the interface that the voter uses to interact with the ID check.
      */
-    private final IIDCheck_TVoter idCheck;
+    private final STIDCheck_TVoter idCheck;
 
     /**
      * The exitPoll attribute stores a reference to the exit poll shared region.
      * This is the interface that the voter uses to interact with the exit poll.
      */
-    private final IExitPoll_TVoter exitPoll;
+    private final STExitPoll_TVoter exitPoll;
 
     /**
      * The state attribute stores the current state of the voter.

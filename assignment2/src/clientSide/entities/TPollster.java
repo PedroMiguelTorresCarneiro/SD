@@ -1,7 +1,6 @@
 package clientSide.entities;
 
 import clientSide.stubs.ExitPoll.STExitPoll_TPollster;
-import stubs.ExitPoll.IExitPoll_TPollster;
 
 /**
  * The TPollster class implements the Runnable interface and represents the life cycle of a pollster in the election simulation.
@@ -21,7 +20,7 @@ public class TPollster implements Runnable {
      * The exitPoll attribute stores a reference to the exit poll shared region.
      * This is the interface that the pollster uses to interact with the exit poll.
      */
-    private final IExitPoll_TPollster exitPoll;
+    private final STExitPoll_TPollster exitPoll;
 
     /**
      * The instance attribute stores the unique instance of the TPollster class.

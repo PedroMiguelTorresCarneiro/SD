@@ -1,4 +1,4 @@
-package stubs.IDCheck;
+package clientSide.stubs.IDCheck;
 
 /**
  * The IIDCheck_ALL interface contains the methods that an ID check should implement to interact with the voters threads.

@@ -1,4 +1,4 @@
-package stubs.PollStation;
+package clientSide.stubs.PollStation;
 
 /**
  * The IPollStation_ALL interface contains the methods that the  polling station shared region

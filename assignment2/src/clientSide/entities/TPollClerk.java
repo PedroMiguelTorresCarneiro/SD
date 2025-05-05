@@ -1,8 +1,8 @@
 package clientSide.entities;
 
-import stubs.EvotingBooth.IEVotingBooth_TPollClerk;
-import stubs.ExitPoll.IExitPoll_TPollClerk;
-import stubs.PollStation.IPollStation_TPollClerk;
+import clientSide.stubs.EvotingBooth.STEVotingBooth_TPollClerk;
+import clientSide.stubs.ExitPoll.STExitPoll_TPollClerk;
+import clientSide.stubs.PollStation.STPollStation_TPollClerk;
 
 /**
  * The TPollClerk class implements the Runnable interface and represents the life cycle of a poll clerk in the election simulation.
@@ -21,19 +21,19 @@ public class TPollClerk implements Runnable {
      * The pollStation attribute stores a reference to the polling station shared region.
      * This is the interface that the poll clerk uses to interact with the polling station.
      */
-    private final IPollStation_TPollClerk pollStation;
+    private final STPollStation_TPollClerk pollStation;
 
     /**
      * The booth attribute stores a reference to the voting booth shared region.
      * This is the interface that the poll clerk uses to interact with the voting booth.
      */
-    private final IEVotingBooth_TPollClerk booth;
+    private final STEVotingBooth_TPollClerk booth;
 
     /**
      * The exitPoll attribute stores a reference to the exit poll shared region.
      * This is the interface that the poll clerk uses to interact with the exit poll.
      */
-    private final IExitPoll_TPollClerk exitPoll;
+    private final STExitPoll_TPollClerk exitPoll;
 
     /**
      * The instance attribute stores the unique instance of the TPollClerk class.

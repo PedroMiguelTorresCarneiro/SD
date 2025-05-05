@@ -1,4 +1,4 @@
-package stubs.ExitPoll;
+package clientSide.stubs.ExitPoll;
 /**
  * The IExitPoll_TPollClerk interface contains the methods that the exit poll shared region
  * should implement to interact with the poll clerk thread.
