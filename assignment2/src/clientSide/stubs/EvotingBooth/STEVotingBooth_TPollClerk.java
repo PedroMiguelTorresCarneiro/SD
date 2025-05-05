@@ -18,7 +18,7 @@ public class STEVotingBooth_TPollClerk extends Stub {
         super(host, port);
     }
 
-    public STEVotingBooth_TPollClerk getInstance(String host, int port){
+    public static STEVotingBooth_TPollClerk getInstance(String host, int port){
         if (instance == null) {
             instance = new STEVotingBooth_TPollClerk(host, port);
         }

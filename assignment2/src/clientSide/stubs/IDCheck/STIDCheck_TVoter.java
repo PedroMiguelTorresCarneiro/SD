@@ -18,7 +18,7 @@ public class STIDCheck_TVoter extends Stub {
         super(host, port);
     }
 
-    public STIDCheck_TVoter getInstance(String host, int port){
+    public static STIDCheck_TVoter getInstance(String host, int port){
         if (instance == null) {
             instance = new STIDCheck_TVoter(host, port);
         }
