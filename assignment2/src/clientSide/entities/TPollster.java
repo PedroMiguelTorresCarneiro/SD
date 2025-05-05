@@ -15,7 +15,7 @@ import Monitors.ExitPoll.IExitPoll_TPollster;
  * @author Inês Águia
  * @author Pedro Carneiro
  */
-public class TPollster implements Runnable, TPollsterCloning {
+public class TPollster implements Runnable {
     /**
      * The exitPoll attribute stores a reference to the exit poll shared region.
      * This is the interface that the pollster uses to interact with the exit poll.

@@ -17,7 +17,7 @@ import java.util.Random;
  * @author Inês Águia
  * @author Pedro Carneiro
  */
-public class TVoter implements Runnable, TVoterCloning  {
+public class TVoter implements Runnable {
     /**
      * The pollStation attribute stores a reference to the polling station shared region.
      * This is the interface that the voter uses to interact with the polling station.

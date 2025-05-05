@@ -15,7 +15,7 @@ import Monitors.PollStation.IPollStation_TPollClerk;
  * @author Inês Águia
  * @author Pedro Carneiro
  */
-public class TPollClerk implements Runnable, TPollClerkCloning {
+public class TPollClerk implements Runnable {
 
     /**
      * The pollStation attribute stores a reference to the polling station shared region.
