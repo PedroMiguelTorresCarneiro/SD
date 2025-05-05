@@ -116,8 +116,8 @@ public class TPollster implements Runnable {
         this.state = state;
     }
     
-      /**
-     * The resetInstance method resets the instance of the TPollClerk class to null.
+    /**
+     * The resetInstance method resets the instance of the TPollSter class to null.
      * So this thread can be reused in the next election.
      */
     private static void resetInstance(){

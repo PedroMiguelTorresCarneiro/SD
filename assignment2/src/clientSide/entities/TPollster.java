@@ -117,9 +117,8 @@ public class TPollster implements Runnable {
     }
     
     /**
-     * The getState method returns the current state of the pollster.
-     *
-     * @return The current state of the pollster.
+     * The resetInstance method resets the instance of the TPollSter class to null.
+     * So this thread can be reused in the next election.
      */
     private static void resetInstance(){
         instance = null;
