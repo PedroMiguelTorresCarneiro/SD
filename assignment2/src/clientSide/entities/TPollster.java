@@ -15,7 +15,7 @@ import Monitors.ExitPoll.IExitPoll_TPollster;
  * @author Inês Águia
  * @author Pedro Carneiro
  */
-public class TPollster implements Runnable {
+public class TPollster implements Runnable, TPollsterCloning {
     /**
      * The exitPoll attribute stores a reference to the exit poll shared region.
      * This is the interface that the pollster uses to interact with the exit poll.
@@ -112,11 +112,16 @@ public class TPollster implements Runnable {
      *
      * @param state The new state of the pollster.
      */
-    public void setState(PollsterState state) {
+    private void setState(PollsterState state) {
         this.state = state;
     }
     
-    public static void resetInstance(){
+    /**
+     * The getState method returns the current state of the pollster.
+     *
+     * @return The current state of the pollster.
+     */
+    private static void resetInstance(){
         instance = null;
     }
 }

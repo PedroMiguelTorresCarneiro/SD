@@ -15,7 +15,7 @@ import Monitors.PollStation.IPollStation_TPollClerk;
  * @author Inês Águia
  * @author Pedro Carneiro
  */
-public class TPollClerk implements Runnable {
+public class TPollClerk implements Runnable, TPollClerkCloning {
 
     /**
      * The pollStation attribute stores a reference to the polling station shared region.
@@ -195,21 +195,16 @@ public class TPollClerk implements Runnable {
      *
      * @param state The new state of the poll clerk.
      */
-    public void setState(PollClerkState state) {
+    private void setState(PollClerkState state) {
         this.state = state;
     }
 
     /**
-     * The getClerkState method returns the current state of the poll clerk.
-     * This method is useful for monitoring the poll clerk's progress during the simulation.
+     * The getState method returns the current state of the poll clerk.
      *
      * @return The current state of the poll clerk.
      */
-    public PollClerkState getClerkState() {
-        return state;
-    }
-    
-    public static void resetInstance(){
+    private static void resetInstance(){
         instance = null;
     }
 }
