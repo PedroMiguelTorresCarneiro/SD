@@ -1,8 +1,5 @@
 package clientSide.stubs.PollStation;
 import clientSide.stubs.Stub;
-
-import commInfra.ClientCom;
-import commInfra.Message;
 import commInfra.MessageType;
 
 /**
@@ -34,69 +31,21 @@ public class STPollStation_TPollClerk extends Stub {
      * @throws InterruptedException The exception thrown when a thread is waiting, sleeping, or otherwise occupied, and the thread is interrupted, either before or during the activity.
      */
     public void openPS() throws InterruptedException{
-        ClientCom com;                                                 
-        Message outMessage; 
-
-        com = new ClientCom(serverHost, serverPort);
-        /* 
-            logic to handle the connection to the server
-            and the response from the server
-        */
-
-        outMessage = new Message(MessageType.OPEN_PS);
-        
-        com.writeObject(outMessage);
-        /* 
-            logic to handle the response from the server
-        */
-
-        com.close();
+        sendMessage(MessageType.OPEN_PS);
     };
 
     /**
      * The callNextVoter method is called by the poll clerk to call the next voter in the polling station inside queue.
      */
     public void callNextVoter(){
-        ClientCom com;                                                 
-        Message outMessage; 
-
-        com = new ClientCom(serverHost, serverPort);
-        /* 
-            logic to handle the connection to the server
-            and the response from the server
-        */
-
-        outMessage = new Message(MessageType.CALL_NEXT_VOTER);
-        
-        com.writeObject(outMessage);
-        /* 
-            logic to handle the response from the server
-        */
-
-        com.close();
+        sendMessage(MessageType.CALL_NEXT_VOTER);
     }
 
     /**
      * The closePS method is called by the poll clerk to close the polling station.
      */
     public void closePS(){
-        ClientCom com;                                                 
-        Message outMessage; 
-
-        com = new ClientCom(serverHost, serverPort);
-        /* 
-            logic to handle the connection to the server
-            and the response from the server
-        */
-
-        outMessage = new Message(MessageType.CLOSE_PS);
-        
-        com.writeObject(outMessage);
-        /* 
-            logic to handle the response from the server
-        */
-
-        com.close();
+        sendMessage(MessageType.CLOSE_PS);
     };
 
     /**
@@ -105,79 +54,11 @@ public class STPollStation_TPollClerk extends Stub {
      * @return boolean The boolean that indicates if the polling station inside queue is empty.
      */
     public boolean isEmpty(){
-        ClientCom com;                                                 
-        Message outMessage, inMessage; 
-
-        com = new ClientCom(serverHost, serverPort);
-        /* 
-            logic to handle the connection to the server
-            and the response from the server
-        */
-
-        outMessage = new Message(MessageType.PS_IS_EMPTY);
-        
-        com.writeObject(outMessage);
-        inMessage = (Message) com.readObject();
-        /* 
-            logic to handle the response from the server
-        */
-
-        com.close();
-
-        return inMessage.getBooleanValue();
+        return boolComm(MessageType.PS_IS_EMPTY);
     };
 
-    /**
-     * The maxVotes method is called by the poll clerk to check if the maximum number of votes has been reached.
-     * 
-     * @param maxVotes The maximum number of votes.
-     * @param maxVoters The maximum number of voters.
-     * @return boolean The boolean that indicates if the maximum number of votes has been reached.
-     */
-    public boolean maxVotes(int maxVotes, int maxVoters) {
-        ClientCom com;                                                 
-        Message outMessage, inMessage; 
-
-        com = new ClientCom(serverHost, serverPort);
-        /* 
-            logic to handle the connection to the server
-            and the response from the server
-        */
-
-        outMessage = new Message(MessageType.MAX_VOTES);
         
-        com.writeObject(outMessage);
-        inMessage = (Message) com.readObject();
-        /* 
-            logic to handle the response from the server
-        */
-
-        com.close();
-
-        return inMessage.getBooleanValue();
-    };
-    
-    
     public boolean isPSclosedAfter(){
-        ClientCom com;                                                 
-        Message outMessage, inMessage; 
-
-        com = new ClientCom(serverHost, serverPort);
-        /* 
-            logic to handle the connection to the server
-            and the response from the server
-        */
-
-        outMessage = new Message(MessageType.PS_IS_CLOSED);
-        
-        com.writeObject(outMessage);
-        inMessage = (Message) com.readObject();
-        /* 
-            logic to handle the response from the server
-        */
-
-        com.close();
-
-        return inMessage.getBooleanValue();
+        return boolComm(MessageType.PS_IS_CLOSED_AFTER);
     };
 }

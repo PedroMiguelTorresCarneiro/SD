@@ -1,8 +1,5 @@
 package clientSide.stubs.PollStation;
 import clientSide.stubs.Stub;
-
-import commInfra.ClientCom;
-import commInfra.Message;
 import commInfra.MessageType;
 
 /**
@@ -35,27 +32,8 @@ public class STPollStation_TVoter extends Stub {
      * @return Boolean The Boolean that indicates if the polling station is closed after the election.
      */
     public boolean isCLosedAfterElection(){
-        ClientCom com;                                                 
-        Message outMessage, inMessage; 
-
-        com = new ClientCom(serverHost, serverPort);
-        /* 
-            logic to handle the connection to the server
-            and the response from the server
-        */
-
-        outMessage = new Message(MessageType.PS_IS_CLOSED);
-        
-        com.writeObject(outMessage);
-        inMessage = (Message) com.readObject();
-        /* 
-            logic to handle the response from the server
-        */
-
-        com.close();
-
-        return inMessage.getBooleanValue();
-    };
+        return boolComm(MessageType.PS_IS_CLOSED_AFTER);
+    }
 
     /**
      * The canEnterPS method is called by the voter to try to enter in the polling station.
@@ -66,27 +44,8 @@ public class STPollStation_TVoter extends Stub {
      * 
      */
     public boolean canEnterPS(String voterId) throws InterruptedException{
-        ClientCom com;                                                 
-        Message outMessage, inMessage; 
-
-        com = new ClientCom(serverHost, serverPort);
-        /* 
-            logic to handle the connection to the server
-            and the response from the server
-        */
-
-        outMessage = new Message(MessageType.CAN_ENTER_PS);
-        
-        com.writeObject(outMessage);
-        inMessage = (Message) com.readObject();
-        /* 
-            logic to handle the response from the server
-        */
-
-        com.close();
-
-        return inMessage.getBooleanValue();
-    };
+        return boolComm(MessageType.CAN_ENTER_PS, voterId);
+    }
 
     /**
      * The exitingPS method is called by the voter to exit the polling station.
@@ -94,22 +53,6 @@ public class STPollStation_TVoter extends Stub {
      * @throws InterruptedException The exception thrown when a thread is waiting, sleeping, or otherwise occupied, and the thread is interrupted, either before or during the activity.
      */
     public void exitingPS(String voterId) throws InterruptedException{
-        ClientCom com;                                                 
-        Message outMessage; 
-
-        com = new ClientCom(serverHost, serverPort);
-        /* 
-            logic to handle the connection to the server
-            and the response from the server
-        */
-
-        outMessage = new Message(MessageType.EXITING_PS);
-        
-        com.writeObject(outMessage);
-        /* 
-            logic to handle the response from the server
-        */
-
-        com.close();
-    };
+        sendMessage(MessageType.EXITING_PS, voterId);
+    }
 }

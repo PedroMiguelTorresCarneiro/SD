@@ -1,8 +1,6 @@
 package clientSide.stubs.ExitPoll;
 
 import clientSide.stubs.Stub;
-import commInfra.ClientCom;
-import commInfra.Message;
 import commInfra.MessageType;
 
 
@@ -30,24 +28,6 @@ public class STExitPoll_TPollClerk extends Stub{
      * The close method is called by the poll clerk to close the exit poll.
      */
     public void close(){
-        ClientCom com;                                                 
-        Message outMessage; 
-
-        com = new ClientCom(serverHost, serverPort);
-        /* 
-            logic to handle the connection to the server
-            and the response from the server
-        */
-
-        outMessage = new Message(MessageType.CLOSE_PS);
-        
-        com.writeObject(outMessage);
-
-        /* 
-            logic to handle the response from the server
-        */
-
-        com.close();
-
-    };
+        sendMessage(MessageType.CLOSE_PS);
+    }
 }

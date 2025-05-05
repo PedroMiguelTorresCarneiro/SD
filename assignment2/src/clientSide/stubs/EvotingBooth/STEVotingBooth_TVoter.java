@@ -1,9 +1,6 @@
 package clientSide.stubs.EvotingBooth;
 
 import clientSide.stubs.Stub;
-
-import commInfra.ClientCom;
-import commInfra.Message;
 import commInfra.MessageType;
 
 /**
@@ -34,23 +31,7 @@ public class STEVotingBooth_TVoter extends Stub{
      * @throws InterruptedException if the thread is interrupted.
      */
     public void vote(String voterId) throws InterruptedException{
-        ClientCom com;                                                 
-        Message outMessage; 
-        
-        com = new ClientCom(serverHost, serverPort);
-        /* 
-            logic to handle the connection to the server
-            and the response from the server
-        */
-
-        outMessage = new Message(MessageType.VOTE);
-        
-        com.writeObject(outMessage);
-        /* 
-            logic to handle the response from the server
-        */
-
-        com.close();
+        sendMessage(MessageType.VOTE, voterId);
     };
 
    /**
@@ -59,25 +40,6 @@ public class STEVotingBooth_TVoter extends Stub{
     * @return the vote of the voter.
     */
     public Character getVote(String voterId){
-        ClientCom com;                                                 
-        Message outMessage, inMessage; 
-        
-        com = new ClientCom(serverHost, serverPort);
-        /* 
-            logic to handle the connection to the server
-            and the response from the server
-        */
-
-        outMessage = new Message(MessageType.GET_VOTE);
-        
-        com.writeObject(outMessage);
-        inMessage = (Message) com.readObject();
-        /* 
-            logic to handle the response from the server
-        */
-
-        com.close();
-        
-        return inMessage.getVote();
+        return charComm(MessageType.GET_VOTE, voterId);
     };
 }

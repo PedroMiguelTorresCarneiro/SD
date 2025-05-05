@@ -1,8 +1,5 @@
 package clientSide.stubs.EvotingBooth;
 import clientSide.stubs.Stub;
-
-import commInfra.ClientCom;
-import commInfra.Message;
 import commInfra.MessageType;
 
 
@@ -34,74 +31,21 @@ public class STEVotingBooth_TPollClerk extends Stub {
      * @throws InterruptedException if the thread is interrupted.
      */
     public void gathering() throws InterruptedException{
-        ClientCom com;                                                 
-        Message outMessage; 
-
-        com = new ClientCom(serverHost, serverPort);
-        /*
-            logic to handle the connection to the server
-            and the response from the server
-        */
-
-        outMessage = new Message(MessageType.GATHERING_VOTES);
-        
-        com.writeObject(outMessage);
-        /*
-            logic to handle the response from the server
-        */
-
-        com.close();
-    };
+        sendMessage(MessageType.GATHERING_VOTES);
+    }
     
     /**
      * The publishElectionResults method is called by the poll clerk to publish the election results.
      */
     public void publishElectionResults(){
-        ClientCom com;                                                 
-        Message outMessage; 
-
-        com = new ClientCom(serverHost, serverPort);
-        /*
-            logic to handle the connection to the server
-            and the response from the server
-        */
-
-        outMessage = new Message(MessageType.PUBLISH_ELECTION_RESULTS);
-        
-        com.writeObject(outMessage);
-        /*
-            logic to handle the response from the server
-        */
-
-        com.close();
-
-    };
+        sendMessage(MessageType.PUBLISH_ELECTION_RESULTS);
+    }
     
     /**
      * The getVotesCount method is called by the poll clerk to get the number of voters.
      * @return the number of voters that have voted.
      */
     public int getVotesCount(){
-        ClientCom com;                                                 
-        Message outMessage, inMessage; 
-
-        com = new ClientCom(serverHost, serverPort);
-        /*
-            logic to handle the connection to the server
-            and the response from the server
-        */
-
-        outMessage = new Message(MessageType.GET_VOTES_COUNT);
-        
-        com.writeObject(outMessage);
-        inMessage = (Message) com.readObject();
-        /*
-            logic to handle the response from the server
-        */
-
-        com.close();
-
-        return inMessage.getVotesCount();
-
-    };
+        return intComm(MessageType.GET_VOTES_COUNT);
+    }
 }

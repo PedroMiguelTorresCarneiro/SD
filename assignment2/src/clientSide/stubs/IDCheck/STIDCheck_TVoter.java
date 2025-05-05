@@ -1,8 +1,6 @@
 package clientSide.stubs.IDCheck;
 
 import clientSide.stubs.Stub;
-import commInfra.ClientCom;
-import commInfra.Message;
 import commInfra.MessageType;
 
 /**
@@ -35,25 +33,6 @@ public class STIDCheck_TVoter extends Stub {
      * @throws InterruptedException Throws an InterruptedException if an error occurs.
      */
     public boolean checkID(String voterId) throws InterruptedException{
-        ClientCom com;                                                 
-        Message outMessage, inMessage; 
-
-        com = new ClientCom(serverHost, serverPort);
-        /* 
-            logic to handle the connection to the server
-            and the response from the server
-        */
-
-        outMessage = new Message(MessageType.CHECK_ID);
-        
-        com.writeObject(outMessage);
-        inMessage = (Message) com.readObject();
-        /* 
-            logic to handle the response from the server
-        */
-
-        com.close();
-        
-        return inMessage.getVoterIdCheckResult();
-    };
+        return boolComm(MessageType.CHECK_ID, voterId);
+    }
 }
