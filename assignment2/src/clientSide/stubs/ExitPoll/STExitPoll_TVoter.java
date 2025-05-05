@@ -1,6 +1,9 @@
 package clientSide.stubs.ExitPoll;
 
 import clientSide.stubs.Stub;
+import commInfra.ClientCom;
+import commInfra.Message;
+import commInfra.MessageType;
 
 /**
  * The IExitPoll_TVoter interface contains the methods that the exit poll shared region
@@ -36,7 +39,7 @@ public class STExitPoll_TVoter extends Stub{
             and the response from the server
         */
 
-        outMessage = new Message(MessageType.CHOOSEN, null);
+        outMessage = new Message(MessageType.VOTER_CHOOSEN);
         
         com.writeObject(outMessage);
         inMessage = (Message) com.readObject();
@@ -57,7 +60,7 @@ public class STExitPoll_TVoter extends Stub{
      */
     public void callForSurvey(Character vote, String voterId) throws InterruptedException{
         ClientCom com;                                                 
-        Message outMessage, inMessage; 
+        Message outMessage; 
 
         com = new ClientCom(serverHost, serverPort);
         /* 
@@ -65,10 +68,9 @@ public class STExitPoll_TVoter extends Stub{
             and the response from the server
         */
 
-        outMessage = new Message(MessageType.CALLFORSURVEY, new Object[]{vote, voterId});
+        outMessage = new Message(MessageType.CALLFORSURVEY);
         
         com.writeObject(outMessage);
-        inMessage = (Message) com.readObject();
         /* 
             logic to handle the response from the server
         */
@@ -90,7 +92,7 @@ public class STExitPoll_TVoter extends Stub{
             and the response from the server
         */
 
-        outMessage = new Message(MessageType.ISOPEN, null);
+        outMessage = new Message(MessageType.EP_ISOPEN);
         
         com.writeObject(outMessage);
         inMessage = (Message) com.readObject();

@@ -1,6 +1,10 @@
 package clientSide.stubs.PollStation;
 import clientSide.stubs.Stub;
 
+import commInfra.ClientCom;
+import commInfra.Message;
+import commInfra.MessageType;
+
 /**
  * The IPollStation_TPollClerk interface contains the methods that the polling station shared region
  * should implement to interact with the poll clerk thread.
@@ -31,7 +35,7 @@ public class STPollStation_TPollClerk extends Stub {
      */
     public void openPS() throws InterruptedException{
         ClientCom com;                                                 
-        Message outMessage, inMessage; 
+        Message outMessage; 
 
         com = new ClientCom(serverHost, serverPort);
         /* 
@@ -39,10 +43,9 @@ public class STPollStation_TPollClerk extends Stub {
             and the response from the server
         */
 
-        outMessage = new Message(MessageType.OPENPS, null);
+        outMessage = new Message(MessageType.OPEN_PS);
         
         com.writeObject(outMessage);
-        inMessage = (Message) com.readObject();
         /* 
             logic to handle the response from the server
         */
@@ -55,7 +58,7 @@ public class STPollStation_TPollClerk extends Stub {
      */
     public void callNextVoter(){
         ClientCom com;                                                 
-        Message outMessage, inMessage; 
+        Message outMessage; 
 
         com = new ClientCom(serverHost, serverPort);
         /* 
@@ -63,10 +66,9 @@ public class STPollStation_TPollClerk extends Stub {
             and the response from the server
         */
 
-        outMessage = new Message(MessageType.CALLNEXTVOTER, null);
+        outMessage = new Message(MessageType.CALL_NEXT_VOTER);
         
         com.writeObject(outMessage);
-        inMessage = (Message) com.readObject();
         /* 
             logic to handle the response from the server
         */
@@ -79,7 +81,7 @@ public class STPollStation_TPollClerk extends Stub {
      */
     public void closePS(){
         ClientCom com;                                                 
-        Message outMessage, inMessage; 
+        Message outMessage; 
 
         com = new ClientCom(serverHost, serverPort);
         /* 
@@ -87,10 +89,9 @@ public class STPollStation_TPollClerk extends Stub {
             and the response from the server
         */
 
-        outMessage = new Message(MessageType.CLOSEPS, null);
+        outMessage = new Message(MessageType.CLOSE_PS);
         
         com.writeObject(outMessage);
-        inMessage = (Message) com.readObject();
         /* 
             logic to handle the response from the server
         */
@@ -113,7 +114,7 @@ public class STPollStation_TPollClerk extends Stub {
             and the response from the server
         */
 
-        outMessage = new Message(MessageType.ISEMPTY, null);
+        outMessage = new Message(MessageType.PS_IS_EMPTY);
         
         com.writeObject(outMessage);
         inMessage = (Message) com.readObject();
@@ -143,7 +144,7 @@ public class STPollStation_TPollClerk extends Stub {
             and the response from the server
         */
 
-        outMessage = new Message(MessageType.MAXVOTES, new Object[]{maxVotes, maxVoters});
+        outMessage = new Message(MessageType.MAX_VOTES);
         
         com.writeObject(outMessage);
         inMessage = (Message) com.readObject();
@@ -167,7 +168,7 @@ public class STPollStation_TPollClerk extends Stub {
             and the response from the server
         */
 
-        outMessage = new Message(MessageType.ISPSCLOSED, null);
+        outMessage = new Message(MessageType.PS_IS_CLOSED);
         
         com.writeObject(outMessage);
         inMessage = (Message) com.readObject();

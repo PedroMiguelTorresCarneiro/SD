@@ -1,6 +1,9 @@
 package clientSide.stubs.IDCheck;
 
 import clientSide.stubs.Stub;
+import commInfra.ClientCom;
+import commInfra.Message;
+import commInfra.MessageType;
 
 /**
  * The IIDCheck_TVoter interface contains the methods that 
@@ -41,7 +44,7 @@ public class STIDCheck_TVoter extends Stub {
             and the response from the server
         */
 
-        outMessage = new Message(MessageType.CHECK_ID, voterId);
+        outMessage = new Message(MessageType.CHECK_ID);
         
         com.writeObject(outMessage);
         inMessage = (Message) com.readObject();

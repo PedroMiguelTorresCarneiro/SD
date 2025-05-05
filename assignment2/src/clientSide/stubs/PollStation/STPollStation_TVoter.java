@@ -1,6 +1,10 @@
 package clientSide.stubs.PollStation;
 import clientSide.stubs.Stub;
 
+import commInfra.ClientCom;
+import commInfra.Message;
+import commInfra.MessageType;
+
 /**
  * The IPollStation_TVoter interface contains the methods that the polling station shared region
  * should implement to interact with the voter threads.
@@ -40,7 +44,7 @@ public class STPollStation_TVoter extends Stub {
             and the response from the server
         */
 
-        outMessage = new Message(MessageType.ISCLOSED, null);
+        outMessage = new Message(MessageType.PS_IS_CLOSED);
         
         com.writeObject(outMessage);
         inMessage = (Message) com.readObject();
@@ -71,7 +75,7 @@ public class STPollStation_TVoter extends Stub {
             and the response from the server
         */
 
-        outMessage = new Message(MessageType.CANENTERPS, voterId);
+        outMessage = new Message(MessageType.CAN_ENTER_PS);
         
         com.writeObject(outMessage);
         inMessage = (Message) com.readObject();
@@ -91,7 +95,7 @@ public class STPollStation_TVoter extends Stub {
      */
     public void exitingPS(String voterId) throws InterruptedException{
         ClientCom com;                                                 
-        Message outMessage, inMessage; 
+        Message outMessage; 
 
         com = new ClientCom(serverHost, serverPort);
         /* 
@@ -99,10 +103,9 @@ public class STPollStation_TVoter extends Stub {
             and the response from the server
         */
 
-        outMessage = new Message(MessageType.EXITINGPS, voterId);
+        outMessage = new Message(MessageType.EXITING_PS);
         
         com.writeObject(outMessage);
-        inMessage = (Message) com.readObject();
         /* 
             logic to handle the response from the server
         */

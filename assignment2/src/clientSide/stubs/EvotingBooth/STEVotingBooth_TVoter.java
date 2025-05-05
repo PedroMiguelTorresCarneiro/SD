@@ -2,6 +2,10 @@ package clientSide.stubs.EvotingBooth;
 
 import clientSide.stubs.Stub;
 
+import commInfra.ClientCom;
+import commInfra.Message;
+import commInfra.MessageType;
+
 /**
  * The IEVotingBooth_TVoter interface contains the methods that the evoting booth shared region
  * should implement to interact with the voter threads.
@@ -31,7 +35,7 @@ public class STEVotingBooth_TVoter extends Stub{
      */
     public void vote(String voterId) throws InterruptedException{
         ClientCom com;                                                 
-        Message outMessage, inMessage; 
+        Message outMessage; 
         
         com = new ClientCom(serverHost, serverPort);
         /* 
@@ -39,10 +43,9 @@ public class STEVotingBooth_TVoter extends Stub{
             and the response from the server
         */
 
-        outMessage = new Message(MessageType.VOTE, voterId);
+        outMessage = new Message(MessageType.VOTE);
         
         com.writeObject(outMessage);
-        inMessage = (Message) com.readObject();
         /* 
             logic to handle the response from the server
         */
@@ -65,7 +68,7 @@ public class STEVotingBooth_TVoter extends Stub{
             and the response from the server
         */
 
-        outMessage = new Message(MessageType.GETVOTE, voterId);
+        outMessage = new Message(MessageType.GET_VOTE);
         
         com.writeObject(outMessage);
         inMessage = (Message) com.readObject();

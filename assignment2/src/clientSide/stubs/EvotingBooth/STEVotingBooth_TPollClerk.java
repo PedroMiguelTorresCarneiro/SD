@@ -1,6 +1,11 @@
 package clientSide.stubs.EvotingBooth;
 import clientSide.stubs.Stub;
 
+import commInfra.ClientCom;
+import commInfra.Message;
+import commInfra.MessageType;
+
+
 /**
  * The IEVotingBooth_TPollClerk interface contains the methods that the evoting booth shared region
  * should implement to interact with the poll clerk thread.
@@ -30,7 +35,7 @@ public class STEVotingBooth_TPollClerk extends Stub {
      */
     public void gathering() throws InterruptedException{
         ClientCom com;                                                 
-        Message outMessage, inMessage; 
+        Message outMessage; 
 
         com = new ClientCom(serverHost, serverPort);
         /*
@@ -38,10 +43,9 @@ public class STEVotingBooth_TPollClerk extends Stub {
             and the response from the server
         */
 
-        outMessage = new Message(MessageType.GATHERING, null);
+        outMessage = new Message(MessageType.GATHERING_VOTES);
         
         com.writeObject(outMessage);
-        inMessage = (Message) com.readObject();
         /*
             logic to handle the response from the server
         */
@@ -54,7 +58,7 @@ public class STEVotingBooth_TPollClerk extends Stub {
      */
     public void publishElectionResults(){
         ClientCom com;                                                 
-        Message outMessage, inMessage; 
+        Message outMessage; 
 
         com = new ClientCom(serverHost, serverPort);
         /*
@@ -62,10 +66,9 @@ public class STEVotingBooth_TPollClerk extends Stub {
             and the response from the server
         */
 
-        outMessage = new Message(MessageType.PUBLISH_ELECTION_RESULTS, null);
+        outMessage = new Message(MessageType.PUBLISH_ELECTION_RESULTS);
         
         com.writeObject(outMessage);
-        inMessage = (Message) com.readObject();
         /*
             logic to handle the response from the server
         */
@@ -88,7 +91,7 @@ public class STEVotingBooth_TPollClerk extends Stub {
             and the response from the server
         */
 
-        outMessage = new Message(MessageType.GET_VOTES_COUNT, null);
+        outMessage = new Message(MessageType.GET_VOTES_COUNT);
         
         com.writeObject(outMessage);
         inMessage = (Message) com.readObject();

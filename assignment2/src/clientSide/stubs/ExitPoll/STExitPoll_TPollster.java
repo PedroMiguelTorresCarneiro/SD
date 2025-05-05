@@ -1,5 +1,8 @@
 package clientSide.stubs.ExitPoll;
 import clientSide.stubs.Stub;
+import commInfra.ClientCom;
+import commInfra.Message;
+import commInfra.MessageType;
 
 /**
  * The IExitPoll_TPollster interface contains the methods that the exit poll shared region
@@ -35,10 +38,11 @@ public class STExitPoll_TPollster extends Stub{
             and the response from the server
         */
 
-        outMessage = new Message(MessageType.ISOPEN, null);
+        outMessage = new Message(MessageType.PS_IS_OPEN);
         
         com.writeObject(outMessage);
         inMessage = (Message) com.readObject();
+
         /* 
             logic to handle the response from the server
         */
@@ -54,7 +58,7 @@ public class STExitPoll_TPollster extends Stub{
      */
     public void conductSurvey() throws InterruptedException{
         ClientCom com;                                                 
-        Message outMessage, inMessage; 
+        Message outMessage; 
 
         com = new ClientCom(serverHost, serverPort);
         /* 
@@ -62,10 +66,10 @@ public class STExitPoll_TPollster extends Stub{
             and the response from the server
         */
 
-        outMessage = new Message(MessageType.CONDUCTSURVEY, null);
+        outMessage = new Message(MessageType.CONDUCTSURVEY);
         
         com.writeObject(outMessage);
-        inMessage = (Message) com.readObject();
+
         /* 
             logic to handle the response from the server
         */
@@ -79,7 +83,7 @@ public class STExitPoll_TPollster extends Stub{
      */
     public void publishResults() throws InterruptedException{
         ClientCom com;                                                 
-        Message outMessage, inMessage; 
+        Message outMessage; 
 
         com = new ClientCom(serverHost, serverPort);
         /* 
@@ -87,10 +91,9 @@ public class STExitPoll_TPollster extends Stub{
             and the response from the server
         */
 
-        outMessage = new Message(MessageType.PUBLISHRESULTS, null);
+        outMessage = new Message(MessageType.PUBLISHRESULTS);
         
         com.writeObject(outMessage);
-        inMessage = (Message) com.readObject();
         /* 
             logic to handle the response from the server
         */
