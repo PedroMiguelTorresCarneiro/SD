@@ -1,4 +1,4 @@
-package stubs.Repository;
+package Monitors.Repository;
 
 /**
  * The IRepo_PollStation interface contains the methods that a repository should implement to interact with the polling station shared region.

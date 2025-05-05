@@ -1,11 +1,11 @@
-package stubs.PollStation;
+package Monitors.PollStation;
 
-import stubs.Repository.MRepo;
+import Monitors.Repository.MRepo;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-import stubs.Repository.IRepo_PollStation;
+import Monitors.Repository.IRepo_PollStation;
 
 /**
  * The MPollStation class implements the IPollStation_ALL interface and represents the polling station shared region.
@@ -54,11 +54,10 @@ public class MPollStation implements IPollStation_ALL {
     
     /**
      * The lockChangeState, lockExternalFifo, lockExitingPS, lockIsEmpty, 
-     * lockMaxedVotes, and lockIsOpen attributes represent 
      * the locks used to control the access to the shared region.
      * Their lock funcionalities are described in their variable names.
      */
-    private final ReentrantLock lockChangeState, lockExternalFifo, lockExitingPS, lockIsEmpty, lockMaxedVotes, lockIsOpen;
+    private final ReentrantLock lockChangeState, lockExternalFifo, lockExitingPS, lockIsEmpty, lockIsOpen;
 
     /**
      * The internalQueue atribut represent lock conditions used to control the polling station inside queue.
@@ -117,9 +116,7 @@ public class MPollStation implements IPollStation_ALL {
         lockExitingPS = new ReentrantLock();
         
         lockIsEmpty = new ReentrantLock();
-        
-        lockMaxedVotes = new ReentrantLock();
-        
+                
         lockIsOpen = new ReentrantLock();         
     }
     
@@ -301,24 +298,7 @@ public class MPollStation implements IPollStation_ALL {
             lockIsEmpty.unlock();
         }
     }
-    
-    /**
-     * The maxVotes method returns a flag that indicates if the maximum number of votes has been reached.
-     * @param maxVotes the maximum number of votes
-     * @param votersRegistered the number of voters that have registered
-     * @return true if the maximum number of votes has been reached, false otherwise
-     */
-    @Override
-    public boolean maxVotes(int maxVotes, int votersRegistered) {
-        lockMaxedVotes.lock();
-
-        try{
-            return votersRegistered >= maxVotes; 
-        } finally{
-            lockMaxedVotes.unlock();
-        }
-    }
-    
+        
     /**
     * Resets the singleton instance of the PollStation monitor.
     * This method is intended for infrastructure-level use only (e.g., Main),

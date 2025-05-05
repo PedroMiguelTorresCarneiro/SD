@@ -1,8 +1,8 @@
 package Threads;
 
-import stubs.EvotingBooth.IEVotingBooth_TPollClerk;
-import stubs.ExitPoll.IExitPoll_TPollClerk;
-import stubs.PollStation.IPollStation_TPollClerk;
+import Monitors.EvotingBooth.IEVotingBooth_TPollClerk;
+import Monitors.ExitPoll.IExitPoll_TPollClerk;
+import Monitors.PollStation.IPollStation_TPollClerk;
 
 /**
  * The TPollClerk class implements the Runnable interface and represents the life cycle of a poll clerk in the election simulation.

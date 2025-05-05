@@ -1,4 +1,4 @@
-package stubs.PollStation;
+package Monitors.PollStation;
 
 /**
  * The IPollStation_ALL interface contains the methods that the  polling station shared region
@@ -13,6 +13,6 @@ package stubs.PollStation;
  * @author Inês Águia
  * @author Pedro Carneiro
  */
-public interface IPollStation_ALL extends STPollStation_TVoter, STPollStation_TPollClerk {
+public interface IPollStation_ALL extends IPollStation_TVoter, IPollStation_TPollClerk {
      
 }

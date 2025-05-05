@@ -1,4 +1,4 @@
-package stubs.EvotingBooth;
+package Monitors.EvotingBooth;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,7 +6,7 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-import stubs.Repository.IRepo_VotingBooth;
+import Monitors.Repository.IRepo_VotingBooth;
 
 /**
  * The MEvotingBooth class implements the IEVotingBooth_ALL interface and represents the evoting booth shared region.

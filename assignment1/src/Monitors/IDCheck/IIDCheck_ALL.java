@@ -1,4 +1,4 @@
-package stubs.IDCheck;
+package Monitors.IDCheck;
 
 /**
  * The IIDCheck_ALL interface contains the methods that an ID check should implement to interact with the voters threads.
@@ -10,6 +10,6 @@ package stubs.IDCheck;
  * @author Inês Águia
  * @author Pedro Carneiro
  */
-public interface IIDCheck_ALL extends STIDCheck_TVoter{
+public interface IIDCheck_ALL extends IIDCheck_TVoter{
     
 }

@@ -1,4 +1,4 @@
-package stubs.ExitPoll;
+package Monitors.ExitPoll;
 
 /**
  * The IExitPoll_TPollster interface contains the methods that the exit poll shared region

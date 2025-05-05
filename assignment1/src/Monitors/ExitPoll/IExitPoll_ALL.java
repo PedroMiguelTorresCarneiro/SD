@@ -1,4 +1,4 @@
-package stubs.ExitPoll;
+package Monitors.ExitPoll;
 
 /**
  * The IExitPoll_ALL interface contains the methods that the exit poll shared region
@@ -14,6 +14,6 @@ package stubs.ExitPoll;
  * @author Inês Águia
  * @author Pedro Carneiro
  */
-public interface IExitPoll_ALL extends IExitPoll_TVoter, STExitPoll_TPollster, IExitPoll_TPollClerk{
+public interface IExitPoll_ALL extends IExitPoll_TVoter, IExitPoll_TPollster, IExitPoll_TPollClerk{
     
 }

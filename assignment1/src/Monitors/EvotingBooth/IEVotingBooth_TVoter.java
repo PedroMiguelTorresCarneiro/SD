@@ -1,4 +1,4 @@
-package stubs.EvotingBooth;
+package Monitors.EvotingBooth;
 
 /**
  * The IEVotingBooth_TVoter interface contains the methods that the evoting booth shared region

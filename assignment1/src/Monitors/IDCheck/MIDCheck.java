@@ -1,4 +1,4 @@
-package stubs.IDCheck;
+package Monitors.IDCheck;
 
 import java.util.Random;
 import java.util.HashSet;
@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-import stubs.Repository.IRepo_IDChek;
+import Monitors.Repository.IRepo_IDChek;
 
 /**
  * The MIDCheck class implements the ID check shared region.

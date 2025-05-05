@@ -1,11 +1,11 @@
-package stubs.ExitPoll;
+package Monitors.ExitPoll;
 
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-import stubs.Repository.IRepo_ExitPoll;
+import Monitors.Repository.IRepo_ExitPoll;
 
 /**
  * The MExitPoll class implements the IExitPoll_ALL interface and represents the Exit Poll shared region.

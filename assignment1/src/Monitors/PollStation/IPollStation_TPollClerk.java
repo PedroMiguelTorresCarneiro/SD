@@ -1,4 +1,4 @@
-package stubs.PollStation;
+package Monitors.PollStation;
 
 /**
  * The IPollStation_TPollClerk interface contains the methods that the polling station shared region
@@ -33,15 +33,11 @@ public interface IPollStation_TPollClerk {
      */
     boolean isEmpty();
 
+
     /**
-     * The maxVotes method is called by the poll clerk to check if the maximum number of votes has been reached.
+     * The isPSclosedAfter method is called by the poll clerk to check if the polling station is closed after the elections.
      * 
-     * @param maxVotes The maximum number of votes.
-     * @param maxVoters The maximum number of voters.
-     * @return boolean The boolean that indicates if the maximum number of votes has been reached.
-     */
-    public boolean maxVotes(int maxVotes, int maxVoters);
-    
-    
+     * @return boolean The boolean that indicates if the polling station is closed after the last voter has voted.
+     */    
     public boolean isPSclosedAfter();
 }
