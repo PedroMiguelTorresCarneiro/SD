@@ -21,4 +21,8 @@ public enum MessageType {
     PS_IS_CLOSED_AFTER,
     CAN_ENTER_PS,
     EXITING_PS,
+    SETNFIC,
+    NFICDONE,
+    SHUT,
+    SHUTDONE,
 }

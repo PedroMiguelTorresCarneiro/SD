@@ -49,6 +49,10 @@ public class Message implements Serializable
       return new Message(type, nVotes);
    }
 
+   public static Message getInstance(MessageType type, String info, int nVotes) {
+      return new Message(type, info, nVotes);
+   }
+
    /* FORM 1 */
    private Message (MessageType type){
          msgType = type;
@@ -80,6 +84,17 @@ public class Message implements Serializable
    private Message (MessageType type, int nVotes){
       msgType = type;
       answerType3 = nVotes;
+   }
+
+   /* FORM 6 
+   *
+   *     @param fileName logging file name
+   *     @param nIter number of iterations of the customer life cycle
+   */
+   private Message (MessageType type, String fileName, int nIter){
+      msgType = type;
+      voterId = fileName;
+      answerType3 = nIter;
    }
    
 

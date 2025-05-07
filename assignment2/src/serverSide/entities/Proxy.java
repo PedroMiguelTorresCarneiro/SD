@@ -3,7 +3,7 @@ package serverSide.entities;
 import commInfra.Message;
 import commInfra.MessageException;
 import commInfra.ServerCom;
-import serverSide.main.sharedRegions.interfaces.SharedRegionInterface;
+import serverSide.sharedRegions.interfaces.SharedRegionInterface;
 
 public class Proxy extends Thread {
 

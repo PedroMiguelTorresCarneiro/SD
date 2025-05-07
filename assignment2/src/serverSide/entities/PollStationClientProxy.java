@@ -1,7 +1,7 @@
 package serverSide.entities;
 
 import commInfra.ServerCom;
-import serverSide.main.sharedRegions.interfaces.PollStationInterface;
+import serverSide.sharedRegions.interfaces.PollStationInterface;
 
 /**
  *

@@ -6,7 +6,7 @@ package serverSide.entities;
 
 
 import commInfra.ServerCom;
-import serverSide.main.sharedRegions.interfaces.EvotingBoothInterface;
+import serverSide.sharedRegions.interfaces.EvotingBoothInterface;
 
 /**
  *

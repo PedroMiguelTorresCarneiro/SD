@@ -2,7 +2,7 @@ package serverSide.entities;
 
 
 import commInfra.ServerCom;
-import serverSide.main.sharedRegions.interfaces.IDCheckInterface;
+import serverSide.sharedRegions.interfaces.IDCheckInterface;
 
 
 /**

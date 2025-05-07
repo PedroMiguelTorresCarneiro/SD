@@ -6,12 +6,12 @@ import commInfra.MessageType;
 
 
 public class Stub {
-    protected final String serverHost;
-    protected final int serverPort;
+    protected final String serverHostName;
+    protected final int serverPortNumb;
 
     protected Stub(String host, int port) {
-        this.serverHost = host;
-        this.serverPort = port;
+        this.serverHostName = host;
+        this.serverPortNumb = port;
     }
 
     @SuppressWarnings("static-access")
@@ -19,7 +19,7 @@ public class Stub {
         ClientCom com;                                                 
         Message outMessage; 
 
-        com = new ClientCom(serverHost, serverPort);
+        com = new ClientCom(serverHostName, serverPortNumb);
         while (!com.open ())                                           // waits for a connection to be established
         { try
             { Thread.currentThread().sleep ((long) (10));
@@ -37,7 +37,7 @@ public class Stub {
         ClientCom com;                                                 
         Message outMessage; 
 
-        com = new ClientCom(serverHost, serverPort);
+        com = new ClientCom(serverHostName, serverPortNumb);
         while (!com.open ())                                           // waits for a connection to be established
         { try
             { Thread.currentThread().sleep ((long) (10));
@@ -55,7 +55,7 @@ public class Stub {
         ClientCom com;                                                 
         Message outMessage, inMessage; 
 
-        com = new ClientCom(serverHost, serverPort);
+        com = new ClientCom(serverHostName, serverPortNumb);
         while (!com.open ())                                           // waits for a connection to be established
         { try
             { Thread.currentThread().sleep ((long) (10));
@@ -77,7 +77,7 @@ public class Stub {
         ClientCom com;                                                 
         Message outMessage, inMessage; 
 
-        com = new ClientCom(serverHost, serverPort);
+        com = new ClientCom(serverHostName, serverPortNumb);
         while (!com.open ())                                           // waits for a connection to be established
         { try
             { Thread.currentThread().sleep ((long) (10));
@@ -99,7 +99,7 @@ public class Stub {
         ClientCom com;                                                 
         Message outMessage, inMessage; 
 
-        com = new ClientCom(serverHost, serverPort);
+        com = new ClientCom(serverHostName, serverPortNumb);
         while (!com.open ())                                           // waits for a connection to be established
         { try
             { Thread.currentThread().sleep ((long) (10));
@@ -121,7 +121,7 @@ public class Stub {
         ClientCom com;                                                 
         Message outMessage, inMessage; 
 
-        com = new ClientCom(serverHost, serverPort);
+        com = new ClientCom(serverHostName, serverPortNumb);
         while (!com.open ())                                           // waits for a connection to be established
         { try
             { Thread.currentThread().sleep ((long) (10));
@@ -143,7 +143,7 @@ public class Stub {
         ClientCom com;                                                 
         Message outMessage, inMessage; 
 
-        com = new ClientCom(serverHost, serverPort);
+        com = new ClientCom(serverHostName, serverPortNumb);
         while (!com.open ())                                           // waits for a connection to be established
         { try
             { Thread.currentThread().sleep ((long) (10));
