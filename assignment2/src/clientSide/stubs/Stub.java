@@ -3,6 +3,7 @@ package clientSide.stubs;
 import commInfra.ClientCom;
 import commInfra.Message;
 import commInfra.MessageType;
+import commInfra.RoleType;
 
 
 public class Stub {
@@ -15,7 +16,7 @@ public class Stub {
     }
 
     @SuppressWarnings("static-access")
-    protected void sendMessage(MessageType type) {
+    protected void sendMessage(MessageType type, RoleType role) {
         ClientCom com;                                                 
         Message outMessage; 
 
@@ -26,14 +27,14 @@ public class Stub {
             }
             catch (InterruptedException e) {}
         }
-        outMessage = Message.getInstance(type);
+        outMessage = Message.getInstance(type, role);
         
         com.writeObject(outMessage);
         com.close();
     }
 
     @SuppressWarnings("static-access")
-    protected void sendMessage(MessageType type, String info) {
+    protected void sendMessage(MessageType type, RoleType role, String info) {
         ClientCom com;                                                 
         Message outMessage; 
 
@@ -44,14 +45,14 @@ public class Stub {
             }
             catch (InterruptedException e) {}
         }
-        outMessage = Message.getInstance(type, info);
+        outMessage = Message.getInstance(type, role, info);
         
         com.writeObject(outMessage);
         com.close();
     }
     
     @SuppressWarnings("static-access")
-    protected boolean boolComm(MessageType type){
+    protected boolean boolComm(MessageType type, RoleType role){
         ClientCom com;                                                 
         Message outMessage, inMessage; 
 
@@ -63,7 +64,7 @@ public class Stub {
             catch (InterruptedException e) {}
         }
 
-        outMessage = Message.getInstance(type);
+        outMessage = Message.getInstance(type, role);
         com.writeObject(outMessage);
         
         inMessage = (Message) com.readObject();
@@ -73,7 +74,7 @@ public class Stub {
     }
 
     @SuppressWarnings("static-access")
-    protected boolean boolComm(MessageType type, String info){
+    protected boolean boolComm(MessageType type, RoleType role, String info){
         ClientCom com;                                                 
         Message outMessage, inMessage; 
 
@@ -85,7 +86,7 @@ public class Stub {
             catch (InterruptedException e) {}
         }
 
-        outMessage = Message.getInstance(type, info);
+        outMessage = Message.getInstance(type, role, info);
         com.writeObject(outMessage);
         
         inMessage = (Message) com.readObject();
@@ -95,7 +96,7 @@ public class Stub {
     }
     
     @SuppressWarnings("static-access")
-    protected char charComm(MessageType type, String info){
+    protected char charComm(MessageType type, RoleType role, String info){
         ClientCom com;                                                 
         Message outMessage, inMessage; 
 
@@ -107,7 +108,7 @@ public class Stub {
             catch (InterruptedException e) {}
         }
 
-        outMessage = Message.getInstance(type, info);
+        outMessage = Message.getInstance(type, role, info);
         com.writeObject(outMessage);
         
         inMessage = (Message) com.readObject();
@@ -117,7 +118,7 @@ public class Stub {
     }
 
     @SuppressWarnings("static-access")
-    protected int intComm(MessageType type){
+    protected int intComm(MessageType type, RoleType role){
         ClientCom com;                                                 
         Message outMessage, inMessage; 
 
@@ -129,7 +130,7 @@ public class Stub {
             catch (InterruptedException e) {}
         }
 
-        outMessage = Message.getInstance(type);
+        outMessage = Message.getInstance(type, role);
         com.writeObject(outMessage);
         
         inMessage = (Message) com.readObject();
@@ -139,7 +140,7 @@ public class Stub {
     }
 
     @SuppressWarnings("static-access")
-    protected int intComm(MessageType type, String info){
+    protected int intComm(MessageType type, RoleType role, String info){
         ClientCom com;                                                 
         Message outMessage, inMessage; 
 
@@ -151,7 +152,7 @@ public class Stub {
             catch (InterruptedException e) {}
         }
 
-        outMessage = Message.getInstance(type, info);
+        outMessage = Message.getInstance(type, role, info);
         com.writeObject(outMessage);
         
         inMessage = (Message) com.readObject();

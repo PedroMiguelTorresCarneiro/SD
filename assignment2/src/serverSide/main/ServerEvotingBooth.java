@@ -1,99 +1,106 @@
-package serverSide.main;
 
+import commInfra.Message;
+import commInfra.RoleType;
+import commInfra.ServerCom;
 import serverSide.entities.EvotingBoothClientProxy;
-import serverSide.sharedRegions.EvotingBooth;
-import serverSide.sharedRegions.interfaces.EvotingBoothInterface;
-
-import clientSide.stubs.STRepo;
-import commInfra.*;
-
+import serverSide.sharedRegions.EVotingBooth.IEVotingBooth_TPollClerk;
+import serverSide.sharedRegions.EVotingBooth.IEVotingBooth_TVoter;
+import serverSide.sharedRegions.EVotingBooth.MEvotingBooth;
 import java.net.*;
 
-/**
- *    Server side of the General Repository of Information.
- *
- *    Implementation of a client-server model of type 2 (server replication).
- *    Communication is based on a communication channel under the TCP protocol.
- */
 
-public class ServerEvotingBooth{
-  /**
-   *  Flag signaling the service is active.
-   */
+public class ServerEvotingBooth {
 
-   public static boolean waitConnection;
+    /**
+     * Variável de controlo para aceitar ou não novas ligações.
+     */
+    public static boolean waitConnection;
 
-  /**
-   *  Main method.
-   *
-   *    @param args runtime arguments
-   *        args[0] - port nunber for listening to service requests
-   *        args[1] - name of the platform where is located the server for the general repository
-   *        args[2] - port nunber where the server for the general repository is listening to service requests
-   */
+    /**
+     *  Main method.
+     *
+     *  Starts the server for the EVotingBooth shared region.
+     *
+     *  @param args runtime arguments:
+     *         args[0] - port number for listening to service requests
+     *         args[1] - name of the platform where the General Repository server is located
+     *         args[2] - port number where the General Repository server is listening
+     */
+    public static void main(String[] args) {
 
-   public static void main (String [] args)
-   {
-      EvotingBooth evotingBooth;                                              // barber shop (service to be rendered)
-      EvotingBoothInterface evotingBInter;                                // interface to the barber shop
-      STRepo reposStub;                                    // stub to the general repository
-      ServerCom scon, sconi;                                         // communication channels
-      int portNumb = -1;                                             // port number for listening to service requests
-      String reposServerName;                                        // name of the platform where is located the server for the general repository
-      int reposPortNumb = -1;                                        // port nunber where the server for the general repository is listening to service requests
+        int portNumb = -1;
+        String reposServerName;
+        int reposPortNumb = -1;
 
-      if (args.length != 3)
-         { System.out.println("Wrong number of parameters!");
-           System.exit (1);
-         }
-      try
-      { portNumb = Integer.parseInt (args[0]);
-      }
-      catch (NumberFormatException e)
-      { System.out.println("args[0] is not a number!");
-        System.exit (1);
-      }
-      if ((portNumb < 4000) || (portNumb >= 65536))
-         { System.out.println("args[0] is not a valid port number!");
-           System.exit (1);
-         }
-      reposServerName = args[1];
-      try
-      { reposPortNumb = Integer.parseInt (args[2]);
-      }
-      catch (NumberFormatException e)
-      { System.out.println("args[2] is not a number!");
-        System.exit (1);
-      }
-      if ((reposPortNumb < 4000) || (reposPortNumb >= 65536))
-         { System.out.println("args[2] is not a valid port number!");
-           System.exit (1);
-         }
-
-     /* service is established */
-
-      reposStub = new STRepo (reposServerName, reposPortNumb);       // communication to the general repository is instantiated
-      evotingBooth = new EvotingBooth (reposStub);                                      // service is instantiated
-      evotingBInter = new EvotingBoothInterface (evotingBooth);                            // interface to the service is instantiated
-      scon = new ServerCom (portNumb);                                         // listening channel at the public port is established
-      scon.start ();
-      System.out.println("Service is established!");
-      System.out.println("Server is listening for service requests.");
-
-     /* service request processing */
-
-      EvotingBoothClientProxy cliProxy;                                // service provider agent
-
-      waitConnection = true;
-      while (waitConnection)
-      { try
-        { sconi = scon.accept ();                                    // enter listening procedure
-          cliProxy = new EvotingBoothClientProxy (sconi, evotingBInter);    // start a service provider agent to address
-          cliProxy.start ();                                         //   the request of service
+        // === Validar número de argumentos ===
+        if (args.length != 3) {
+            System.err.println("Wrong number of parameters!");
+            System.exit(1);
         }
-        catch (SocketTimeoutException e) {}
-      }
-      scon.end ();                                                   // operations termination
-      System.out.println("Server was shutdown.");
-   }
+
+        // === Validar porto do EVotingBooth ===
+        try {
+            portNumb = Integer.parseInt(args[0]);
+        } catch (NumberFormatException e) {
+            System.err.println("args[0] is not a number!");
+            System.exit(1);
+        }
+
+        if (portNumb < 4000 || portNumb >= 65536) {
+            System.err.println("args[0] is not a valid port number!");
+            System.exit(1);
+        }
+
+        // === Validar hostname e porto do repositorio ===
+        reposServerName = args[1];
+
+        try {
+            reposPortNumb = Integer.parseInt(args[2]);
+        } catch (NumberFormatException e) {
+            System.err.println("args[2] is not a number!");
+            System.exit(1);
+        }
+
+        if (reposPortNumb < 4000 || reposPortNumb >= 65536) {
+            System.err.println("args[2] is not a valid port number!");
+            System.exit(1);
+        }
+
+        // === Inicializar monitor e interfaces ===
+        waitConnection = true;
+        Repo logs = new Repo(reposServerName, reposPortNumb);
+
+        MEvotingBooth booth = new MEvotingBooth.getInstance(logs);
+        IEVotingBooth_TVoter tvoterInterface = IEVotingBooth_TVoter.getInstance(booth);
+        IEVotingBooth_TPollClerk tclerkInterface = IEVotingBooth_TPollClerk.getInstance(booth);
+
+        ServerCom serverCom = new ServerCom(portNumb);
+        serverCom.start();
+
+        System.out.println("[EVotingBooth] Servidor iniciado no porto " + portNumb + ".");
+
+        while (waitConnection) {
+            try{
+              ServerCom sconi = serverCom.accept();
+
+              Message firstMessage = (Message) sconi.readObject();
+              RoleType role = firstMessage.getRoleType();
+
+              EvotingBoothClientProxy cliProxy = switch (role) {
+                  case TVOTER -> new EvotingBoothClientProxy(sconi, tvoterInterface, null, firstMessage);
+                  case TPOLLCLERK -> new EvotingBoothClientProxy(sconi, null, tclerkInterface, firstMessage);
+                  default -> {
+                      System.err.println("[EVotingBooth] Ligação com RoleType inválido: " + role);
+                      sconi.close();
+                      yield null;
+                  }
+              };
+
+              if (cliProxy != null) cliProxy.start();
+            } catch (SocketTimeoutException e) {}
+        }
+
+        serverCom.end();
+        System.out.println("[EVotingBooth] Servidor encerrado.");
+    }
 }

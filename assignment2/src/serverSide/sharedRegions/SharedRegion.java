@@ -1,11 +1,10 @@
 package serverSide.sharedRegions;
 
-import clientSide.stubs.STRepo;
 
 public class SharedRegion {
-    protected STRepo reposStub; 
+    protected Repo reposStub; 
 
-    public SharedRegion(STRepo reposStub) {
+    public SharedRegion(Repo reposStub) {
         this.reposStub = reposStub;
     }
 }

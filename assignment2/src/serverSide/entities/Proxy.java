@@ -3,15 +3,12 @@ package serverSide.entities;
 import commInfra.Message;
 import commInfra.MessageException;
 import commInfra.ServerCom;
-import serverSide.sharedRegions.interfaces.SharedRegionInterface;
 
 public class Proxy extends Thread {
 
     private static int nProxy = 0; // Number of proxies created
 
-    protected ServerCom sconi; // Communication channel with the client
-
-    protected SharedRegionInterface sharedRegionInterface; 
+    protected ServerCom sconi; // Communication channel with the client 
 
     public Proxy(String proxyName, ServerCom sconi)  {
         super(proxyName + "_" + Proxy.getProxyId()); 

@@ -2,6 +2,7 @@ package clientSide.stubs.EvotingBooth;
 
 import clientSide.stubs.Stub;
 import commInfra.MessageType;
+import commInfra.RoleType;
 
 /**
  * The IEVotingBooth_TVoter interface contains the methods that the evoting booth shared region
@@ -31,7 +32,7 @@ public class STEVotingBooth_TVoter extends Stub{
      * @throws InterruptedException if the thread is interrupted.
      */
     public void vote(String voterId) throws InterruptedException{
-        sendMessage(MessageType.VOTE, voterId);
+        sendMessage(MessageType.VOTE, RoleType.VOTER, voterId);
     };
 
    /**
@@ -40,6 +41,6 @@ public class STEVotingBooth_TVoter extends Stub{
     * @return the vote of the voter.
     */
     public Character getVote(String voterId){
-        return charComm(MessageType.GET_VOTE, voterId);
+        return charComm(MessageType.GET_VOTE, RoleType.VOTER, voterId);
     };
 }

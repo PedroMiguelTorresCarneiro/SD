@@ -1,6 +1,7 @@
 package clientSide.stubs.PollStation;
 import clientSide.stubs.Stub;
 import commInfra.MessageType;
+import commInfra.RoleType;
 
 /**
  * The IPollStation_TPollClerk interface contains the methods that the polling station shared region
@@ -31,21 +32,21 @@ public class STPollStation_TPollClerk extends Stub {
      * @throws InterruptedException The exception thrown when a thread is waiting, sleeping, or otherwise occupied, and the thread is interrupted, either before or during the activity.
      */
     public void openPS() throws InterruptedException{
-        sendMessage(MessageType.OPEN_PS);
+        sendMessage(MessageType.OPEN_PS, RoleType.POLLCLERK);
     };
 
     /**
      * The callNextVoter method is called by the poll clerk to call the next voter in the polling station inside queue.
      */
     public void callNextVoter(){
-        sendMessage(MessageType.CALL_NEXT_VOTER);
+        sendMessage(MessageType.CALL_NEXT_VOTER, RoleType.POLLCLERK);
     }
 
     /**
      * The closePS method is called by the poll clerk to close the polling station.
      */
     public void closePS(){
-        sendMessage(MessageType.CLOSE_PS);
+        sendMessage(MessageType.CLOSE_PS, RoleType.POLLCLERK);
     };
 
     /**
@@ -54,11 +55,11 @@ public class STPollStation_TPollClerk extends Stub {
      * @return boolean The boolean that indicates if the polling station inside queue is empty.
      */
     public boolean isEmpty(){
-        return boolComm(MessageType.PS_IS_EMPTY);
+        return boolComm(MessageType.PS_IS_EMPTY, RoleType.POLLCLERK);
     };
 
         
     public boolean isPSclosedAfter(){
-        return boolComm(MessageType.PS_IS_CLOSED_AFTER);
+        return boolComm(MessageType.PS_IS_CLOSED_AFTER, RoleType.POLLCLERK);
     };
 }

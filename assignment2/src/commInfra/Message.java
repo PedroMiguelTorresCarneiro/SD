@@ -22,6 +22,7 @@ public class Message implements Serializable
    */
 
    private MessageType msgType = null;
+   private RoleType roleType = null;
    private String vote = null;
    private String voterId = null;
    private boolean answerType1 = false;
@@ -29,38 +30,40 @@ public class Message implements Serializable
    private int answerType3;
 
 
-   public static Message getInstance(MessageType type) {
-      return new Message(type);
+   public static Message getInstance(MessageType type, RoleType role) {
+      return new Message(type, role);
    }
 
-   public static Message getInstance(MessageType type, String info) {
-      return new Message(type, info);
+   public static Message getInstance(MessageType type, RoleType role, String info) {
+      return new Message(type, role, info);
    }
 
-   public static Message getInstance(MessageType type, boolean bool) {
-      return new Message(type, bool);
+   public static Message getInstance(MessageType type, RoleType role, boolean bool) {
+      return new Message(type, role, bool);
    }
 
-   public static Message getInstance(MessageType type, char vote) {
-      return new Message(type, vote);
+   public static Message getInstance(MessageType type, RoleType role, char vote) {
+      return new Message(type, role, vote);
    }
 
-   public static Message getInstance(MessageType type, int nVotes) {
-      return new Message(type, nVotes);
+   public static Message getInstance(MessageType type, RoleType role, int nVotes) {
+      return new Message(type, role, nVotes);
    }
 
-   public static Message getInstance(MessageType type, String info, int nVotes) {
-      return new Message(type, info, nVotes);
+   public static Message getInstance(MessageType type, RoleType role, String info, int nVotes) {
+      return new Message(type, role, info, nVotes);
    }
 
    /* FORM 1 */
-   private Message (MessageType type){
+   private Message (MessageType type, RoleType role){
          msgType = type;
+         roleType = role;
    }
 
    /* FORM 2 */
-   private Message (MessageType type, String info){
+   private Message (MessageType type, RoleType role, String info){
          msgType = type;
+         roleType = role;
          if(type == MessageType.GET_VOTE){
             vote = info;
          }else {
@@ -69,20 +72,23 @@ public class Message implements Serializable
    }
 
    /* FORM 3 */
-   private Message (MessageType type, boolean bool){
+   private Message (MessageType type, RoleType role, boolean bool){
       msgType = type;
+      roleType = role;
       answerType1 = bool;
    }
 
    /* FORM 4 */
-   private Message (MessageType type, char vote){
+   private Message (MessageType type, RoleType role, char vote){
       msgType = type;
+      roleType = role;
       answerType2 = vote;
    }
 
    /* FORM 5 */
-   private Message (MessageType type, int nVotes){
+   private Message (MessageType type, RoleType role, int nVotes){
       msgType = type;
+      roleType = role;
       answerType3 = nVotes;
    }
 
@@ -91,8 +97,9 @@ public class Message implements Serializable
    *     @param fileName logging file name
    *     @param nIter number of iterations of the customer life cycle
    */
-   private Message (MessageType type, String fileName, int nIter){
+   private Message (MessageType type, RoleType role, String fileName, int nIter){
       msgType = type;
+      roleType = role;
       voterId = fileName;
       answerType3 = nIter;
    }
@@ -128,6 +135,15 @@ public class Message implements Serializable
       return (voterId);
    }
 
+   /**
+    * Getting MessageType.
+    *    
+    *   @return message type
+    */
+   public MessageType getMessageType() {
+      return msgType;
+   }
+
 
   /**
    *  Printing the values of the internal fields.
@@ -155,6 +171,10 @@ public class Message implements Serializable
 
     public int getAnswerType3() {
         return answerType3;
+    }
+
+    public RoleType getRoleType() {
+        return roleType;
     }
 
 }

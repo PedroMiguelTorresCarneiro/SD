@@ -2,6 +2,7 @@ package clientSide.stubs.IDCheck;
 
 import clientSide.stubs.Stub;
 import commInfra.MessageType;
+import commInfra.RoleType;
 
 /**
  * The IIDCheck_TVoter interface contains the methods that 
@@ -33,6 +34,6 @@ public class STIDCheck_TVoter extends Stub {
      * @throws InterruptedException Throws an InterruptedException if an error occurs.
      */
     public boolean checkID(String voterId) throws InterruptedException{
-        return boolComm(MessageType.CHECK_ID, voterId);
+        return boolComm(MessageType.CHECK_ID, RoleType.VOTER, voterId);
     }
 }

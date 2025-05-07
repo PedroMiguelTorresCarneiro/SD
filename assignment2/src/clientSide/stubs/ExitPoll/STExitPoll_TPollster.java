@@ -1,6 +1,7 @@
 package clientSide.stubs.ExitPoll;
 import clientSide.stubs.Stub;
 import commInfra.MessageType;
+import commInfra.RoleType;
 
 /**
  * The IExitPoll_TPollster interface contains the methods that the exit poll shared region
@@ -27,7 +28,7 @@ public class STExitPoll_TPollster extends Stub{
      * @return Boolean value that indicates if the exit poll is open.
      */
     public boolean isOpen(){
-        return boolComm(MessageType.PS_IS_OPEN);
+        return boolComm(MessageType.PS_IS_OPEN, RoleType.POLLSTER);
     }
 
     /**
@@ -35,7 +36,7 @@ public class STExitPoll_TPollster extends Stub{
      * @throws InterruptedException Exception that may be thrown if the thread is interrupted.
      */
     public void conductSurvey() throws InterruptedException{
-        sendMessage(MessageType.CONDUCTSURVEY);
+        sendMessage(MessageType.CONDUCTSURVEY, RoleType.POLLSTER);
     }
 
     /**
@@ -43,6 +44,6 @@ public class STExitPoll_TPollster extends Stub{
      * @throws InterruptedException Exception that may be thrown if the thread is interrupted.
      */
     public void publishResults() throws InterruptedException{
-        sendMessage(MessageType.PUBLISHRESULTS);
+        sendMessage(MessageType.PUBLISHRESULTS, RoleType.POLLSTER);
     }
 }

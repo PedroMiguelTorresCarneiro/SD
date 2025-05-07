@@ -1,6 +1,7 @@
 package clientSide.stubs.EvotingBooth;
 import clientSide.stubs.Stub;
 import commInfra.MessageType;
+import commInfra.RoleType;
 
 
 /**
@@ -31,14 +32,14 @@ public class STEVotingBooth_TPollClerk extends Stub {
      * @throws InterruptedException if the thread is interrupted.
      */
     public void gathering() throws InterruptedException{
-        sendMessage(MessageType.GATHERING_VOTES);
+        sendMessage(MessageType.GATHERING_VOTES, RoleType.POLLCLERK);
     }
     
     /**
      * The publishElectionResults method is called by the poll clerk to publish the election results.
      */
     public void publishElectionResults(){
-        sendMessage(MessageType.PUBLISH_ELECTION_RESULTS);
+        sendMessage(MessageType.PUBLISH_ELECTION_RESULTS, RoleType.POLLCLERK);
     }
     
     /**
@@ -46,6 +47,6 @@ public class STEVotingBooth_TPollClerk extends Stub {
      * @return the number of voters that have voted.
      */
     public int getVotesCount(){
-        return intComm(MessageType.GET_VOTES_COUNT);
+        return intComm(MessageType.GET_VOTES_COUNT, RoleType.POLLCLERK);
     }
 }

@@ -1,6 +1,7 @@
 package clientSide.stubs.PollStation;
 import clientSide.stubs.Stub;
 import commInfra.MessageType;
+import commInfra.RoleType;
 
 /**
  * The IPollStation_TVoter interface contains the methods that the polling station shared region
@@ -32,7 +33,7 @@ public class STPollStation_TVoter extends Stub {
      * @return Boolean The Boolean that indicates if the polling station is closed after the election.
      */
     public boolean isCLosedAfterElection(){
-        return boolComm(MessageType.PS_IS_CLOSED_AFTER);
+        return boolComm(MessageType.PS_IS_CLOSED_AFTER, RoleType.VOTER);
     }
 
     /**
@@ -44,7 +45,7 @@ public class STPollStation_TVoter extends Stub {
      * 
      */
     public boolean canEnterPS(String voterId) throws InterruptedException{
-        return boolComm(MessageType.CAN_ENTER_PS, voterId);
+        return boolComm(MessageType.CAN_ENTER_PS, RoleType.VOTER, voterId);
     }
 
     /**
@@ -53,6 +54,6 @@ public class STPollStation_TVoter extends Stub {
      * @throws InterruptedException The exception thrown when a thread is waiting, sleeping, or otherwise occupied, and the thread is interrupted, either before or during the activity.
      */
     public void exitingPS(String voterId) throws InterruptedException{
-        sendMessage(MessageType.EXITING_PS, voterId);
+        sendMessage(MessageType.EXITING_PS, RoleType.VOTER, voterId);
     }
 }
