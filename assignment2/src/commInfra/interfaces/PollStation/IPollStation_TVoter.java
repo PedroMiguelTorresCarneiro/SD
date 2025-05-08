@@ -1,7 +1,4 @@
-package clientSide.stubs.PollStation;
-import clientSide.stubs.Stub;
-import commInfra.MessageType;
-import commInfra.RoleType;
+package commInfra.interfaces.PollStation;
 
 /**
  * The IPollStation_TVoter interface contains the methods that the polling station shared region
@@ -12,29 +9,13 @@ import commInfra.RoleType;
  * @author Pedro Carneiro
  * 
  */
-public class STPollStation_TVoter extends Stub {
-    private static STPollStation_TVoter instance = null;
-
-    private STPollStation_TVoter(String host, int port) {
-        super(host, port);
-    }
-
-    public static STPollStation_TVoter getInstance(String host, int port) {
-        if (instance == null) {
-            instance = new STPollStation_TVoter(host, port);
-        }
-        
-        return instance;
-    }
-
+public interface IPollStation_TVoter {
     /**
      * The isCLosedAfterElection method is called by the voter to check if the polling station is closed after the election.
      * 
      * @return Boolean The Boolean that indicates if the polling station is closed after the election.
      */
-    public boolean isCLosedAfterElection(){
-        return boolComm(MessageType.PS_IS_CLOSED_AFTER, RoleType.VOTER);
-    }
+    boolean isCLosedAfterElection();
 
     /**
      * The canEnterPS method is called by the voter to try to enter in the polling station.
@@ -44,16 +25,12 @@ public class STPollStation_TVoter extends Stub {
      * @throws InterruptedException The exception thrown when a thread is waiting, sleeping, or otherwise occupied, and the thread is interrupted, either before or during the activity.
      * 
      */
-    public boolean canEnterPS(String voterId) throws InterruptedException{
-        return boolComm(MessageType.CAN_ENTER_PS, RoleType.VOTER, voterId);
-    }
+    boolean canEnterPS(String voterId) throws InterruptedException;
 
     /**
      * The exitingPS method is called by the voter to exit the polling station.
      * @param voterId The ID of the voter.
      * @throws InterruptedException The exception thrown when a thread is waiting, sleeping, or otherwise occupied, and the thread is interrupted, either before or during the activity.
      */
-    public void exitingPS(String voterId) throws InterruptedException{
-        sendMessage(MessageType.EXITING_PS, RoleType.VOTER, voterId);
-    }
+    void exitingPS(String voterId) throws InterruptedException;
 }
