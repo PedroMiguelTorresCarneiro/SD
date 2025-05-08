@@ -1,28 +1,44 @@
 package clientSide.stubs;
 
-import commInfra.interfaces.EvotingBooth.IEVotingBooth_ALL;;
+import commInfra.MessageType;
+import commInfra.interfaces.EvotingBooth.IEVotingBooth_ALL;
 
 public class STEvotingBooth extends Stub implements IEVotingBooth_ALL {
-    // Constructor
-    public STEvotingBooth(String serverHostName, int serverPortNumb) {
+    private static STEvotingBooth instance = null;
+
+    private STEvotingBooth(String serverHostName, int serverPortNumb) {
         super(serverHostName, serverPortNumb);
     }
 
+    public STEvotingBooth getInstance(String serverHostName, int serverPortNumb) {
+        if (instance == null) {
+            instance = new STEvotingBooth(serverHostName, serverPortNumb);
+        }
+        return instance;
+    }
 
+    @Override
     public void gathering() throws InterruptedException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'gathering'");
+        sendMessage(MessageType.GATHERING_VOTES);
     }
 
+    @Override
     public void publishElectionResults() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'publishElectionResults'");
+        sendMessage(MessageType.PUBLISH_ELECTION_RESULTS);
     }
 
+    @Override
     public int getVotesCount() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getVotesCount'");
+        return intComm(MessageType.GET_VOTES_COUNT);
     }
 
-    
+    @Override
+    public void vote(String voterId) throws InterruptedException {
+        sendMessage(MessageType.VOTE, voterId);
+    }
+
+    @Override
+    public char getVote(String voterId) {
+        return charComm(MessageType.GET_VOTE, voterId);
+    }
 }
