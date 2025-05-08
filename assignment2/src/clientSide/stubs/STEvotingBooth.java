@@ -10,7 +10,7 @@ public class STEvotingBooth extends Stub implements IEVotingBooth_ALL {
         super(serverHostName, serverPortNumb);
     }
 
-    public STEvotingBooth getInstance(String serverHostName, int serverPortNumb) {
+    public static STEvotingBooth getInstance(String serverHostName, int serverPortNumb) {
         if (instance == null) {
             instance = new STEvotingBooth(serverHostName, serverPortNumb);
         }

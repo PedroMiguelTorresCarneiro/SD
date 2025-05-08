@@ -9,7 +9,7 @@ import java.net.SocketTimeoutException;
 import clientSide.stubs.STRepo;
 import commInfra.ServerCom;
 
-import serverSide.entities.ExitPollClientProxy;
+import serverSide.entities.PExitPoll;
 import serverSide.sharedRegions.ExitPoll;
 import serverSide.sharedRegions.interfaces.ExitPollInterFace;
 
@@ -83,13 +83,13 @@ public class ServerExitPoll {
 
      /* service request processing */
 
-      ExitPollClientProxy cliProxy;                                // service provider agent
+      PExitPoll cliProxy;                                // service provider agent
 
       waitConnection = true;
       while (waitConnection)
       { try
         { sconi = scon.accept ();                                    // enter listening procedure
-          cliProxy = new ExitPollClientProxy(sconi, exitPInter);    // start a service provider agent to address
+          cliProxy = new PExitPoll(sconi, exitPInter);    // start a service provider agent to address
           cliProxy.start ();                                         //   the request of service
         }
         catch (SocketTimeoutException e) {}

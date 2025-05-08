@@ -22,7 +22,7 @@ public class Proxy extends Thread {
    *     @return instantiation identifier
    */
 
-   private static int getProxyId ()
+   private static int getProxyId (String className)
    {
       Class<?> cl = null;                                            // representation of the BarberShopClientProxy object in JVM
       int proxyId;                                                   // instantiation identifier

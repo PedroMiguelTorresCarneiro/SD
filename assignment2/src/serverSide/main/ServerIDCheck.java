@@ -9,7 +9,7 @@ import java.net.SocketTimeoutException;
 import clientSide.stubs.STRepo;
 import commInfra.ServerCom;
 
-import serverSide.entities.IDCheckClientProxy;
+import serverSide.entities.PIDCheck;
 import serverSide.sharedRegions.IDCheck;
 import serverSide.sharedRegions.interfaces.IDCheckInterface;
 
@@ -83,13 +83,13 @@ public class ServerIDCheck {
 
      /* service request processing */
 
-      IDCheckClientProxy cliProxy;                                // service provider agent
+      PIDCheck cliProxy;                                // service provider agent
 
       waitConnection = true;
       while (waitConnection)
       { try
         { sconi = scon.accept ();                                    // enter listening procedure
-          cliProxy = new IDCheckClientProxy(sconi, iDCInter);    // start a service provider agent to address
+          cliProxy = new PIDCheck(sconi, iDCInter);    // start a service provider agent to address
           cliProxy.start ();                                         //   the request of service
         }
         catch (SocketTimeoutException e) {}

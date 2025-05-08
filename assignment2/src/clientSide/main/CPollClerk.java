@@ -1,9 +1,10 @@
 package clientSide.main;
 
 import clientSide.entities.TPollClerk;
-import clientSide.stubs.EvotingBooth.STEVotingBooth_TPollClerk;
-import clientSide.stubs.ExitPoll.STExitPoll_TPollClerk;
-import clientSide.stubs.PollStation.STPollStation_TPollClerk;
+import clientSide.stubs.STEvotingBooth;
+import clientSide.stubs.STExitPoll;
+import clientSide.stubs.STPollStation;
+
 
 public class CPollClerk {
     public static void main(String[] args) {
@@ -18,9 +19,9 @@ public class CPollClerk {
         int exitPollPort = Integer.parseInt(args[3]);
         int maxVotes = Integer.parseInt(args[4]);
 
-        var pollStation = STPollStation_TPollClerk.getInstance(host, psPort);
-        var booth = STEVotingBooth_TPollClerk.getInstance(host, boothPort);
-        var exitPoll = STExitPoll_TPollClerk.getInstance(host, exitPollPort);
+        var pollStation = STPollStation.getInstance(host, psPort);
+        var booth = STEvotingBooth.getInstance(host, boothPort);
+        var exitPoll = STExitPoll.getInstance(host, exitPollPort);
 
         Thread clerk = new Thread(TPollClerk.getInstance(pollStation, booth, exitPoll, maxVotes));
         clerk.start();

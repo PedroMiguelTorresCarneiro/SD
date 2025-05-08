@@ -1,9 +1,10 @@
 package clientSide.entities;
 
-import clientSide.stubs.EvotingBooth.STEVotingBooth_TVoter;
-import clientSide.stubs.ExitPoll.STExitPoll_TVoter;
-import clientSide.stubs.IDCheck.STIDCheck_TVoter;
-import clientSide.stubs.PollStation.STPollStation_TVoter;
+
+import clientSide.stubs.STEvotingBooth;
+import clientSide.stubs.STExitPoll;
+import clientSide.stubs.STIDCheck;
+import clientSide.stubs.STPollStation;
 import java.util.Random;
 
 /**
@@ -22,25 +23,25 @@ public class TVoter implements Runnable {
      * The pollStation attribute stores a reference to the polling station shared region.
      * This is the interface that the voter uses to interact with the polling station.
      */
-    private final STPollStation_TVoter pollStation;
+    private final STPollStation pollStation;
 
     /**
      * The booth attribute stores a reference to the voting booth shared region.
      * This is the interface that the voter uses to interact with the voting booth.
      */
-    private final STEVotingBooth_TVoter booth;
+    private final STEvotingBooth booth;
 
     /**
      * The idCheck attribute stores a reference to the ID check shared region.
      * This is the interface that the voter uses to interact with the ID check.
      */
-    private final STIDCheck_TVoter idCheck;
+    private final STIDCheck idCheck;
 
     /**
      * The exitPoll attribute stores a reference to the exit poll shared region.
      * This is the interface that the voter uses to interact with the exit poll.
      */
-    private final STExitPoll_TVoter exitPoll;
+    private final STExitPoll exitPoll;
 
     /**
      * The state attribute stores the current state of the voter.
@@ -118,7 +119,7 @@ public class TVoter implements Runnable {
      * @param booth       The voting booth shared region.
      * @param exitPoll    The exit poll shared region.
      */
-    private TVoter(String voterId, STPollStation_TVoter pollStation, STIDCheck_TVoter idCheck, STEVotingBooth_TVoter booth, STExitPoll_TVoter exitPoll) {
+    private TVoter(String voterId, STPollStation pollStation, STIDCheck idCheck, STEvotingBooth booth, STExitPoll exitPoll) {
         this.voterId = voterId;
         this.pollStation = pollStation;
         this.idCheck = idCheck;
@@ -136,7 +137,7 @@ public class TVoter implements Runnable {
      * @param exitPoll    The exit poll shared region.
      * @return A new TVoter object.
      */
-    public static Runnable getInstance(String voterId, STPollStation_TVoter pollStation, STIDCheck_TVoter idCheck, STEVotingBooth_TVoter booth, STExitPoll_TVoter exitPoll) {
+    public static Runnable getInstance(String voterId, STPollStation pollStation, STIDCheck idCheck, STEvotingBooth booth, STExitPoll exitPoll) {
         return new TVoter(voterId, pollStation, idCheck, booth, exitPoll);
     }
 

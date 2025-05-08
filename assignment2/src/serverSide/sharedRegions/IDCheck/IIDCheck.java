@@ -3,7 +3,7 @@ package serverSide.sharedRegions.IDCheck;
 import commInfra.Message;
 import commInfra.MessageException;
 import commInfra.MessageType;
-import commInfra.RoleType;
+import commInfra.interfaces.IDCheck.IIDCheck_ALL;
 
 /**
  * Interface TCP da região partilhada IDCheck, dedicada ao tratamento
@@ -13,20 +13,23 @@ import commInfra.RoleType;
  * 
  * @author ...
  */
-public class IIDCheck_TVoter {
-
+public class IIDCheck implements IIDCheck_ALL{
+    private static IIDCheck instance = null;
     private final MIDCheck idCheck;
 
     /**
      * Construtor da interface.
      * @param idCheck instância do monitor MIDCheck
      */
-    private IIDCheck_TVoter(MIDCheck idCheck) {
+    private IIDCheck(MIDCheck idCheck) {
         this.idCheck = idCheck;
     }
 
-    public static IIDCheck_TVoter getInstance(MIDCheck idCheck) {
-        return new IIDCheck_TVoter(idCheck);
+    public static IIDCheck getInstance(MIDCheck idCheck) {
+        if (instance == null) {
+            instance = new IIDCheck(idCheck);
+        }
+        return instance;
     }
 
     /**
@@ -49,13 +52,13 @@ public class IIDCheck_TVoter {
 
                 try {
                     boolean isValid = checkID(voterId);
-                    outMessage = Message.getInstance(MessageType.CHECK_ID, RoleType.VOTER, isValid);
+                    outMessage = Message.getInstance(MessageType.CHECK_ID, isValid);
                 } catch (InterruptedException e) {
                     throw new MessageException("Thread interrompida durante checkID().", inMessage);
                 }
             }
 
-            default -> throw new MessageException("Tipo de mensagem inválido para TVoter na IDCheck.", inMessage);
+            default -> throw new MessageException("Tipo de mensagem inválido", inMessage);
         }
 
         return outMessage;
@@ -68,7 +71,8 @@ public class IIDCheck_TVoter {
      * @return true se for aceite, false caso contrário
      * @throws InterruptedException se a thread for interrompida
      */
-    private boolean checkID(String voterId) throws InterruptedException {
+    @Override
+    public boolean checkID(String voterId) throws InterruptedException {
         return idCheck.checkID(voterId);
     }
 }

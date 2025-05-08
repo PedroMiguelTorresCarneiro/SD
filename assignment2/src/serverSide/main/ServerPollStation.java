@@ -9,7 +9,7 @@ import java.net.SocketTimeoutException;
 import clientSide.stubs.STRepo;
 import commInfra.ServerCom;
 
-import serverSide.entities.PollStationClientProxy;
+import serverSide.entities.PPollStation;
 import serverSide.sharedRegions.PollStation;
 import serverSide.sharedRegions.interfaces.PollStationInterface;
 
@@ -83,13 +83,13 @@ public class ServerPollStation {
 
      /* service request processing */
 
-      PollStationClientProxy cliProxy;                                // service provider agent
+      PPollStation cliProxy;                                // service provider agent
 
       waitConnection = true;
       while (waitConnection)
       { try
         { sconi = scon.accept ();                                    // enter listening procedure
-          cliProxy = new PollStationClientProxy(sconi, pollSInter);    // start a service provider agent to address
+          cliProxy = new PPollStation(sconi, pollSInter);    // start a service provider agent to address
           cliProxy.start ();                                         //   the request of service
         }
         catch (SocketTimeoutException e) {}

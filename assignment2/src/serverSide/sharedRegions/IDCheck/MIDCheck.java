@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-import serverSide.sharedRegions.Repository.IRepo_IDChek;
+import commInfra.interfaces.Repository.IRepo_IDChek;
 
 /**
  * The MIDCheck class implements the ID check shared region.

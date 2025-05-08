@@ -6,7 +6,7 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-import serverSide.sharedRegions.Repository.IRepo_VotingBooth;
+import serverSide.sharedRegions.Repository.IRepo;
 
 /**
  * The MEvotingBooth class implements the IEVotingBooth_ALL interface and represents the evoting booth shared region.
@@ -30,7 +30,7 @@ public class MEvotingBooth{
      * The evoting booth shared region shares information to the repository
      * to be logged (log file and on the terminal) and displayed in the GUI.
      */
-    private static IRepo_VotingBooth log;
+    private static IRepo log;
 
     /**
      * The votes atributte represents the set of the votes.
@@ -71,7 +71,7 @@ public class MEvotingBooth{
      * 
      * @param logs the repository shared region.
      */
-    private MEvotingBooth(IRepo_VotingBooth logs) {
+    private MEvotingBooth(IRepo logs) {
         log = logs;
         lockGathering = new ReentrantLock();
         simulateCountig = lockGathering.newCondition();
@@ -91,7 +91,7 @@ public class MEvotingBooth{
      * @param logs repository of the voting booth.
      * @return instance of MEvotingBooth.
      */
-    public static MEvotingBooth getInstance(IRepo_VotingBooth logs) {
+    public static MEvotingBooth getInstance(IRepo logs) {
         if (instance == null) {
             instance = new MEvotingBooth(logs);
         }

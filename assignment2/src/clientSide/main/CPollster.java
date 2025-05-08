@@ -1,7 +1,7 @@
 package clientSide.main;
 
 import clientSide.entities.TPollster;
-import clientSide.stubs.ExitPoll.STExitPoll_TPollster;
+import clientSide.stubs.STExitPoll;
 
 public class CPollster {
     public static void main(String[] args) {
@@ -13,7 +13,7 @@ public class CPollster {
         String host = args[0];
         int exitPollPort = Integer.parseInt(args[1]);
 
-        var exitPoll = STExitPoll_TPollster.getInstance(host, exitPollPort);
+        var exitPoll = STExitPoll.getInstance(host, exitPollPort);
         Thread pollster = new Thread(TPollster.getInstance(exitPoll));
         pollster.start();
         

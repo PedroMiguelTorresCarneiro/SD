@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-import serverSide.sharedRegions.Repository.IRepo_PollStation;
+import commInfra.interfaces.Repository.IRepo_PollStation;
 
 /**
  * The MPollStation class implements the IPollStation_ALL interface and represents the polling station shared region.

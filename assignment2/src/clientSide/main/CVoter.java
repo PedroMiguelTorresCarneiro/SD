@@ -1,10 +1,11 @@
 package clientSide.main;
 
 import clientSide.entities.TVoter;
-import clientSide.stubs.EvotingBooth.STEVotingBooth_TVoter;
-import clientSide.stubs.ExitPoll.STExitPoll_TVoter;
-import clientSide.stubs.IDCheck.STIDCheck_TVoter;
-import clientSide.stubs.PollStation.STPollStation_TVoter;
+import clientSide.stubs.STEvotingBooth;
+import clientSide.stubs.STExitPoll;
+import clientSide.stubs.STIDCheck;
+import clientSide.stubs.STPollStation;
+
 
 public class CVoter {
     public static void main(String[] args) {
@@ -20,10 +21,10 @@ public class CVoter {
         int exitPollPort = Integer.parseInt(args[4]);
         int numberOfVoters = Integer.parseInt(args[5]);
 
-        var pollStation = STPollStation_TVoter.getInstance(host, psPort);
-        var idCheck = STIDCheck_TVoter.getInstance(host, idCheckPort);
-        var booth = STEVotingBooth_TVoter.getInstance(host, boothPort);
-        var exitPoll = STExitPoll_TVoter.getInstance(host, exitPollPort);
+        var pollStation = STPollStation.getInstance(host, psPort);
+        var idCheck = STIDCheck.getInstance(host, idCheckPort);
+        var booth = STEvotingBooth.getInstance(host, boothPort);
+        var exitPoll = STExitPoll.getInstance(host, exitPollPort);
 
         Thread[] voters = new Thread[numberOfVoters];
             for (int i = 0; i < numberOfVoters; i++) {
