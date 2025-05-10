@@ -1,11 +1,11 @@
 package serverSide.main;
 
 import commInfra.ServerCom;
+import java.net.SocketTimeoutException;
 import serverSide.entities.PRepo;
 import serverSide.sharedRegions.Repository.IRepo;
 import serverSide.sharedRegions.Repository.MRepo;
 import utils.EnvReader;
-import java.net.SocketTimeoutException;
 
 /**
  * Servidor da região partilhada Repository com GUI e configuração via .env.
@@ -34,6 +34,7 @@ public class SRepository {
 
         /* Instancia a GUI */
         gui = new mainGUI();
+        gui.setVisible(true);
 
         /* Instancia o monitor */
         mrepo = MRepo.getInstance(votesToEnd, numVoters, maxInside, gui);
