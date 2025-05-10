@@ -417,55 +417,49 @@ public class mainGUI extends javax.swing.JFrame {
         int maxVotes = (int) spinnerMaxVotes.getValue();
 
         new Thread(() -> {
-            writeEnvFile(numVoters, maxCapacity, maxVotes);
-
-            /*
             try {
-                // Caminho absoluto para o script start-all.sh dentro de src/
-                String path = System.getProperty("user.dir") + "/start-all.sh";
+                // 1. Gera o ficheiro .env
+                writeEnvFile(numVoters, maxCapacity, maxVotes);
 
-                // Comando AppleScript para abrir o Terminal e executar o script
+                // 2. Lança o backend Repository na mesma JVM
+                SRepository.launchBackend(this);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }).start();
+
+        // 3. Arranca os restantes servidores e clientes num script externo
+        try {
+            String userDir = System.getProperty("user.dir");
+            String os = System.getProperty("os.name").toLowerCase();
+
+            if (os.contains("mac")) {
+                String path = userDir + "/start-others.sh";
                 String[] cmd = {
                     "osascript",
                     "-e",
                     "tell app \"Terminal\" to do script \"sh '" + path + "'\""
                 };
-
                 Runtime.getRuntime().exec(cmd);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
-
-           try {
-                String userDir = System.getProperty("user.dir");
-                String os = System.getProperty("os.name").toLowerCase();
-
-                if (os.contains("mac")) {
-                    String path = userDir + "/start-all.sh";
-                    String[] cmd = {
-                        "osascript",
-                        "-e",
-                        "tell app \"Terminal\" to do script \"sh '" + path + "'\""
-                    };
-                    Runtime.getRuntime().exec(cmd);
-                } else if (os.contains("win")) {
-                    String path = userDir + "\\start-all.bat";
-                    String[] cmd = {
-                        "cmd.exe",
-                        "/c",
-                        "start",
-                        "\"\"",
-                        "\"" + path + "\""
-                    };
-                    Runtime.getRuntime().exec(cmd);
-                } else {
-                    System.err.println("Sistema operativo não suportado.");
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            } else if (os.contains("win")) {
+                String path = userDir + "\\start-others.bat";
+                String[] cmd = {
+                    "cmd.exe",
+                    "/c",
+                    "start",
+                    "\"\"",
+                    "\"" + path + "\""
+                };
+                Runtime.getRuntime().exec(cmd);
+            } else {
+                System.err.println("Sistema operativo não suportado.");
             }
-
-        }).start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // 4. Desabilita o botão de start
+        startButton.setEnabled(false);
+        
     }//GEN-LAST:event_startButtonActionPerformed
     
     private void writeEnvFile(int numVoters, int maxCapacity, int maxVotes) {
