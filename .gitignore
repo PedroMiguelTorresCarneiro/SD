@@ -10,6 +10,8 @@ assignment1/*.ear
 log*.txt
 
 
+assignment2/src/src/
+
 # NetBeans project metadata
 nbproject/
 *.iml
