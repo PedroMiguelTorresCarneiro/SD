@@ -419,6 +419,7 @@ public class mainGUI extends javax.swing.JFrame {
         new Thread(() -> {
             writeEnvFile(numVoters, maxCapacity, maxVotes);
 
+            /*
             try {
                 // Caminho absoluto para o script start-all.sh dentro de src/
                 String path = System.getProperty("user.dir") + "/start-all.sh";
@@ -433,7 +434,38 @@ public class mainGUI extends javax.swing.JFrame {
                 Runtime.getRuntime().exec(cmd);
             } catch (IOException e) {
                 e.printStackTrace();
+            }*/
+
+           try {
+                // Caminho base do projeto
+                String userDir = System.getProperty("user.dir");
+
+                // Verifica o sistema operativo
+                String os = System.getProperty("os.name").toLowerCase();
+
+                if (os.contains("mac")) {
+                    // macOS: usar osascript para abrir Terminal e correr o script
+                    String path = userDir + "/start-all.sh";
+                    String[] cmd = {
+                        "osascript",
+                        "-e",
+                        "tell app \"Terminal\" to do script \"sh '" + path + "'\""
+                    };
+                    Runtime.getRuntime().exec(cmd);
+                } else if (os.contains("win")) {
+                    // Windows: usar cmd para correr o batch
+                    String path = userDir + "\\start-all.pso";
+                    String[] cmd = {
+                        "cmd.exe", "/c", "start", "", "\"" + path + "\""
+                    };
+                    Runtime.getRuntime().exec(cmd);
+                } else {
+                    System.err.println("Sistema operativo não suportado.");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+
         }).start();
     }//GEN-LAST:event_startButtonActionPerformed
     
