@@ -449,12 +449,13 @@ public class mainGUI extends javax.swing.JFrame {
                     };
                     Runtime.getRuntime().exec(cmd);
                 } else if (os.contains("win")) {
-                    String path = userDir + "\\start-all.ps1";
+                    String path = userDir + "\\start-all.bat";
                     String[] cmd = {
-                        "powershell.exe",
-                        "-ExecutionPolicy", "Bypass",
-                        "-NoExit",
-                        "-File", path
+                        "cmd.exe",
+                        "/c",
+                        "start",
+                        "\"\"",
+                        "\"" + path + "\""
                     };
                     Runtime.getRuntime().exec(cmd);
                 } else {
@@ -463,7 +464,6 @@ public class mainGUI extends javax.swing.JFrame {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
 
         }).start();
     }//GEN-LAST:event_startButtonActionPerformed
