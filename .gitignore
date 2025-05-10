@@ -1,20 +1,20 @@
 # Build and compiled files
-assignment1/build/
+*/build/
 assignment1/dist/
-assignment1/*.class
+*.class
 assignment1/*.jar
 assignment1/*.war
 assignment1/*.ear
 
 # Logs
-assignment1/*.log
-assignment1/logs.txt
-assignment1/logs/
+*.log
+*/logs.txt
+*/logs/
 
 # NetBeans-specific files
-assignment1/nbproject/private/
-assignment1/nbactions.xml
-assignment1/nb-configuration.xml
+*/nbproject/private/
+*/nbactions.xml
+*/nb-configuration.xml
 
 # IDE-specific files
 assignment1/.idea/
@@ -25,3 +25,4 @@ assignment1/.project
 # System temporary files
 **/.DS_Store
 assignment1/Thumbs.db
+/assignment2/nbproject/private/
