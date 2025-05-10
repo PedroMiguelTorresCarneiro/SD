@@ -25,4 +25,16 @@ public enum MessageType {
     NFICDONE,
     SHUT,
     SHUTDONE,
+    /*------- REPO------*/
+    LOGVOTING,
+    LOGELECTIONRESULTS,
+    CLOSE,
+    LOGPOLL,
+    LOGWAITING,
+    LOGINSIDE,
+    LOGEPOLL,
+    LOGID,
+    LOGSURVEY,
+    LOGSURVEYRESULTS,
+    ACK
 }

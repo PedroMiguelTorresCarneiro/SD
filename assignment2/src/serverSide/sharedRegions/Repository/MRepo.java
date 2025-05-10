@@ -1,6 +1,6 @@
 package serverSide.sharedRegions.Repository;
 
-import Main.mainGUI;
+import serverSide.main.mainGUI;
 import java.util.concurrent.locks.ReentrantLock;
 import java.io.FileWriter;
 import java.io.BufferedWriter;

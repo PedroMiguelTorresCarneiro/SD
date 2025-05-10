@@ -35,7 +35,8 @@ public class Stub {
     @SuppressWarnings("static-access")
     protected void sendMessage(MessageType type, String info) {
         ClientCom com;                                                 
-        Message outMessage; 
+        Message outMessage, inMessage;
+
 
         com = new ClientCom(serverHostName, serverPortNumb);
         while (!com.open ())                                           // waits for a connection to be established
@@ -47,6 +48,8 @@ public class Stub {
         outMessage = Message.getInstance(type, info);
         
         com.writeObject(outMessage);
+        // ✅ Lê a resposta do servidor (ACK ou outro)
+        inMessage = (Message) com.readObject();
         com.close();
     }
     

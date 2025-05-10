@@ -49,25 +49,24 @@ public class PEvotingBooth implements Runnable{
    }
     
    @Override
-   public void run()
-   {
-      Message inMessage = null,                                      // service request
-              outMessage = null;                                     // service reply
+    public void run(){
+        Message inMessage = null,                                      // service request
+                outMessage = null;                                     // service reply
 
-     /* service providing */
+        /* service providing */
 
-      inMessage = (Message) sconi.readObject ();                     // get service request
-      try{ 
-          outMessage = votingBooth.processAndReply(inMessage);         // process it
-      }
-      catch (MessageException e)
-      { System.out.println("Thread VotingBooth: " + e.getMessage () + "!");
-        System.out.println(e.getMessageVal ().toString ());
-        System.exit (1);
-      } catch (InterruptedException ex) {
+        inMessage = (Message) sconi.readObject ();                     // get service request
+        try{ 
+            outMessage = votingBooth.processAndReply(inMessage);         // process it
+        }
+        catch (MessageException e)
+        { System.out.println("Thread IDCheck: " + e.getMessage () + "!");
+          System.out.println(e.getMessageVal ().toString ());
+          System.exit (1);
+        } catch (InterruptedException ex) {
             Logger.getLogger(PEvotingBooth.class.getName()).log(Level.SEVERE, null, ex);
         }
-      sconi.writeObject (outMessage);                                // send service reply
-      sconi.close ();                                                // close the communication channel
-   }
+        sconi.writeObject (outMessage);                                // send service reply
+        sconi.close ();                                                // close the communication channel
+    }
 }

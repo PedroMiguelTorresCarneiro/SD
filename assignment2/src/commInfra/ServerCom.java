@@ -79,7 +79,7 @@ public class ServerCom
    {
       try
       { listeningSocket = new ServerSocket (serverPortNumb);
-        listeningSocket.setSoTimeout (1000);                                   // fixing a 1 s time out in listening to a connection request
+        listeningSocket.setSoTimeout (15000);                                   // fixing a 1 s time out in listening to a connection request
       }
       catch (BindException e)                              // fatal error --- port already in use
       { System.out.println(Thread.currentThread ().getName () +
@@ -133,52 +133,49 @@ public class ServerCom
    *    @throws SocketTimeoutException when a timeout is reached on the listening process
    */
 
-   public ServerCom accept () throws SocketTimeoutException
-   {
-      ServerCom scon;                                      // communication channel
+   public ServerCom accept() throws SocketTimeoutException {
+      ServerCom scon;  // Canal de comunicação com o cliente
 
       scon = new ServerCom(serverPortNumb, listeningSocket);
-      try
-      { scon.commSocket = listeningSocket.accept();
-      }
-      catch (SocketTimeoutException e)
-      { throw new SocketTimeoutException ("Listening timeout!");
-      }
-      catch (SocketException e)
-      { System.out.println(Thread.currentThread ().getName () +
-                                 " - the listening socket was closed during the listening process!");
-        e.printStackTrace ();
-        System.exit (1);
-      }
-      catch (IOException e)
-      { System.out.println(Thread.currentThread ().getName () +
-                                 " - it was not possible to instantiate a communication channel for the pending request!");
-        e.printStackTrace ();
-        System.exit (1);
+      try {
+          scon.commSocket = listeningSocket.accept();
+      } catch (SocketTimeoutException e) {
+          throw new SocketTimeoutException("Listening timeout!");
+      } catch (SocketException e) {
+          System.out.println(Thread.currentThread().getName() +
+                  " - the listening socket was closed during the listening process!");
+          e.printStackTrace();
+          System.exit(1);
+      } catch (IOException e) {
+          System.out.println(Thread.currentThread().getName() +
+                  " - it was not possible to instantiate a communication channel for the pending request!");
+          e.printStackTrace();
+          System.exit(1);
       }
 
-      try
-      { scon.in = new ObjectInputStream (scon.commSocket.getInputStream ());
-      }
-      catch (IOException e)
-      { System.out.println(Thread.currentThread ().getName () +
-                                 " - it was not possible to open the input stream!");
-        e.printStackTrace ();
-        System.exit (1);
+      try {
+          // ⚠️ Ordem importante: criar primeiro o ObjectOutputStream e fazer flush
+          scon.out = new ObjectOutputStream(scon.commSocket.getOutputStream());
+          scon.out.flush();  // Garante que o cabeçalho de serialização é enviado imediatamente
+      } catch (IOException e) {
+          System.out.println(Thread.currentThread().getName() +
+                  " - it was not possible to open the output stream!");
+          e.printStackTrace();
+          System.exit(1);
       }
 
-      try
-      { scon.out = new ObjectOutputStream (scon.commSocket.getOutputStream ());
-      }
-      catch (IOException e)
-      { System.out.println(Thread.currentThread ().getName () +
-                                 " - it was not possible to open the output stream!");
-        e.printStackTrace ();
-        System.exit (1);
+      try {
+          scon.in = new ObjectInputStream(scon.commSocket.getInputStream());
+      } catch (IOException e) {
+          System.out.println(Thread.currentThread().getName() +
+                  " - it was not possible to open the input stream!");
+          e.printStackTrace();
+          System.exit(1);
       }
 
       return scon;
-   }
+  }
+
 
   /**
    *  Close the communication channel.

@@ -17,6 +17,7 @@ public class Message implements Serializable
 
    private static final long serialVersionUID = 2021L;
 
+    
   /**
    *  Message type.
    */
@@ -26,10 +27,12 @@ public class Message implements Serializable
    private String voterId = null;
    private boolean answerType1 = false;
    private char answerType2;
+   private char voteC;
+   private long A, B;
    private int answerType3;
 
 
-   public static Message getInstance(MessageType type ) {
+   public static Message getInstance(MessageType type) {
       return new Message(type);
    }
 
@@ -52,14 +55,22 @@ public class Message implements Serializable
    public static Message getInstance(MessageType type , String info, int nVotes) {
       return new Message(type, info, nVotes);
    }
-
+   
+   public static Message getInstance(MessageType type , String info, char vote) {
+      return new Message(type, info, vote);
+   }
+   
+   public static Message getInstance(MessageType type,long A, long B, String info) {
+      return new Message(type, A, B, info);
+   }
+   
    /* FORM 1 */
-   private Message (MessageType type ){
+   private Message(MessageType type){
          msgType = type;
    }
 
    /* FORM 2 */
-   private Message (MessageType type , String info){
+   private Message(MessageType type , String info){
          msgType = type;
          if(type == MessageType.GET_VOTE){
             vote = info;
@@ -69,35 +80,55 @@ public class Message implements Serializable
    }
 
    /* FORM 3 */
-   private Message (MessageType type , boolean bool){
+   private Message(MessageType type , boolean bool){
       msgType = type;
       answerType1 = bool;
    }
 
    /* FORM 4 */
-   private Message (MessageType type , char vote){
+   private Message(MessageType type , char vote){
       msgType = type;
       answerType2 = vote;
    }
 
    /* FORM 5 */
-   private Message (MessageType type , int nVotes){
+   private Message(MessageType type , int nVotes){
       msgType = type;
       answerType3 = nVotes;
    }
 
-   /* FORM 6 
-   *
-   *     @param fileName logging file name
-   *     @param nIter number of iterations of the customer life cycle
-   */
-   private Message (MessageType type , String fileName, int nIter){
+   /* FORM 6 */
+   private Message(MessageType type , String fileName, int nIter){
       msgType = type;
       voterId = fileName;
       answerType3 = nIter;
    }
    
-
+   private Message(MessageType type , String voterId, char vote){
+       msgType = type;
+       this.voterId = voterId;
+       voteC = vote;
+   }
+   
+   private Message(MessageType type,long A, long B, String info){
+       msgType = type;
+       this.A = A;
+       this.B = B;
+       vote = info;
+   }
+   
+   public long getA(){
+       return (A);
+   }
+   
+   public long getB(){
+       return (B);
+   }
+   
+   public char getVoteC(){
+       return (voteC);
+   }
+   
    /**
    *  Getting message type.
    *

@@ -1,9 +1,9 @@
 package serverSide.sharedRegions.ExitPoll;
 
-import Monitors.ExitPoll.IExitPoll_ALL;
 import commInfra.Message;
 import commInfra.MessageException;
 import commInfra.MessageType;
+import commInfra.interfaces.ExitPoll.IExitPoll_ALL;
 
 /**
  *
@@ -90,11 +90,6 @@ public class IExitPoll implements IExitPoll_ALL {
     }
 
     @Override
-    public void callForSurvey(Character vote, String voterId) throws InterruptedException {
-        exitPoll.callForSurvey(vote, voterId);
-    }
-
-    @Override
     public boolean isOpen() {
         return exitPoll.isOpen();
     }
@@ -112,6 +107,11 @@ public class IExitPoll implements IExitPoll_ALL {
     @Override
     public void close() {
         exitPoll.close();
+    }
+
+    @Override
+    public void callForSurvey(char vote, String voterId) throws InterruptedException {
+        exitPoll.callForSurvey(vote, voterId);
     }
     
 }

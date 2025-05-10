@@ -1,11 +1,11 @@
 package serverSide.sharedRegions.ExitPoll;
 
+import commInfra.interfaces.Repository.IRepo_ExitPoll;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-import commInfra.interfaces.Repository.IRepo_ExitPoll;
 
 /**
  * The MExitPoll class implements the IExitPoll_ALL interface and represents the Exit Poll shared region.

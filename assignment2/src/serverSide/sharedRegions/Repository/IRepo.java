@@ -1,28 +1,77 @@
 package serverSide.sharedRegions.Repository;
 
+import commInfra.Message;
+import commInfra.MessageException;
+import commInfra.MessageType;
+
 import commInfra.interfaces.Repository.IRepo_ALL;
 
-/**
- *
- * @author pedrocarneiro
- */
+
 public class IRepo implements IRepo_ALL{
     private static IRepo instance = null;
     private final MRepo repo;
-    private int votesNumber, votersNumber, insideQueueMaxCapacity;
     
-    private IRepo(int votesNumber, int votersNumber, int insideQueueMaxCapacity){
-        this.votesNumber = votesNumber;
-        this.votersNumber = votersNumber;
-        this.insideQueueMaxCapacity = insideQueueMaxCapacity;
+    private IRepo(MRepo repo){
+        this.repo = repo;
     }
     
-    public static IRepo getInstance(int votesNumber, int votersNumber, int insideQueueMaxCapacity){
+    public static IRepo getInstance(MRepo repo){
         if (instance == null) {
-            instance = new MRepo(votesNumber, votersNumber, insideQueueMaxCapacity);
+            instance = new IRepo(repo);
         }
         return instance;
     }
+    
+    public Message processAndReply(Message inMessage) throws MessageException {
+        Message outMessage;
+
+        switch (inMessage.getMsgType()) {
+            case LOGVOTING -> {
+                logVoting(inMessage.getVoterId(), inMessage.getVoteC());
+                outMessage = Message.getInstance(MessageType.ACK);
+            }
+            case LOGELECTIONRESULTS -> {
+                logElectionResults(inMessage.getA(), inMessage.getB(), inMessage.getVote());
+                outMessage = Message.getInstance(MessageType.ACK);
+            }
+            case CLOSE -> {
+                close();
+                outMessage = Message.getInstance(MessageType.ACK);
+            }
+            case LOGPOLL -> {
+                logPollStation(inMessage.getVote());
+                outMessage = Message.getInstance(MessageType.ACK);
+            }
+            case LOGWAITING -> {
+                logWaiting(inMessage.getVoterId());
+                outMessage = Message.getInstance(MessageType.ACK);
+            }
+            case LOGINSIDE -> {
+                logInside(inMessage.getVoterId());
+                outMessage = Message.getInstance(MessageType.ACK);
+            }
+            case LOGEPOLL -> {
+                logExitPoll(inMessage.getVoterId());
+                outMessage = Message.getInstance(MessageType.ACK);
+            }
+            case LOGID -> {
+                logIDCheck(inMessage.getVoterId(), inMessage.getVoteC());
+                outMessage = Message.getInstance(MessageType.ACK);
+            }
+            case LOGSURVEY -> {
+                logSurvey(inMessage.getVoterId(), inMessage.getVoteC());
+                outMessage = Message.getInstance(MessageType.ACK);
+            }
+            case LOGSURVEYRESULTS -> {
+                logSurveyResults(inMessage.getA(), inMessage.getB(), inMessage.getVote());
+                outMessage = Message.getInstance(MessageType.ACK);
+            }
+            default -> throw new MessageException("Tipo de mensagem inválido", inMessage);
+        }
+
+        return outMessage;
+    }
+
     
     @Override
     public void logVoting(String voterId, char vote) {

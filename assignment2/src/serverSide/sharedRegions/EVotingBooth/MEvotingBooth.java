@@ -1,5 +1,6 @@
 package serverSide.sharedRegions.EVotingBooth;
 
+import commInfra.interfaces.Repository.IRepo_VotingBooth;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -30,7 +31,7 @@ public class MEvotingBooth{
      * The evoting booth shared region shares information to the repository
      * to be logged (log file and on the terminal) and displayed in the GUI.
      */
-    private static IRepo log;
+    private static IRepo_VotingBooth log;
 
     /**
      * The votes atributte represents the set of the votes.
@@ -71,7 +72,7 @@ public class MEvotingBooth{
      * 
      * @param logs the repository shared region.
      */
-    private MEvotingBooth(IRepo logs) {
+    private MEvotingBooth(IRepo_VotingBooth logs) {
         log = logs;
         lockGathering = new ReentrantLock();
         simulateCountig = lockGathering.newCondition();
@@ -91,7 +92,7 @@ public class MEvotingBooth{
      * @param logs repository of the voting booth.
      * @return instance of MEvotingBooth.
      */
-    public static MEvotingBooth getInstance(IRepo logs) {
+    public static MEvotingBooth getInstance(IRepo_VotingBooth logs) {
         if (instance == null) {
             instance = new MEvotingBooth(logs);
         }

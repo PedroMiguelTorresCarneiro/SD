@@ -1,26 +1,22 @@
 package serverSide.entities;
 
 import commInfra.*;
-import serverSide.sharedRegions.PollStation.IPollStation;
+import serverSide.sharedRegions.Repository.IRepo;
 
-/**
- *
- * @author pedrocarneiro
- */
-public class PPollStation implements Runnable {
-    private static PPollStation instance = null;
+public class PRepo implements Runnable {
+    private static PRepo instance = null;
     private final ServerCom sconi;
-    private final IPollStation poll;
+    private final IRepo repo;
     private static int nProxy = 0;
 
-    private PPollStation(ServerCom sconi, IPollStation poll){
+    private PRepo(ServerCom sconi, IRepo repo){
         this.sconi = sconi;
-        this.poll = poll;
+        this.repo = repo;
     }
     
-    public static PPollStation getInstance(ServerCom sconi, IPollStation poll){
+    public static PRepo getInstance(ServerCom sconi, IRepo repo){
         if(instance == null){
-            instance = new PPollStation(sconi, poll);
+            instance = new PRepo(sconi, repo);
         }
         return instance;
     }
@@ -30,10 +26,10 @@ public class PPollStation implements Runnable {
         int proxyId;                                                   // instantiation identifier
 
         try
-        { cl = Class.forName ("serverSide.entities.PIDCheck");
+        { cl = Class.forName ("serverSide.entities.PRepo");
         }
         catch (ClassNotFoundException e)
-        { System.out.println("Data type PPollStation was not found!");
+        { System.out.println("Data type PRepo was not found!");
           e.printStackTrace ();
           System.exit (1);
         }
@@ -53,10 +49,10 @@ public class PPollStation implements Runnable {
 
         inMessage = (Message) sconi.readObject ();                     // get service request
         try{ 
-            outMessage = poll.processAndReply(inMessage);         // process it
+            outMessage = repo.processAndReply(inMessage);         // process it
         }
         catch (MessageException e)
-        { System.out.println("Thread IPollStation: " + e.getMessage () + "!");
+        { System.out.println("Thread IRepo: " + e.getMessage () + "!");
           System.out.println(e.getMessageVal ().toString ());
           System.exit (1);
         }
