@@ -437,14 +437,10 @@ public class mainGUI extends javax.swing.JFrame {
             }*/
 
            try {
-                // Caminho base do projeto
                 String userDir = System.getProperty("user.dir");
-
-                // Verifica o sistema operativo
                 String os = System.getProperty("os.name").toLowerCase();
 
                 if (os.contains("mac")) {
-                    // macOS: usar osascript para abrir Terminal e correr o script
                     String path = userDir + "/start-all.sh";
                     String[] cmd = {
                         "osascript",
@@ -453,10 +449,12 @@ public class mainGUI extends javax.swing.JFrame {
                     };
                     Runtime.getRuntime().exec(cmd);
                 } else if (os.contains("win")) {
-                    // Windows: usar cmd para correr o batch
-                    String path = userDir + "\\start-all.pso";
+                    String path = userDir + "\\start-all.ps1";
                     String[] cmd = {
-                        "cmd.exe", "/c", "start", "", "\"" + path + "\""
+                        "powershell.exe",
+                        "-ExecutionPolicy", "Bypass",
+                        "-NoExit",
+                        "-File", path
                     };
                     Runtime.getRuntime().exec(cmd);
                 } else {
@@ -465,6 +463,7 @@ public class mainGUI extends javax.swing.JFrame {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
 
         }).start();
     }//GEN-LAST:event_startButtonActionPerformed
