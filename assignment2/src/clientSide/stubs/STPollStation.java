@@ -19,7 +19,7 @@ public class STPollStation extends Stub implements IPollStation_ALL {
 
     @Override
     public boolean isCLosedAfterElection() {
-        return boolComm(MessageType.PS_IS_CLOSED_AFTER);
+        return boolComm(MessageType.PS_IS_CLOSED_AFTER_ELECTION);
     }
 
     @Override

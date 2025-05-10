@@ -19,6 +19,7 @@ public enum MessageType {
     PS_IS_EMPTY,
     MAX_VOTES,
     PS_IS_CLOSED_AFTER,
+    PS_IS_CLOSED_AFTER_ELECTION,
     CAN_ENTER_PS,
     EXITING_PS,
     SETNFIC,

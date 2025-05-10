@@ -24,12 +24,12 @@ public class STExitPoll extends Stub implements IExitPoll_ALL{
 
     @Override
     public void callForSurvey(char vote, String voterId) throws InterruptedException {
-        sendMessage(MessageType.CALLFORSURVEY, voterId);
+        sendMessage(MessageType.CALLFORSURVEY, vote, voterId);
     }
 
     @Override
     public boolean isOpen() {
-        return boolComm(MessageType.PS_IS_OPEN);
+        return boolComm(MessageType.EP_ISOPEN);
     }
 
     @Override

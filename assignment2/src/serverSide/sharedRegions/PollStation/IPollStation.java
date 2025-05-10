@@ -4,10 +4,10 @@
  */
 package serverSide.sharedRegions.PollStation;
 
-import commInfra.interfaces.PollStation.IPollStation_ALL;
 import commInfra.Message;
 import commInfra.MessageException;
 import commInfra.MessageType;
+import commInfra.interfaces.PollStation.IPollStation_ALL;
 
 /**
  *
@@ -31,55 +31,83 @@ public class IPollStation implements IPollStation_ALL{
     public Message processAndReply(Message inMessage) throws MessageException {
         Message outMessage;
 
-        switch (inMessage.getMessageType()) {
+        switch (inMessage.getMsgType()) {
             case CAN_ENTER_PS -> {
-                String voterId = inMessage.getVoterId();
+                System.out.println(" \n[PollStation] CASE CAN_ENTER_PS ------>");
+                String voterId = inMessage.getInfo();
                 if (voterId == null || voterId.isEmpty()) {
                     throw new MessageException("Voter ID inválido ou ausente.", inMessage);
                 }
 
                 try {
+                    System.out.println("Voter ID: " + voterId + " is trying to enter the Poll Station");
                     boolean entered = canEnterPS(voterId);
+                    System.out.println("Voter ID: " + voterId + " can enter the Poll Station: " + entered);
                     outMessage = Message.getInstance(MessageType.CAN_ENTER_PS, entered);
                 } catch (InterruptedException e) {
                     throw new MessageException("Thread interrompida durante canEnterPS.", inMessage);
                 }
             }
             case PS_IS_CLOSED_AFTER -> {
-                boolean closed = isCLosedAfterElection();
+                System.out.println(" \n[PollStation] CASE PS_IS_CLOSED_AFTER ------>");
+                System.out.println("Checking if the Poll Station is closed after the election");
+                boolean closed = isPSclosedAfter();
+                System.out.println("Poll Station is closed after the election: " + closed);
                 outMessage = Message.getInstance(MessageType.PS_IS_CLOSED_AFTER, closed);
             }
+            case PS_IS_CLOSED_AFTER_ELECTION -> {
+                System.out.println(" \n[PollStation] CASE PS_IS_CLOSED_AFTER_ELECTION ------>");
+                System.out.println("Checking if the Poll Station is closed after the election");
+                boolean closed = isCLosedAfterElection();
+                System.out.println("Poll Station is closed after the election: " + closed);
+                outMessage = Message.getInstance(MessageType.PS_IS_CLOSED_AFTER_ELECTION, closed);
+            }
             case EXITING_PS -> {
-                String voterId = inMessage.getVoterId();
+                System.out.println(" \n[[PollStation] CASE EXITING_PS ------>");
+                String voterId = inMessage.getInfo();
                 if (voterId == null || voterId.isEmpty()) {
                     throw new MessageException("Voter ID inválido ou ausente.", inMessage);
                 }
 
                 try {
+                    System.out.println("Voter ID: " + voterId + " is exiting the Poll Station");
                     exitingPS(voterId);
-                    outMessage = Message.getInstance(MessageType.EXITING_PS);
+                    System.out.println("Voter ID: " + voterId + " has exited the Poll Station");
+                    outMessage = Message.getInstance(MessageType.ACK);
                 } catch (InterruptedException e) {
                     throw new MessageException("Thread interrompida durante exitingPS.", inMessage);
                 }
             }
             case OPEN_PS -> {
+                System.out.println(" \n[PollStation] CASE OPEN_PS ------>");
                 try {
+                    System.out.println("Opening the Poll Station");
                     openPS();
-                    outMessage = Message.getInstance(MessageType.OPEN_PS);
+                    System.out.println("Poll Station is now open");
+                    outMessage = Message.getInstance(MessageType.ACK);
                 } catch (InterruptedException e) {
                     throw new MessageException("Thread interrompida durante openPS.", inMessage);
                 }
             }
             case CALL_NEXT_VOTER -> {
+                System.out.println(" \n[PollStation] CASE CALL_NEXT_VOTER ------>");
+                System.out.println("Calling the next voter");
                 callNextVoter();
-                outMessage = Message.getInstance(MessageType.CALL_NEXT_VOTER);
+                System.out.println("Next voter has been called");
+                outMessage = Message.getInstance(MessageType.ACK);
             }
             case CLOSE_PS -> {
+                System.out.println(" \n[PollStation] CASE CLOSE_PS ------>");
+                System.out.println("Closing the Poll Station");
                 closePS();
-                outMessage = Message.getInstance(MessageType.CLOSE_PS);
+                System.out.println("Poll Station is now closed");
+                outMessage = Message.getInstance(MessageType.ACK);
             }
             case PS_IS_EMPTY -> {
+                System.out.println(" \n[PollStation] CASE PS_IS_EMPTY ------>");
+                System.out.println("Checking if the Poll Station is empty");
                 boolean empty = isEmpty();
+                System.out.println("Poll Station is empty: " + empty);
                 outMessage = Message.getInstance(MessageType.PS_IS_EMPTY, empty);
             }
 

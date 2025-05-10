@@ -49,7 +49,7 @@ public class SEvotingBooth {
         /* Aceitação de pedidos */
         while (true) {
             sconi = server.accept();
-            proxy = PEvotingBooth.getInstance(sconi, boothInterface);
+            proxy = new PEvotingBooth(sconi, boothInterface);
             new Thread(proxy).start();
         }
     }

@@ -42,16 +42,19 @@ public class IIDCheck implements IIDCheck_ALL{
     public Message processAndReply(Message inMessage) throws MessageException {
         Message outMessage;
 
-        switch (inMessage.getMessageType()) {
+        switch (inMessage.getMsgType()) {
             case CHECK_ID -> {
-                String voterId = inMessage.getVoterId();
+                System.out.println("\n[IDCheck] CASE CHECK_ID --->");
+                String voterId = inMessage.getInfo();
 
                 if (voterId == null || voterId.isEmpty()) {
                     throw new MessageException("Voter ID inválido ou ausente!", inMessage);
                 }
 
                 try {
+                    System.out.println("[IDCheck] A verificar ID do votante: " + voterId);
                     boolean isValid = checkID(voterId);
+                    System.out.println("[IDCheck] ID do votante " + (isValid ? "aceite" : "não aceite"));
                     outMessage = Message.getInstance(MessageType.CHECK_ID, isValid);
                 } catch (InterruptedException e) {
                     throw new MessageException("Thread interrompida durante checkID().", inMessage);

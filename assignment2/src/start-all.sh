@@ -30,10 +30,11 @@ sleep 1
 
 # Clientes
 echo "🚀 [2/2] Clientes"
+osascript -e "tell app \"Terminal\" to do script \"cd '$SRC_DIR' && java -cp '$BUILD_DIR' clientSide.main.CVoter\""
+sleep 1
 osascript -e "tell app \"Terminal\" to do script \"cd '$SRC_DIR' && java -cp '$BUILD_DIR' clientSide.main.CPollClerk\""
 sleep 1
 osascript -e "tell app \"Terminal\" to do script \"cd '$SRC_DIR' && java -cp '$BUILD_DIR' clientSide.main.CPollster\""
 sleep 1
-osascript -e "tell app \"Terminal\" to do script \"cd '$SRC_DIR' && java -cp '$BUILD_DIR' clientSide.main.CVoter\""
 
 echo "✅ Simulação distribuída iniciada!"

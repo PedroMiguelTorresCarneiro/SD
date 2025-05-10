@@ -27,42 +27,60 @@ public class IExitPoll implements IExitPoll_ALL {
     public Message processAndReply(Message inMessage) throws MessageException, InterruptedException{
         Message outMessage;
         
-        switch (inMessage.getMessageType()){
+        switch (inMessage.getMsgType()){
             case CLOSE_PS -> {
+                System.out.println("\n[EXITPOLL] CASE CLOSE_PS --->");
+                System.out.println("Closing exit poll...");
                 close();
-                outMessage = Message.getInstance(MessageType.CLOSE_PS);
+                System.out.println("Exit poll closed.");
+                outMessage = Message.getInstance(MessageType.ACK);
             }
             case EP_ISOPEN -> {
+                System.out.println("\n[EXITPOLL] CASE EP_ISOPEN --->");
+                System.out.println("Checking if exit poll is open...");
                 boolean isOpen = isOpen();
+                System.out.println("Exit poll is open: " + isOpen);
                 outMessage = Message.getInstance(MessageType.EP_ISOPEN, isOpen);
             }
             case CONDUCTSURVEY -> {
+                System.out.println("\n[EXITPOLL] CASE CONDUCTSURVEY --->");
                 try {
+                    System.out.println("Conducting survey...");
                     conductSurvey();
-                    outMessage = Message.getInstance(MessageType.CONDUCTSURVEY);
+                    System.out.println("Survey conducted.");
+                    outMessage = Message.getInstance(MessageType.ACK);
                 } catch (InterruptedException e) {
                     throw new MessageException("Thread interrompida durante conductSurvey.", inMessage);
                 }
             }
             case PUBLISHRESULTS -> {
+                System.out.println("\n[EXITPOLL] CASE PUBLISHRESULTS --->");
                 try {
+                    System.out.println("Publishing results...");
                     publishResults();
-                    outMessage = Message.getInstance(MessageType.PUBLISHRESULTS);
+                    System.out.println("Results published.");
+                    outMessage = Message.getInstance(MessageType.ACK);
                 } catch (InterruptedException e) {
                     throw new MessageException("Thread interrompida durante publishResults.", inMessage);
                 }
             }
             case VOTER_CHOOSEN -> {
+                System.out.println("\n[EXITPOLL] CASE VOTER_CHOOSEN --->");
                 try {
+                    System.out.println("Waiting for voter to choose...");
                     boolean selected = choosen();
+                    System.out.println("Voter has chosen: " + selected);
                     outMessage = Message.getInstance(MessageType.VOTER_CHOOSEN, selected);
                 } catch (InterruptedException e) {
                     throw new MessageException("Thread interrompida durante choosen().", inMessage);
                 }
             }
             case CALLFORSURVEY -> {
-                char vote = inMessage.getAnswerType2();
-                String voterId = inMessage.getVoterId();
+                System.out.println("\n[EXITPOLL] CASE CALLFORSURVEY --->");
+                System.out.println("Calling for survey...");
+                char vote = inMessage.getCaracter();
+                System.out.println("Vote: " + vote);
+                String voterId = inMessage.getInfo();
 
                 if (voterId == null || voterId.isEmpty())
                     throw new MessageException("Voter ID inválido ou ausente.", inMessage);
@@ -71,8 +89,10 @@ public class IExitPoll implements IExitPoll_ALL {
                     throw new MessageException("Voto inválido: " + vote, inMessage);
 
                 try {
+                    System.out.println("Calling for survey with vote: " + vote + " and voter ID: " + voterId);
                     callForSurvey(vote, voterId);
-                    outMessage = Message.getInstance(MessageType.CALLFORSURVEY);
+                    System.out.println("Survey called.");
+                    outMessage = Message.getInstance(MessageType.ACK);
                 } catch (InterruptedException e) {
                     throw new MessageException("Thread interrompida durante callForSurvey().", inMessage);
                 }

@@ -13,7 +13,7 @@ public class PPollStation implements Runnable {
     private final IPollStation poll;
     private static int nProxy = 0;
 
-    private PPollStation(ServerCom sconi, IPollStation poll){
+    public PPollStation(ServerCom sconi, IPollStation poll){
         this.sconi = sconi;
         this.poll = poll;
     }

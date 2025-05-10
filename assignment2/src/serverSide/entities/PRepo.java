@@ -9,7 +9,7 @@ public class PRepo implements Runnable {
     private final IRepo repo;
     private static int nProxy = 0;
 
-    private PRepo(ServerCom sconi, IRepo repo){
+    public PRepo(ServerCom sconi, IRepo repo){
         this.sconi = sconi;
         this.repo = repo;
     }
@@ -48,6 +48,7 @@ public class PRepo implements Runnable {
         /* service providing */
 
         inMessage = (Message) sconi.readObject ();                     // get service request
+        //System.out.println("Incoming message: " + inMessage.toString());
         try{ 
             outMessage = repo.processAndReply(inMessage);         // process it
         }

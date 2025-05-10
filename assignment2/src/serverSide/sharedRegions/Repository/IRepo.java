@@ -3,7 +3,6 @@ package serverSide.sharedRegions.Repository;
 import commInfra.Message;
 import commInfra.MessageException;
 import commInfra.MessageType;
-
 import commInfra.interfaces.Repository.IRepo_ALL;
 
 
@@ -27,43 +26,54 @@ public class IRepo implements IRepo_ALL{
 
         switch (inMessage.getMsgType()) {
             case LOGVOTING -> {
-                logVoting(inMessage.getVoterId(), inMessage.getVoteC());
+                System.out.println("\nCASE LOGVOTING --->\n");
+                logVoting(inMessage.getInfo(), inMessage.getCaracter());
                 outMessage = Message.getInstance(MessageType.ACK);
             }
             case LOGELECTIONRESULTS -> {
-                logElectionResults(inMessage.getA(), inMessage.getB(), inMessage.getVote());
+                System.out.println("\nCASE LOGELECTIONRESULTS --->\n");
+                logElectionResults(inMessage.getLongA(), inMessage.getLongB(), inMessage.getInfo());
                 outMessage = Message.getInstance(MessageType.ACK);
             }
             case CLOSE -> {
+                System.out.println("\nCASE CLOSE --->\n");
                 close();
                 outMessage = Message.getInstance(MessageType.ACK);
             }
             case LOGPOLL -> {
-                logPollStation(inMessage.getVote());
+                System.out.println("\nCASE LOGPOLL --->\n");
+                logPollStation(inMessage.getInfo());
+                System.out.println("Poll LOGGED");
                 outMessage = Message.getInstance(MessageType.ACK);
             }
             case LOGWAITING -> {
-                logWaiting(inMessage.getVoterId());
+                System.out.println("\nCASE LOGWAITING --->\n");
+                logWaiting(inMessage.getInfo());
                 outMessage = Message.getInstance(MessageType.ACK);
             }
             case LOGINSIDE -> {
-                logInside(inMessage.getVoterId());
+                System.out.println("\nCASE LOGINSIDE --->\n");
+                logInside(inMessage.getInfo());
                 outMessage = Message.getInstance(MessageType.ACK);
             }
             case LOGEPOLL -> {
-                logExitPoll(inMessage.getVoterId());
+                System.out.println("\nCASE LOGEPOLL --->\n");
+                logExitPoll(inMessage.getInfo());
                 outMessage = Message.getInstance(MessageType.ACK);
             }
             case LOGID -> {
-                logIDCheck(inMessage.getVoterId(), inMessage.getVoteC());
+                System.out.println("\nCASE LOGID --->\n");
+                logIDCheck(inMessage.getInfo(), inMessage.getCaracter());
                 outMessage = Message.getInstance(MessageType.ACK);
             }
             case LOGSURVEY -> {
-                logSurvey(inMessage.getVoterId(), inMessage.getVoteC());
+                System.out.println("\nCASE LOGSURVEY --->\n");
+                logSurvey(inMessage.getInfo(), inMessage.getCaracter());
                 outMessage = Message.getInstance(MessageType.ACK);
             }
             case LOGSURVEYRESULTS -> {
-                logSurveyResults(inMessage.getA(), inMessage.getB(), inMessage.getVote());
+                System.out.println("\nCASE LOGSURVEYRESULTS --->\n");
+                logSurveyResults(inMessage.getLongA(), inMessage.getLongB(), inMessage.getInfo());
                 outMessage = Message.getInstance(MessageType.ACK);
             }
             default -> throw new MessageException("Tipo de mensagem inválido", inMessage);

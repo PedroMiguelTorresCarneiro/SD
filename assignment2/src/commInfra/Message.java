@@ -23,13 +23,11 @@ public class Message implements Serializable
    */
 
    private MessageType msgType = null;
-   private String vote = null;
-   private String voterId = null;
-   private boolean answerType1 = false;
-   private char answerType2;
-   private char voteC;
-   private long A, B;
-   private int answerType3;
+   private String info = null;
+   private char caracter;
+   private boolean bool = false;
+   private int inteiro;
+   private long longA, longB;
 
 
    public static Message getInstance(MessageType type) {
@@ -63,6 +61,10 @@ public class Message implements Serializable
    public static Message getInstance(MessageType type,long A, long B, String info) {
       return new Message(type, A, B, info);
    }
+
+   public static Message getInstance(MessageType type,char vote, String info) {
+      return new Message(type, vote, info);
+   }
    
    /* FORM 1 */
    private Message(MessageType type){
@@ -72,63 +74,78 @@ public class Message implements Serializable
    /* FORM 2 */
    private Message(MessageType type , String info){
          msgType = type;
-         if(type == MessageType.GET_VOTE){
-            vote = info;
-         }else {
-            voterId = info;
-         }
+         this.info = info;
    }
 
    /* FORM 3 */
    private Message(MessageType type , boolean bool){
       msgType = type;
-      answerType1 = bool;
+      this.bool = bool;
    }
 
    /* FORM 4 */
    private Message(MessageType type , char vote){
       msgType = type;
-      answerType2 = vote;
+      caracter = vote;
    }
 
    /* FORM 5 */
    private Message(MessageType type , int nVotes){
       msgType = type;
-      answerType3 = nVotes;
+      inteiro = nVotes;
    }
 
    /* FORM 6 */
    private Message(MessageType type , String fileName, int nIter){
       msgType = type;
-      voterId = fileName;
-      answerType3 = nIter;
+      info = fileName;
+      inteiro = nIter;
    }
    
    private Message(MessageType type , String voterId, char vote){
-       msgType = type;
-       this.voterId = voterId;
-       voteC = vote;
+      msgType = type;
+      info = voterId;
+      caracter = vote;
    }
    
    private Message(MessageType type,long A, long B, String info){
-       msgType = type;
-       this.A = A;
-       this.B = B;
-       vote = info;
+      msgType = type;
+      longA = A;
+      longB = B;
+      this.info = info;
+   }
+
+   private Message(MessageType type,char vote, String info){
+      msgType = type;
+      caracter = vote;
+      this.info = info;
    }
    
-   public long getA(){
-       return (A);
+   public long getLongA(){
+       return (longA);
    }
    
-   public long getB(){
-       return (B);
+   public long getLongB(){
+       return (longB);
    }
    
-   public char getVoteC(){
-       return (voteC);
+   public char getCaracter(){
+       return (caracter);
+   }
+
+   public String getInfo(){
+       return (info);
    }
    
+   public boolean getBool(){
+       return (bool);
+   }
+
+   public int getInteiro(){
+       return (inteiro);
+   }
+
+
    /**
    *  Getting message type.
    *
@@ -137,35 +154,6 @@ public class Message implements Serializable
    public MessageType getMsgType ()
    {
       return (msgType);
-   }
-
-   /**
-    * Getting the vote.
-    *    
-    *   @return vote
-    */
-   public String getVote ()
-   {
-      return (vote);
-   }
-
-   /**
-    * Getting the voter id.
-    *    
-    *   @return voter id
-    */
-   public String getVoterId ()
-   {
-      return (voterId);
-   }
-
-   /**
-    * Getting MessageType.
-    *    
-    *   @return message type
-    */
-   public MessageType getMessageType() {
-      return msgType;
    }
 
 
@@ -180,21 +168,12 @@ public class Message implements Serializable
    public String toString ()
    {
       return ("Message type = " + msgType +
-              "\nVoter Id = " + voterId +
-              "\nVote = " + vote +
+              "\nInfo = " + info +
+              "\nchar = " + caracter +
+              "\nint = " + inteiro +
+              "\nbollean = " + bool +
+              "\nlong A = " + longA +
+              "\nlongB = " + longB +
               "\n");
    }
-
-    public boolean getAnswerType1() {
-        return answerType1;
-    }
-
-    public char getAnswerType2() {
-        return answerType2;
-    }
-
-    public int getAnswerType3() {
-        return answerType3;
-    }
-
 }

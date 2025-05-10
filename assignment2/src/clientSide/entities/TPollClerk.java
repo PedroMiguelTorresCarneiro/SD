@@ -12,9 +12,9 @@ package clientSide.entities;
  * @author Inês Águia
  * @author Pedro Carneiro
  */
-import clientSide.stubs.STPollStation;
 import clientSide.stubs.STEvotingBooth;
 import clientSide.stubs.STExitPoll;
+import clientSide.stubs.STPollStation;
 
 public class TPollClerk implements Runnable {
 
@@ -143,40 +143,58 @@ public class TPollClerk implements Runnable {
             while (state != PollClerkState.PUBLISHING_WINNER) {
                 switch (state) {   
                     case OPEN_PS ->{
+                        System.out.println("\n[TPOLLCLERK] - CASE OPEN_PS --->\n");
                         pollStation.openPS();
                         setState(PollClerkState.ID_CHECK_WAIT);
                     } 
 
-                    case ID_CHECK_WAIT -> {           
+                    case ID_CHECK_WAIT -> { 
+                        System.out.println("\n[TPOLLCLERK] - CASE ID_CHECK_WAIT --->\n");          
                         if(pollStation.isPSclosedAfter()){
+                            System.out.println("\n[TPOLLCLERK] - Polling station is closed --->\n");
                             setState(PollClerkState.INFORMING_EP);
                             break;
                         } 
+
+                        System.out.println("\n[TPOLLCLERK] - calling next voter --->\n");
                         pollStation.callNextVoter();
+                        System.out.println("\n[TPOLLCLERK] - Voter called --->\n");
                         setState(PollClerkState.ID_CHECK);
                     }
 
                     case ID_CHECK -> {
+                        System.out.println("\n[TPOLLCLERK] - CASE ID_CHECK --->\n");
+
                         if (booth.getVotesCount() >= maxVotes) {
+                            System.out.println("\n[TPOLLCLERK] - Maximum votes reached --->\n");
                             pollStation.closePS();
                         }
 
                         if (pollStation.isEmpty()) {
+                            System.out.println("\n[TPOLLCLERK] - Polling station is empty --->\n");
                             setState(PollClerkState.INFORMING_EP);
                             break;
                         }
-
+                        System.out.println("\n[TPOLLCLERK] - Checking ID wait --->\n");
                         setState(PollClerkState.ID_CHECK_WAIT);
                     }
 
                     case INFORMING_EP -> {
+                        System.out.println("\n[TPOLLCLERK] - CASE INFORMING_EP --->\n");
+                        System.out.println("\n[TPOLLCLERK] - Informing exit poll --->\n");
                         exitPoll.close();
+                        System.out.println("\n[TPOLLCLERK] - Exit poll closed --->\n");
+                        System.out.println("\n[TPOLLCLERK] - Gathering votes --->\n");
                         booth.gathering();
+                        System.out.println("\n[TPOLLCLERK] - Gathering votes finished --->\n");
                         setState(PollClerkState.GATHERING_VOTES);
                     }
 
                     case GATHERING_VOTES ->{
+                        System.out.println("\n[TPOLLCLERK] - CASE GATHERING_VOTES --->\n");
+                        System.out.println("\n[TPOLLCLERK] - Publishing election results --->\n");
                         booth.publishElectionResults();
+                        System.out.println("\n[TPOLLCLERK] - Election results published --->\n");
                         setState(PollClerkState.PUBLISHING_WINNER);
                     }
 

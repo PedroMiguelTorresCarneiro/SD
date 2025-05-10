@@ -1,9 +1,9 @@
 package serverSide.sharedRegions.EVotingBooth;
 
 import commInfra.Message;
-import commInfra.interfaces.EvotingBooth.IEVotingBooth_ALL;
 import commInfra.MessageException;
 import commInfra.MessageType;
+import commInfra.interfaces.EvotingBooth.IEVotingBooth_ALL;
 
 public class IEVotingBooth implements IEVotingBooth_ALL {
     private static IEVotingBooth instance = null;
@@ -23,41 +23,54 @@ public class IEVotingBooth implements IEVotingBooth_ALL {
     public Message processAndReply(Message inMessage) throws MessageException, InterruptedException{
         Message outMessage;
         
-        switch (inMessage.getMessageType()){
+        switch (inMessage.getMsgType()){
             case VOTE -> {
-                String voterId = inMessage.getVoterId();
+                System.out.println("\n[EVotingBooth] CASE VOTE --->");
+                String voterId = inMessage.getInfo();
                 if (voterId == null || voterId.isEmpty()) {
                     throw new MessageException("Voter ID ausente ou inválido!", inMessage);
                 }
-
+                System.out.println("Voter ID: " + voterId);
                 vote(voterId);
-                outMessage = Message.getInstance(MessageType.VOTE);
+                System.out.println("Voto registrado com sucesso!");
+                outMessage = Message.getInstance(MessageType.ACK);
             }
             case GET_VOTE -> {
-                String voterId = inMessage.getVoterId();
+                System.out.println("\n[EVotingBooth] CASE GET_VOTE --->");
+                String voterId = inMessage.getInfo();
                 if (voterId == null || voterId.isEmpty()) {
                     throw new MessageException("Voter ID ausente ou inválido!", inMessage);
                 }
-
+                System.out.println("Voter ID: " + voterId);
                 char vote = getVote(voterId);
+                System.out.println("Voto "+ vote + " recuperado com sucesso!");
                 outMessage = Message.getInstance(MessageType.GET_VOTE, vote);
             }
             case GATHERING_VOTES -> {
+                System.out.println("\n[EVotingBooth] CASE GATHERING_VOTES --->");
                 try {
+                    System.out.println("Iniciando o gathering...");
                     gathering();
-                    outMessage = Message.getInstance(MessageType.GATHERING_VOTES);
+                    System.out.println("Gathering concluído com sucesso!");
+                    outMessage = Message.getInstance(MessageType.ACK);
                 } catch (InterruptedException e) {
                     throw new MessageException("Thread interrompida durante gathering.", inMessage);
                 }
             }
 
             case PUBLISH_ELECTION_RESULTS -> {
+                System.out.println("\n[EVotingBooth] CASE PUBLISH_ELECTION_RESULTS --->");
+                System.out.println("Publicando resultados da eleição...");
                 publishElectionResults();
-                outMessage = Message.getInstance(MessageType.PUBLISH_ELECTION_RESULTS);
+                System.out.println("Resultados publicados com sucesso!");
+                outMessage = Message.getInstance(MessageType.ACK);
             }
 
             case GET_VOTES_COUNT -> {
+                System.out.println("\n[EVotingBooth] CASE GET_VOTES_COUNT --->");
+                System.out.println("Contando votos...");
                 int count = getVotesCount();
+                System.out.println("Total de votos: " + count);
                 outMessage = Message.getInstance(MessageType.GET_VOTES_COUNT, count);
             }
             default -> throw new MessageException("Tipo de mensagem inválido", inMessage);

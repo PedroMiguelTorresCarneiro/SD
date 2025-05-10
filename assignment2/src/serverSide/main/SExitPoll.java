@@ -1,13 +1,13 @@
 package serverSide.main;
 
 import commInfra.ServerCom;
+import commInfra.interfaces.Repository.IRepo_ExitPoll;
+import java.net.SocketTimeoutException;
 import serverSide.entities.PExitPoll;
 import serverSide.sharedRegions.ExitPoll.IExitPoll;
 import serverSide.sharedRegions.ExitPoll.MExitPoll;
 import serverSide.stubs.SRepository;
-import commInfra.interfaces.Repository.IRepo_ExitPoll;
 import utils.EnvReader;
-import java.net.SocketTimeoutException;
 
 /**
  * Servidor da região partilhada ExitPoll com configuração via .env.
@@ -49,7 +49,7 @@ public class SExitPoll {
         /* Aceitação de pedidos */
         while (true) {
             sconi = server.accept();
-            proxy = PExitPoll.getInstance(sconi, exitPollInterface);
+            proxy = new PExitPoll(sconi, exitPollInterface);
             new Thread(proxy).start();
         }
     }

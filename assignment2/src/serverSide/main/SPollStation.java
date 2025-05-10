@@ -50,7 +50,7 @@ public class SPollStation {
         /* Aceitação de pedidos */
         while (true) {
             sconi = server.accept();
-            proxy = PPollStation.getInstance(sconi, pollStationInterface);
+            proxy = new PPollStation(sconi, pollStationInterface);
             new Thread(proxy).start();
         }
     }

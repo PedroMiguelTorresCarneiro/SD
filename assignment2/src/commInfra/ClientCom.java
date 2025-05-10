@@ -34,13 +34,13 @@ public class ClientCom
    *  Name of the computational system where the server is located.
    */
 
-   private String serverHostName;
+   private final String serverHostName;
 
   /**
    *  Number of the listening port at the computational system where the server is located.
    */
 
-   private int serverPortNumb;
+   private final int serverPortNumb;
 
   /**
    *  Input stream of the communication channel.
@@ -77,6 +77,7 @@ public class ClientCom
    *            false, otherwise
    */
 
+   @SuppressWarnings("CallToPrintStackTrace")
    public boolean open ()
    {
       boolean success = true;                                                                      // flag signaling
@@ -129,6 +130,7 @@ public class ClientCom
 
       try
       { out = new ObjectOutputStream (commSocket.getOutputStream ());
+        out.flush(); // 🔥 essencial para handshake
       }
       catch (IOException e)
       { System.out.println(Thread.currentThread ().getName () +
@@ -157,6 +159,7 @@ public class ClientCom
    *  The communication socket is closed.
    */
 
+   @SuppressWarnings("CallToPrintStackTrace")
    public void close ()
    {
       try
@@ -196,6 +199,7 @@ public class ClientCom
    *    @return reference to the object that was read
    */
 
+   @SuppressWarnings("CallToPrintStackTrace")
    public Object readObject ()
    {
       Object fromServer = null;                            // object that is read
@@ -231,6 +235,7 @@ public class ClientCom
    *    @param toServer reference to the object to be written
    */
 
+   @SuppressWarnings("CallToPrintStackTrace")
    public void writeObject (Object toServer)
    {
       try

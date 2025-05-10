@@ -49,7 +49,7 @@ public class SIDCheck {
         /* Aceitação de pedidos */
         while (true) {
             sconi = server.accept();
-            proxy = PIDCheck.getInstance(sconi, iidCheck);
+            proxy = new PIDCheck(sconi, iidCheck);
             new Thread(proxy).start();
         }
     }

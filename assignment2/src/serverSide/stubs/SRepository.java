@@ -1,13 +1,14 @@
 package serverSide.stubs;
 
-import commInfra.interfaces.Repository.IRepo_ALL;
 import commInfra.MessageType;
+import commInfra.interfaces.Repository.IRepo_ALL;
 
 public class SRepository extends Stub implements IRepo_ALL{
     private static SRepository instance = null;
 
     private SRepository(String serverHostName, int serverPortNumb) {
         super(serverHostName, serverPortNumb);
+        System.out.println("Server Repository: " + serverHostName + ":" + serverPortNumb);
     }
 
     public static SRepository getInstance(String serverHostName, int serverPortNumb) {

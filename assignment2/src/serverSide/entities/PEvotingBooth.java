@@ -17,7 +17,7 @@ public class PEvotingBooth implements Runnable{
     private static int nProxy = 0;
     
     
-    private PEvotingBooth(ServerCom sconi, IEVotingBooth votingBooth) {
+    public PEvotingBooth(ServerCom sconi, IEVotingBooth votingBooth) {
         this.sconi = sconi;
         this.votingBooth = votingBooth;
     }

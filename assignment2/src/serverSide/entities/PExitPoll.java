@@ -11,7 +11,7 @@ public class PExitPoll implements Runnable{
     private final IExitPoll exitPoll;
     private static int nProxy = 0;
 
-    private PExitPoll(ServerCom sconi, IExitPoll exitPoll){
+    public PExitPoll(ServerCom sconi, IExitPoll exitPoll){
         this.sconi = sconi;
         this.exitPoll = exitPoll;
     }

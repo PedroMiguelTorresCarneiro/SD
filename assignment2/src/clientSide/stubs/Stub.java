@@ -17,7 +17,7 @@ public class Stub {
     @SuppressWarnings("static-access")
     protected void sendMessage(MessageType type) {
         ClientCom com;                                                 
-        Message outMessage; 
+        Message outMessage, inMessage; 
 
         com = new ClientCom(serverHostName, serverPortNumb);
         while (!com.open ())                                           // waits for a connection to be established
@@ -29,6 +29,13 @@ public class Stub {
         outMessage = Message.getInstance(type);
         
         com.writeObject(outMessage);
+
+        inMessage = (Message) com.readObject();
+
+        if (inMessage.getMsgType() != MessageType.ACK) {
+            System.err.println("Erro: resposta inesperada do servidor.");
+            System.exit(1);
+        }
         com.close();
     }
 
@@ -37,21 +44,51 @@ public class Stub {
         ClientCom com;                                                 
         Message outMessage, inMessage;
 
-
         com = new ClientCom(serverHostName, serverPortNumb);
-        while (!com.open ())                                           // waits for a connection to be established
-        { try
-            { Thread.currentThread().sleep ((long) (10));
-            }
-            catch (InterruptedException e) {}
+        while (!com.open()) { // waits for a connection to be established
+            try {
+                Thread.currentThread().sleep((long) (10));
+            } catch (InterruptedException e) {}
         }
+
         outMessage = Message.getInstance(type, info);
-        
         com.writeObject(outMessage);
-        // ✅ Lê a resposta do servidor (ACK ou outro)
+
         inMessage = (Message) com.readObject();
+
+        if (inMessage.getMsgType() != MessageType.ACK) {
+            System.err.println("Erro: resposta inesperada do servidor.");
+            System.exit(1);
+        }
+
         com.close();
     }
+
+    @SuppressWarnings("static-access")
+    protected void sendMessage(MessageType type, char vote, String info) {
+        ClientCom com;                                                 
+        Message outMessage, inMessage;
+
+        com = new ClientCom(serverHostName, serverPortNumb);
+        while (!com.open()) { // waits for a connection to be established
+            try {
+                Thread.currentThread().sleep((long) (10));
+            } catch (InterruptedException e) {}
+        }
+
+        outMessage = Message.getInstance(type, vote, info);
+        com.writeObject(outMessage);
+
+        inMessage = (Message) com.readObject();
+
+        if (inMessage.getMsgType() != MessageType.ACK) {
+            System.err.println("Erro: resposta inesperada do servidor.");
+            System.exit(1);
+        }
+
+        com.close();
+    }
+
     
     @SuppressWarnings("static-access")
     protected boolean boolComm(MessageType type){
@@ -72,7 +109,7 @@ public class Stub {
         inMessage = (Message) com.readObject();
         com.close();
 
-        return inMessage.getAnswerType1();
+        return inMessage.getBool();
     }
 
     @SuppressWarnings("static-access")
@@ -94,7 +131,7 @@ public class Stub {
         inMessage = (Message) com.readObject();
         com.close();
 
-        return inMessage.getAnswerType1();
+        return inMessage.getBool();
     }
     
     @SuppressWarnings("static-access")
@@ -116,7 +153,7 @@ public class Stub {
         inMessage = (Message) com.readObject();
         com.close();
 
-        return inMessage.getAnswerType2();
+        return inMessage.getCaracter();
     }
 
     @SuppressWarnings("static-access")
@@ -138,7 +175,7 @@ public class Stub {
         inMessage = (Message) com.readObject();
         com.close();
 
-        return inMessage.getAnswerType3();
+        return inMessage.getInteiro();
     }
 
     @SuppressWarnings("static-access")
@@ -160,7 +197,7 @@ public class Stub {
         inMessage = (Message) com.readObject();
         com.close();
 
-        return inMessage.getAnswerType3();
+        return inMessage.getInteiro();
     }
 
 }

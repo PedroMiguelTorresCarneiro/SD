@@ -49,7 +49,7 @@ public class SRepository {
         /* Aceitação de pedidos */
         while (true) {
             sconi = server.accept();
-            proxy = PRepo.getInstance(sconi, repoInterface);
+            proxy = new PRepo(sconi, repoInterface);
             new Thread(proxy).start();
         }
     }

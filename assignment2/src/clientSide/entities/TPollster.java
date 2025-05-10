@@ -88,18 +88,24 @@ public class TPollster implements Runnable {
             while (state != PollsterState.PUBLISHING_RESULTS) {
                 switch (state) {
                     case WAITING_VOTERS -> {
+                        System.out.println("[TPOLLSTER] - CASE WAITING_VOTERS --->");
                         if (!exitPoll.isOpen()) {
+                            System.out.println("[TPOLLSTER] - Exit poll is closed, publishing results...");
                             setState(PollsterState.PUBLISHING_RESULTS);
                             break;
                         }
 
+
                         exitPoll.conductSurvey();
+                        System.out.println("[TPOLLSTER] - TPollster called a voter to conduct the survey...");
                     }
                     default -> {
                     }
                 }
             }
             
+
+            System.out.println("[TPOLLSTER] - TPollster is publishing results...");
             exitPoll.publishResults();
             setState(PollsterState.PUBLISHING_RESULTS);
             resetInstance();

@@ -15,7 +15,7 @@ public class PIDCheck implements Runnable {
     private final IIDCheck idCheck;
     private static int nProxy = 0;
 
-    private PIDCheck(ServerCom sconi, IIDCheck idCheck){
+    public PIDCheck(ServerCom sconi, IIDCheck idCheck){
         this.sconi = sconi;
         this.idCheck = idCheck;
     }

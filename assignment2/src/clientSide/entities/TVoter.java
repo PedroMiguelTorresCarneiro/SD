@@ -176,53 +176,80 @@ public class TVoter implements Runnable {
             while (state != VoterState.GO_HOME) {
                 switch (state) {
                     case WAITING_OUTSIDE -> {
+                        System.out.println("\n[TVOTER] - CASE WAITING_OUTSIDE --->\n");
+                        System.out.println("\n[TVOTER] - Voter " + voterId + " is waiting outside the polling station --->\n");
+
                         if (pollStation.isCLosedAfterElection()) {
+                            System.out.println("\n[TVOTER] - Polling station is closed after election --->\n");
                             setState(VoterState.GO_HOME);
                             break;
                         }
 
                         if(pollStation.canEnterPS(voterId)){
+                            System.out.println("\n[TVOTER] - Voter " + voterId + " is trying to enter the polling station --->\n");
                             setState(VoterState.WAITING_INSIDE);
                         }   
                     }
 
                     case WAITING_INSIDE -> {
+                        System.out.println("\n[TVOTER] - CASE WAITING_INSIDE --->\n");
+                        System.out.println("\n[TVOTER] - Voter " + voterId + " is waiting inside the polling station --->\n");
                         validID = idCheck.checkID(voterId);
+                        System.out.println("\n[TVOTER] - Voter " + voterId + " called to check ID --->\n");
                         setState(VoterState.CHECKING_ID);
                     }
 
                     case CHECKING_ID -> {
+                        System.out.println("\n[TVOTER] - CASE CHECKING_ID --->\n");
                         if (!validID) {
+                            System.out.println("\n[TVOTER] - Invalid ID, exiting polling station --->\n");
                             pollStation.exitingPS(voterId);
+                            System.out.println("\n[TVOTER] - Voter " + voterId + " has an invalid ID and is exiting the polling station --->\n");
                             setState(VoterState.EXIT_PS);
                             break;
                         }
 
+                        System.out.println("\n[TVOTER] - Valid ID, proceeding to vote --->\n");
                         booth.vote(voterId);
+                        System.out.println("\n[TVOTER] - Voter " + voterId + " is voting --->\n");
                         setState(VoterState.VOTING);
                     }
 
                     case VOTING -> {
+                        System.out.println("\n[TVOTER] - CASE VOTING --->\n");
                         pollStation.exitingPS(voterId);
+                        System.out.println("\n[TVOTER] - Voter " + voterId + " has voted and is exiting the polling station --->\n");
                         setState(VoterState.EXIT_PS);
                     }
 
                     case EXIT_PS -> {
+                        System.out.println("\n[TVOTER] - CASE EXIT_PS --->\n");
                         if (!exitPoll.isOpen()) {
+                            System.out.println("\n[TVOTER] - Exit poll is closed, going home --->\n");
                             setState(VoterState.GO_HOME);
+                            System.out.println("\n[TVOTER] - Voter " + voterId + " is going home --->\n");
                             break;
                         }
 
                         if (!exitPoll.choosen()) {
+                            System.out.println("\n[TVOTER] - Voter " + voterId + " was not chosen to answer the survey --->\n");
+                            System.out.println("\n[TVOTER] - Voter " + voterId + " will reborn --->\n");
                             reborn();
                             break;
                         }
                         
                         if (Math.random() < CHOOSE_TO_ANSWER_PROB) {
-                            exitPoll.callForSurvey(booth.getVote(voterId), voterId);
+                            System.out.println("\n[TVOTER] - Voter " + voterId + " was chosen to answer the survey --->\n");
+                            System.out.println("\n[TVOTER] - Getting the vote of "+ voterId +" from booth --->\n");
+                            char vote = booth.getVote(voterId);
+                            System.out.println("\n[TVOTER] - Voter " + voterId + " votted " + vote + " --->\n");
+                            exitPoll.callForSurvey(vote, voterId);
+                            System.out.println("\n[TVOTER] - Voter " + voterId + " is answering the survey --->\n");
                             setState(VoterState.ANSWER_SURVEY);
                         } else {
+                            System.out.println("\n[TVOTER] - Voter " + voterId + " was chosen to answer the survey but decided not to answer --->\n");
                             reborn();
+                            System.out.println("\n[TVOTER] - Voter " + voterId + " will reborn --->\n");
                         }
                     }
 

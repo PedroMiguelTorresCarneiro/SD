@@ -17,7 +17,7 @@ public class Stub {
     @SuppressWarnings("static-access")
     protected void sendMessage(MessageType type) {
         ClientCom com;                                                 
-        Message outMessage; 
+        Message outMessage, inMessage; 
 
         com = new ClientCom(serverHostName, serverPortNumb);
         while (!com.open ())                                           // waits for a connection to be established
@@ -29,13 +29,21 @@ public class Stub {
         outMessage = Message.getInstance(type);
         
         com.writeObject(outMessage);
+
+        inMessage = (Message) com.readObject(); // ✅ Aguarda resposta
+
+        if (inMessage.getMsgType() != MessageType.ACK) {
+            System.err.println("Erro: resposta inesperada do servidor.");
+            System.exit(1);
+        }
+
         com.close();
     }
 
     @SuppressWarnings("static-access")
     protected void sendMessage(MessageType type, String info) {
         ClientCom com;                                                 
-        Message outMessage; 
+        Message outMessage, inMessage; 
 
         com = new ClientCom(serverHostName, serverPortNumb);
         while (!com.open ())                                           // waits for a connection to be established
@@ -47,13 +55,21 @@ public class Stub {
         outMessage = Message.getInstance(type, info);
         
         com.writeObject(outMessage);
+
+        inMessage = (Message) com.readObject(); // ✅ Aguarda resposta
+
+        if (inMessage.getMsgType() != MessageType.ACK) {
+            System.err.println("Erro: resposta inesperada do servidor.");
+            System.exit(1);
+        }
+
         com.close();
     }
     
     @SuppressWarnings("static-access")
     protected void sendMessage(MessageType type, String info, char vote) {
         ClientCom com;                                                 
-        Message outMessage; 
+        Message outMessage, inMessage; 
 
         com = new ClientCom(serverHostName, serverPortNumb);
         while (!com.open ())                                           // waits for a connection to be established
@@ -65,13 +81,21 @@ public class Stub {
         outMessage = Message.getInstance(type, info, vote);
         
         com.writeObject(outMessage);
+
+        inMessage = (Message) com.readObject(); // ✅ Aguarda resposta
+
+        if (inMessage.getMsgType() != MessageType.ACK) {
+            System.err.println("Erro: resposta inesperada do servidor.");
+            System.exit(1);
+        }
+
         com.close();
     }
     
     @SuppressWarnings("static-access")
     protected void sendMessage(MessageType type,long A, long B, String info) {
         ClientCom com;                                                 
-        Message outMessage; 
+        Message outMessage, inMessage; 
 
         com = new ClientCom(serverHostName, serverPortNumb);
         while (!com.open ())                                           // waits for a connection to be established
@@ -83,6 +107,14 @@ public class Stub {
         outMessage = Message.getInstance(type, A, B, info);
         
         com.writeObject(outMessage);
+
+        inMessage = (Message) com.readObject(); // ✅ Aguarda resposta
+
+        if (inMessage.getMsgType() != MessageType.ACK) {
+            System.err.println("Erro: resposta inesperada do servidor.");
+            System.exit(1);
+        }
+
         com.close();
     }
 }
