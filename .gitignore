@@ -1,28 +1,43 @@
 # Build and compiled files
 */build/
 assignment1/dist/
-*.class
 assignment1/*.jar
 assignment1/*.war
 assignment1/*.ear
 
 # Logs
 *.log
-*/logs.txt
-*/logs/
+log*.txt
 
-# NetBeans-specific files
-*/nbproject/private/
-*/nbactions.xml
-*/nb-configuration.xml
 
-# IDE-specific files
-assignment1/.idea/
-assignment1/.settings/
-assignment1/.classpath
-assignment1/.project
+# NetBeans project metadata
+nbproject/
+*.iml
+*.ipr
+*.iws
+
+# Build files (NetBeans + Ant)
+build/
+build.xml
+build-impl.xml
+genfiles.properties
+project.properties
+project.xml
+manifest.mf
+
+# Java class files
+*.class
+
+# IDE folders
+.idea/
+.vscode/
+
+
+# Backup / temp files
+*~
+*.swp
+*.bak
+*.tmp
 
 # System temporary files
-**/.DS_Store
-assignment1/Thumbs.db
-/assignment2/nbproject/private/
+.DS_Store
