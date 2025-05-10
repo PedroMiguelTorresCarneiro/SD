@@ -450,7 +450,20 @@ public class mainGUI extends javax.swing.JFrame {
                     "\"\"",
                     "\"" + path + "\""
                 };
+                
                 Runtime.getRuntime().exec(cmd);
+
+            } else if (os.contains("linux")) {
+                String path = userDir + "/start-others.sh";
+                String[] cmd = {
+                    "gnome-terminal",
+                    "--",
+                    "sh",
+                    path
+                };
+
+                Runtime.getRuntime().exec(cmd);
+
             } else {
                 System.err.println("Sistema operativo não suportado.");
             }
