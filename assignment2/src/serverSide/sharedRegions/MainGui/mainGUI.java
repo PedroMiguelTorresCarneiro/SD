@@ -417,7 +417,7 @@ public class mainGUI extends javax.swing.JFrame{
      */
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
         System.out.println("🟢 Botão Start clicado!");
-
+        clean_2();
         // 1. Ler valores dos spinners
         int numVoters = (int) votersSpinner.getValue();
         int maxCapacity = (int) pollingStationSpinner.getValue();
@@ -744,12 +744,43 @@ public class mainGUI extends javax.swing.JFrame{
     /**
      * The clean method cleans the labels and progress bars.
      */
-    public void clean(){
+    public void clean() {
+        // Limpar labels
         VOTINGBOOTH.setText(" ");
         IDCHECK.setText(" ");
         SURVEY.setText(" ");
+        psStatus.setText("Closed");
+
+        // Limpar filas
+        ((DefaultListModel<String>) externalFIFO.getModel()).clear();
+        ((DefaultListModel<String>) internalFIFO.getModel()).clear();
+        ((DefaultListModel<String>) idcheckFIFO.getModel()).clear();
+
+        
+
     }
     
+    public void clean_2(){
+        // Resetar cores e textos dos resultados
+        elecpartyA.setText("A Party");
+        elecpartyA.setForeground(Color.BLACK);
+        elecpartyB.setText("B Party");
+        elecpartyB.setForeground(Color.BLACK);
+        surveypartyA.setText("A Party");
+        surveypartyA.setForeground(Color.BLACK);
+        surveypartyB.setText("B Party");
+        surveypartyB.setForeground(Color.BLACK);
+
+        // Resetar barras de progresso
+        partyA_progress.setValue(0);
+        partyA_progress.repaint();
+        partyB_progress.setValue(0);
+        partyB_progress.repaint();
+        partyA_survey.setValue(0);
+        partyA_survey.repaint();
+        partyB_survey.setValue(0);
+        partyB_survey.repaint();
+    }
     /**
      * 
      * @param enabled 

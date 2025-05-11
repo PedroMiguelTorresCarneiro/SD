@@ -6,41 +6,14 @@ import java.util.logging.Logger;
 import serverSide.sharedRegions.ExitPoll.IExitPoll;
 
 public class PExitPoll implements Runnable{
-    private static PExitPoll instance = null;
     private final ServerCom sconi;
     private final IExitPoll exitPoll;
-    private static int nProxy = 0;
 
     public PExitPoll(ServerCom sconi, IExitPoll exitPoll){
         this.sconi = sconi;
         this.exitPoll = exitPoll;
     }
     
-    public static PExitPoll getInstance(ServerCom sconi, IExitPoll exitPoll){
-        if(instance == null){
-            instance = new PExitPoll(sconi, exitPoll);
-        }
-        return instance;
-    }
-    
-    private static int getProxyId(){
-        Class<?> cl = null;                                            // representation of the PEvotingBooth object in JVM
-        int proxyId;                                                   // instantiation identifier
-
-        try
-        { cl = Class.forName ("serverSide.entities.PExitPoll");
-        }
-        catch (ClassNotFoundException e)
-        { System.out.println("Data type PExitPoll was not found!");
-          e.printStackTrace ();
-          System.exit (1);
-        }
-        synchronized (cl)
-        { proxyId = nProxy;
-          nProxy += 1;
-        }
-        return proxyId;
-    }
     
     @Override
     public void run(){

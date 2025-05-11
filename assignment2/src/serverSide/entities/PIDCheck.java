@@ -10,41 +10,14 @@ import serverSide.sharedRegions.IDCheck.IIDCheck;
  * @author pedrocarneiro
  */
 public class PIDCheck implements Runnable {
-    private static PIDCheck instance = null;
     private final ServerCom sconi;
     private final IIDCheck idCheck;
-    private static int nProxy = 0;
 
     public PIDCheck(ServerCom sconi, IIDCheck idCheck){
         this.sconi = sconi;
         this.idCheck = idCheck;
     }
-    
-    public static PIDCheck getInstance(ServerCom sconi, IIDCheck idCheck){
-        if(instance == null){
-            instance = new PIDCheck(sconi, idCheck);
-        }
-        return instance;
-    }
-    
-    private static int getProxyId(){
-        Class<?> cl = null;                                            // representation of the PEvotingBooth object in JVM
-        int proxyId;                                                   // instantiation identifier
 
-        try
-        { cl = Class.forName ("serverSide.entities.PIDCheck");
-        }
-        catch (ClassNotFoundException e)
-        { System.out.println("Data type PIDCheck was not found!");
-          e.printStackTrace ();
-          System.exit (1);
-        }
-        synchronized (cl)
-        { proxyId = nProxy;
-          nProxy += 1;
-        }
-        return proxyId;
-    }
     
     @Override
     public void run(){

@@ -11,10 +11,8 @@ import serverSide.sharedRegions.EVotingBooth.IEVotingBooth;
  * @author pedrocarneiro
  */
 public class PEvotingBooth implements Runnable{
-    private static PEvotingBooth instance = null;
     private final ServerCom sconi;
     private final IEVotingBooth votingBooth;
-    private static int nProxy = 0;
     
     
     public PEvotingBooth(ServerCom sconi, IEVotingBooth votingBooth) {
@@ -22,31 +20,6 @@ public class PEvotingBooth implements Runnable{
         this.votingBooth = votingBooth;
     }
     
-    public static PEvotingBooth getInstance(ServerCom sconi, IEVotingBooth votingBooth){
-        if(instance == null){
-            instance = new PEvotingBooth(sconi, votingBooth);
-        }
-        return instance;
-    }
-    
-    private static int getProxyId(){
-        Class<?> cl = null;                                            // representation of the PEvotingBooth object in JVM
-        int proxyId;                                                   // instantiation identifier
-
-        try
-        { cl = Class.forName ("serverSide.entities.PEvotingBooth");
-        }
-        catch (ClassNotFoundException e)
-        { System.out.println("Data type PEvotingBooth was not found!");
-          e.printStackTrace ();
-          System.exit (1);
-        }
-        synchronized (cl)
-        { proxyId = nProxy;
-          nProxy += 1;
-        }
-        return proxyId;
-   }
     
    @Override
     public void run(){
