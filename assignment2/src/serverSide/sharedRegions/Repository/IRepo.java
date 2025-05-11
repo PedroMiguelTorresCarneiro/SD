@@ -33,11 +33,20 @@ public class IRepo implements IRepo_ALL{
             case LOGELECTIONRESULTS -> {
                 System.out.println("\nCASE LOGELECTIONRESULTS --->\n");
                 logElectionResults(inMessage.getLongA(), inMessage.getLongB(), inMessage.getInfo());
+                System.out.println("Election Results LOGGED");
                 outMessage = Message.getInstance(MessageType.ACK);
             }
             case CLOSE -> {
                 System.out.println("\nCASE CLOSE --->\n");
                 close();
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(100); // pequeno delay para garantir que o ACK é enviado
+                        shutdown(); // encerra depois
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }).start();
                 outMessage = Message.getInstance(MessageType.ACK);
             }
             case LOGPOLL -> {
@@ -75,6 +84,18 @@ public class IRepo implements IRepo_ALL{
                 System.out.println("\nCASE LOGSURVEYRESULTS --->\n");
                 logSurveyResults(inMessage.getLongA(), inMessage.getLongB(), inMessage.getInfo());
                 outMessage = Message.getInstance(MessageType.ACK);
+            }
+            case SHUTDOWN -> {
+                System.out.println("🔻 Pedido de shutdown recebido.");
+                outMessage = Message.getInstance(MessageType.ACK);  // responde primeiro!
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(100); // pequeno delay para garantir que o ACK é enviado
+                        shutdown(); // encerra depois
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }).start();
             }
             default -> throw new MessageException("Tipo de mensagem inválido", inMessage);
         }
@@ -132,4 +153,9 @@ public class IRepo implements IRepo_ALL{
     public void logSurveyResults(long A, long B, String winner) {
         repo.logSurveyResults(A, B, winner);
     }   
+    
+    public void shutdown() {
+        //repo.shutdown();
+        System.exit(0);
+    }
 }

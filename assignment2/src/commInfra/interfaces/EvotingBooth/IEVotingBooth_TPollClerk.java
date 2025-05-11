@@ -25,4 +25,6 @@ public interface IEVotingBooth_TPollClerk {
      * @return the number of voters that have voted.
      */
     int getVotesCount();
+    
+    void shutdown();
 }

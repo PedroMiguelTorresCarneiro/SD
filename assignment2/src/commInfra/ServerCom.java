@@ -168,4 +168,16 @@ public class ServerCom {
             System.exit(1);
         }
     }
+    
+    // Dentro de ServerCom.java
+    public void shutdown() {
+        try {
+            if (listeningSocket != null && !listeningSocket.isClosed()) {
+                listeningSocket.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

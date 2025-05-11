@@ -4,7 +4,7 @@ import commInfra.ServerCom;
 import serverSide.entities.PIDCheck;
 import serverSide.sharedRegions.IDCheck.IIDCheck;
 import serverSide.sharedRegions.IDCheck.MIDCheck;
-import serverSide.stubs.SRepository;
+import serverSide.stubs.STRepository;
 import commInfra.interfaces.Repository.IRepo_IDChek;
 import utils.EnvReader;
 import java.net.SocketTimeoutException;
@@ -33,7 +33,7 @@ public class SIDCheck {
         int idCheckPort = EnvReader.getInt("IDCHECK_PORT");
 
         /* Instancia o stub remoto do repositório */
-        IRepo_IDChek logs = SRepository.getInstance(host, repoPort);
+        IRepo_IDChek logs = STRepository.getInstance(host, repoPort);
 
         /* Instancia o monitor */
         midCheck = MIDCheck.getInstance(logs);

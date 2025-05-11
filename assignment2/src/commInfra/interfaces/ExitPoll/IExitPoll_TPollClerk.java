@@ -8,4 +8,6 @@ public interface IExitPoll_TPollClerk {
      * The close method is called by the poll clerk to close the exit poll.
      */
     void close();
+    
+    void shutdown();
 }

@@ -57,4 +57,8 @@ public class STPollStation extends Stub implements IPollStation_ALL {
         return boolComm(MessageType.PS_IS_CLOSED_AFTER);
     }
     
+    @Override
+    public void shutdown() {
+        sendMessage(MessageType.SHUTDOWN);
+    }
 }

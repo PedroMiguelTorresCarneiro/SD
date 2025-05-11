@@ -39,6 +39,58 @@ public class Stub {
 
         com.close();
     }
+    
+    @SuppressWarnings("static-access")
+    protected void sendMessage(MessageType type, int inteiro) {
+        ClientCom com;                                                 
+        Message outMessage, inMessage; 
+
+        com = new ClientCom(serverHostName, serverPortNumb);
+        while (!com.open ())                                           // waits for a connection to be established
+        { try
+            { Thread.currentThread().sleep ((long) (10));
+            }
+            catch (InterruptedException e) {}
+        }
+        outMessage = Message.getInstance(type, inteiro);
+        
+        com.writeObject(outMessage);
+
+        inMessage = (Message) com.readObject(); // ✅ Aguarda resposta
+
+        if (inMessage.getMsgType() != MessageType.ACK) {
+            System.err.println("Erro: resposta inesperada do servidor.");
+            System.exit(1);
+        }
+
+        com.close();
+    }
+    
+    @SuppressWarnings("static-access")
+    protected void sendMessage(MessageType type, boolean bool) {
+        ClientCom com;                                                 
+        Message outMessage, inMessage; 
+
+        com = new ClientCom(serverHostName, serverPortNumb);
+        while (!com.open ())                                           // waits for a connection to be established
+        { try
+            { Thread.currentThread().sleep ((long) (10));
+            }
+            catch (InterruptedException e) {}
+        }
+        outMessage = Message.getInstance(type, bool);
+        
+        com.writeObject(outMessage);
+
+        inMessage = (Message) com.readObject(); // ✅ Aguarda resposta
+
+        if (inMessage.getMsgType() != MessageType.ACK) {
+            System.err.println("Erro: resposta inesperada do servidor.");
+            System.exit(1);
+        }
+
+        com.close();
+    }
 
     @SuppressWarnings("static-access")
     protected void sendMessage(MessageType type, String info) {

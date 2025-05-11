@@ -6,6 +6,8 @@ set SRC_DIR=%~dp0
 set BUILD_DIR=%SRC_DIR%..\build
 
 :: Inicia os servidores em janelas separadas
+start "SIDCheck" cmd /k "cd /d "%SRC_DIR%" && java -cp "%BUILD_DIR%" serverSide.main.SRepository"
+timeout /t 3 >nul
 start "SIDCheck" cmd /k "cd /d "%SRC_DIR%" && java -cp "%BUILD_DIR%" serverSide.main.SIDCheck"
 timeout /t 1 >nul
 start "SPollStation" cmd /k "cd /d "%SRC_DIR%" && java -cp "%BUILD_DIR%" serverSide.main.SPollStation"

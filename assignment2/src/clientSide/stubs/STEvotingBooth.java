@@ -41,4 +41,10 @@ public class STEvotingBooth extends Stub implements IEVotingBooth_ALL {
     public char getVote(String voterId) {
         return charComm(MessageType.GET_VOTE, voterId);
     }
+    
+    @Override
+    public void shutdown() {
+        sendMessage(MessageType.SHUTDOWN);
+    }
+
 }

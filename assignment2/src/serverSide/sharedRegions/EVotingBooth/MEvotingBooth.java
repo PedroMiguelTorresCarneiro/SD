@@ -7,7 +7,6 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-import serverSide.sharedRegions.Repository.IRepo;
 
 /**
  * The MEvotingBooth class implements the IEVotingBooth_ALL interface and represents the evoting booth shared region.

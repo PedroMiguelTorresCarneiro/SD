@@ -6,7 +6,7 @@ import java.net.SocketTimeoutException;
 import serverSide.entities.PExitPoll;
 import serverSide.sharedRegions.ExitPoll.IExitPoll;
 import serverSide.sharedRegions.ExitPoll.MExitPoll;
-import serverSide.stubs.SRepository;
+import serverSide.stubs.STRepository;
 import utils.EnvReader;
 
 /**
@@ -33,7 +33,7 @@ public class SExitPoll {
         int exitPollPort = EnvReader.getInt("EXITPOLL_PORT");
 
         /* Instancia o stub remoto do repositório */
-        IRepo_ExitPoll logs = SRepository.getInstance(host, repoPort);
+        IRepo_ExitPoll logs = STRepository.getInstance(host, repoPort);
 
         /* Instancia o monitor */
         exitPoll = MExitPoll.getInstance(logs);

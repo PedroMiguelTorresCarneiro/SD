@@ -3,6 +3,7 @@ package clientSide.main;
 import clientSide.entities.TPollClerk;
 import clientSide.stubs.STEvotingBooth;
 import clientSide.stubs.STExitPoll;
+import clientSide.stubs.STIDCheck;
 import clientSide.stubs.STPollStation;
 import utils.EnvReader;
 
@@ -15,14 +16,16 @@ public class CPollClerk {
         int boothPort = EnvReader.getInt("EVOTINGBOOTH_PORT");
         int exitPollPort = EnvReader.getInt("EXITPOLL_PORT");
         int maxVotes = EnvReader.getInt("VOTES_TO_END");
+        int idCheckPort = EnvReader.getInt("IDCHECK_PORT");
 
         /* Instancia os stubs */
         var pollStation = STPollStation.getInstance(host, psPort);
         var booth = STEvotingBooth.getInstance(host, boothPort);
         var exitPoll = STExitPoll.getInstance(host, exitPollPort);
+        var idCheck = STIDCheck.getInstance(host, idCheckPort);
 
         /* Inicia a thread do funcionário */
-        Thread clerk = new Thread(TPollClerk.getInstance(pollStation, booth, exitPoll, maxVotes));
+        Thread clerk = new Thread(TPollClerk.getInstance(pollStation, booth, exitPoll, maxVotes, idCheck));
         clerk.start();
 
         try {

@@ -3,15 +3,11 @@ package serverSide.sharedRegions.Repository;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.SwingUtilities;
-import serverSide.main.mainGUI;
+import serverSide.stubs.STmainGUI;
 
 /**
  * The MRepo class implements the IRepo_ALL interface and represents the repository .
@@ -88,8 +84,7 @@ public class MRepo{
     /**
      * The gui atributte is used to store the reference to the simulation GUI
      */
-    private mainGUI gui;
-    
+    private final STmainGUI gui = STmainGUI.getInstance("localhost", 47000);
 
    /**
     * The MRepo constructor initializes a new MRepo object with the specified attributes.
@@ -101,11 +96,10 @@ public class MRepo{
     * @param insideQueueMaxCapacity The maximum capacity of the queue inside the polling station   
     * @param gui The simulation's GUI
     */
-    private MRepo(int votesNumber, int votersNumber, int insideQueueMaxCapacity, mainGUI gui) {
+    private MRepo(int votesNumber, int votersNumber, int insideQueueMaxCapacity) {
         this.votesNumber = votesNumber;
         this.votersNumber = votersNumber;
         this.insideQueueMaxCapacity = insideQueueMaxCapacity;
-        this.gui = gui;
         this.lock = new ReentrantLock();
     
         // Initialize the file writer with unique log file in /logs
@@ -121,12 +115,11 @@ public class MRepo{
      * @param votesNumber The number of votes that are needed to end the election
      * @param votersNumber The number of voters that are allowed to vote
      * @param insideQueueMaxCapacity The maximum capacity of the queue inside the polling station
-     * @param gui The simulation's GUI
      * @return The unique instance of the MRepo class
      */
-    public static MRepo getInstance(int votesNumber, int votersNumber, int insideQueueMaxCapacity, mainGUI gui) {
+    public static MRepo getInstance(int votesNumber, int votersNumber, int insideQueueMaxCapacity) {
         if (instance == null) {
-            instance = new MRepo(votesNumber, votersNumber, insideQueueMaxCapacity, gui);
+            instance = new MRepo(votesNumber, votersNumber, insideQueueMaxCapacity);
         }
         return instance;
     }
@@ -160,6 +153,11 @@ public class MRepo{
             System.err.println("Failed to initialize log file: " + e.getMessage());
             fileWriter = null;
         }
+
+        if (fileWriter == null) {
+            System.err.println("❌ Log file writer é null! logHeader() vai falhar.");
+        }
+
     }
 
     
@@ -238,20 +236,14 @@ public class MRepo{
 
         try {
 
-            //gui.logPOLLSTATION(state);
+            gui.logPOLLSTATION(state);
                
-            SwingUtilities.invokeAndWait(() -> {
-                gui.logPOLLSTATION(state);
-            });
+            
             
             String coloredState = state.equals("OPEN  ") ? GREEN + state + RESET : RED + state + RESET;
             String logMessage = String.format("| %-11s      |         |        |         |        |          |        |%n", coloredState);
 
             writeLog(logMessage);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvocationTargetException ex) {
-            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             lock.unlock(); 
         }
@@ -267,19 +259,13 @@ public class MRepo{
         lock.lock(); 
 
         try {
-            SwingUtilities.invokeAndWait(() -> {
-                gui.addExternalFIFO(voterId);
-            });
-            //gui.addExternalFIFO(voterId);
+            
+            gui.addExternalFIFO(voterId);
 
             String logMessage = String.format("|             |   %s%-5s%s |        |         |        |          |        |%n", BOLD, voterId, RESET);
 
             writeLog(logMessage);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvocationTargetException ex) {
-            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        }finally {
             lock.unlock(); // Release the lock
         }
     }
@@ -294,23 +280,13 @@ public class MRepo{
         lock.lock(); 
 
         try {
-            SwingUtilities.invokeAndWait(() -> {
-              gui.removeExternalFIFO(voterId);
-            });
             
-            SwingUtilities.invokeAndWait(() -> {
-              gui.addInternalFIFO(voterId);  
-            });
-            //gui.removeExternalFIFO(voterId);
-            //gui.addInternalFIFO(voterId);
+            gui.removeExternalFIFO(voterId);
+            gui.addInternalFIFO(voterId);
             
             String logMessage = String.format("|             |         |  %s%-5s%s |         |        |          |        |%n", GREEN, voterId, RESET);
 
             writeLog(logMessage);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvocationTargetException ex) {
-            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             lock.unlock();
         }
@@ -327,27 +303,15 @@ public class MRepo{
         lock.lock(); 
 
         try {
-            SwingUtilities.invokeAndWait(() -> {
-                gui.removeInternalFIFO(voterId);
-            });
-            SwingUtilities.invokeAndWait(() -> {
-                gui.logIDCHECK(voterId+accepted, accepted);  
-            });
-            SwingUtilities.invokeAndWait(() -> {
-                gui.addIdcheckFIFO(voterId);
-            });
-            //gui.removeInternalFIFO(voterId);
-            //gui.logIDCHECK(voterId+accepted, accepted);
-            //gui.addIdcheckFIFO(voterId);
+            
+            gui.removeInternalFIFO(voterId);
+            gui.logIDCHECK(voterId+accepted, accepted);
+            gui.addIdcheckFIFO(voterId);
             
             String color = (accepted == '✔') ? GREEN : RED;
             String logMessage = String.format("|             |         |        |  %s%-4s%c%s  |        |          |        |%n", color, voterId, accepted, RESET);
 
             writeLog(logMessage);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvocationTargetException ex) {
-            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             lock.unlock(); 
         }
@@ -364,19 +328,12 @@ public class MRepo{
         lock.lock();
 
         try {
-            SwingUtilities.invokeAndWait(() -> {
-                gui.logVOTING(voterId);
-            });
-            //gui.logVOTING(voterId);
+            gui.logVOTING(voterId);
 
             String voteColor = (vote == 'A') ? CYAN : RED;
             String logMessage = String.format("|             |         |        |         |  %-4s%s%c%s |          |        |%n", voterId, voteColor, vote, RESET);
 
             writeLog(logMessage);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvocationTargetException ex) {
-            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             lock.unlock(); 
         }
@@ -392,18 +349,11 @@ public class MRepo{
         lock.lock();
 
         try {
-            SwingUtilities.invokeAndWait(() -> {
-                gui.removeIdcheckFIFO(voterId);
-            });
-            //gui.removeIdcheckFIFO(voterId);
+            gui.removeIdcheckFIFO(voterId);
 
             String logMessage = String.format("|             |         |        |         |        |   %s%-5s%s  |        |%n", YELLOW, voterId, RESET);
 
             writeLog(logMessage);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvocationTargetException ex) {
-            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             lock.unlock(); 
         }
@@ -420,18 +370,11 @@ public class MRepo{
         lock.lock(); 
 
         try {
-            SwingUtilities.invokeAndWait(() -> {
-                gui.logSURVEY(voterId);
-            });
-            //gui.logSURVEY(voterId);
+            gui.logSURVEY(voterId);
 
             String logMessage = String.format("|             |         |        |         |        |          |  %s%-4s%c%s |%n", BOLD, voterId, lieOrNot, RESET);
 
             writeLog(logMessage);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvocationTargetException ex) {
-            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             lock.unlock(); 
         }
@@ -456,30 +399,15 @@ public class MRepo{
             double partyBRatio = (B / (double)(A + B)) * 100; 
             int partyBPercentage = (int) partyBRatio;
             
-            SwingUtilities.invokeAndWait(() -> {
-                gui.updatePartyA_survey(partyAPercentage);
-            });
-            //gui.updatePartyA_survey(partyAPercentage);
-            SwingUtilities.invokeAndWait(() -> {
-                gui.updatePartyB_survey(partyBPercentage);
-            });
-            //gui.updatePartyB_survey(partyBPercentage);
+            gui.updatePartyA_survey(partyAPercentage);
+            gui.updatePartyB_survey(partyBPercentage);
             
             if(partyAPercentage > partyBPercentage){
-                SwingUtilities.invokeAndWait(() -> {
-                    gui.setSurveyPartyAwinner();
-                });
-                //gui.setSurveyPartyAwinner();
+                gui.setSurveyPartyAwinner();
             }else if(partyAPercentage < partyBPercentage){
-                SwingUtilities.invokeAndWait(() -> {
-                    gui.setSurveyPartyBwinner();
-                });
-                //gui.setSurveyPartyBwinner();
+                gui.setSurveyPartyBwinner();
             }else{
-                SwingUtilities.invokeAndWait(() -> {
-                    gui.setSurveyTie();
-                });
-                //gui.setSurveyTie();
+                gui.setSurveyTie();
             }
             
             String logMessage = CYAN + "-------------------------------------------------------------------------" + RESET + "\n" +
@@ -490,10 +418,6 @@ public class MRepo{
                     CYAN + "----------------------" + RESET + "\n";
 
             writeLog(logMessage);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvocationTargetException ex) {
-            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             lock.unlock(); 
         }
@@ -512,10 +436,8 @@ public class MRepo{
 
         try {
             // Clears the GUI
-            SwingUtilities.invokeAndWait(() -> {
-                gui.clean();
-            });
-            //gui.clean();
+            gui.clean();
+            //gui.setStartButtonEnabled(true);
 
             double partyARatio = (A / (double)(A + B)) * 100; 
             int partyAPercentage = (int) partyARatio; 
@@ -524,42 +446,25 @@ public class MRepo{
             int partyBPercentage = (int) partyBRatio;
             
             if(partyAPercentage > partyBPercentage){
-                SwingUtilities.invokeAndWait(() -> {
-                    gui.setElecPartyAwinner();
-                });
-                //gui.setElecPartyAwinner();
+                gui.setElecPartyAwinner();
             }else if(partyAPercentage < partyBPercentage){
-                SwingUtilities.invokeAndWait(() -> {
-                    gui.setElecPartyBwinner();
-                });
-                //gui.setElecPartyBwinner();
+                gui.setElecPartyBwinner();
             }else{
-                SwingUtilities.invokeAndWait(() -> {
-                    gui.setElecTie();
-                });
-                //gui.setElecTie();
+                gui.setElecTie();
             }
             
-            SwingUtilities.invokeAndWait(() -> {
-                gui.updatePartyA(partyAPercentage);
-            });
-            //gui.updatePartyA(partyAPercentage);
-            SwingUtilities.invokeAndWait(() -> {
-                gui.updatePartyB(partyBPercentage);
-            });
-            //gui.updatePartyB(partyBPercentage);
+            gui.updatePartyA(partyAPercentage);
+            gui.updatePartyB(partyBPercentage);
             
             String logMessage = CYAN + "\n----------------------| ELECTION RESULTS" + RESET + "\n" +
                     String.format("Total votes for A: %s%d%s%n", YELLOW, A, RESET) +
                     String.format("Total votes for B: %s%d%s%n", YELLOW, B, RESET) +
                     BOLD + GREEN + "  WINNER  🏆🏆 -> " + winner + RESET + "\n" +
                     CYAN + "----------------------" + RESET + "\n";
-
+            
+            gui.setStartButtonEnabled(true); 
+            
             writeLog(logMessage);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvocationTargetException ex) {
-            Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             lock.unlock(); 
         }
@@ -586,7 +491,29 @@ public class MRepo{
     * Should never be used by any functional thread (TVoter, TPollClerk, etc).
     */
    public static void resetInstance() {
-       instance = null;
-   }
+        if (instance != null) {
+            instance.close(); // <-- fecha o antigo writer se existir
+        }
+        instance = null;
+    }
 
+   
+   
+   private volatile boolean running = true;
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    public void shutdown() {
+        running = false;
+        System.out.println("🟥 [Repository] Shutdown pedido: a terminar loop principal.");
+    }
+
+    /*public void attachGUI(mainGUI gui) {
+        this.gui = gui;
+    }
+    public mainGUI getGUI() {
+        return gui;
+    }*/
 }

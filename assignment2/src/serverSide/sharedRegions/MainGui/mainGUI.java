@@ -1,4 +1,4 @@
-package serverSide.main;
+package serverSide.sharedRegions.MainGui;
 
 import java.awt.Color;
 import java.io.File;
@@ -8,6 +8,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.SwingUtilities;
+
+import serverSide.stubs.STRepository;
+
 
 /**
  * The mainGUI class represents the main graphical user interface of the application.
@@ -21,7 +24,9 @@ import javax.swing.SwingUtilities;
  * @author Inês Águia
  * @author Pedro Carneiro
  */
-public class mainGUI extends javax.swing.JFrame {
+public class mainGUI extends javax.swing.JFrame{
+    
+    private boolean repositoryStartedOnce = false;
 
     /**
      * The mainGUI constructor initializes the main graphical user interface.
@@ -411,70 +416,75 @@ public class mainGUI extends javax.swing.JFrame {
      * @param evt the action event.
      */
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
-        // Get the values from the spinners
+        System.out.println("🟢 Botão Start clicado!");
+
+        // 1. Ler valores dos spinners
         int numVoters = (int) votersSpinner.getValue();
         int maxCapacity = (int) pollingStationSpinner.getValue();
         int maxVotes = (int) spinnerMaxVotes.getValue();
 
-        new Thread(() -> {
-            try {
-                // 1. Gera o ficheiro .env
-                writeEnvFile(numVoters, maxCapacity, maxVotes);
+        String userDir = System.getProperty("user.dir");
+        String os = System.getProperty("os.name").toLowerCase();
 
-                // 2. Lança o backend Repository na mesma JVM
-                SRepository.launchBackend(this);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }).start();
+        // 2. Desativar botão Start para evitar múltiplos cliques
+        setStartButtonEnabled(false);
 
-        // 3. Arranca os restantes servidores e clientes num script externo
+
+        // 4. Atualiza o ficheiro .env com os novos valores
         try {
-            String userDir = System.getProperty("user.dir");
-            String os = System.getProperty("os.name").toLowerCase();
+            writeEnvFile(numVoters, maxCapacity, maxVotes);
+        } catch (Exception e) {
+            System.err.println("[mainGUI] - Erro ao escrever .env: " + e.getMessage());
+            return;
+        }
 
+        // 5. Arrancar o SRepository via script (start-repo.sh)
+        /*
+        try {
             if (os.contains("mac")) {
-                String path = userDir + "/start-others.sh";
                 String[] cmd = {
                     "osascript",
                     "-e",
-                    "tell app \"Terminal\" to do script \"sh '" + path + "'\""
+                    "tell application \"Terminal\" to do script \\\"cd '" + userDir + "' && chmod +x start-repo.sh && ./start-repo.sh\\\""
+                };
+                Runtime.getRuntime().exec(cmd);
+            } else if (os.contains("win")) {
+                String path = userDir + "\\start-repo.bat";
+                String[] cmd = {
+                    "cmd.exe", "/c", "start", "\"\"", "\"" + path + "\""
+                };
+                Runtime.getRuntime().exec(cmd);
+            } else {
+                System.err.println("Sistema operativo não suportado.");
+            }
+            Thread.sleep(2000); // Dá tempo ao SRepository para arrancar antes de arrancar os outros
+        } catch (IOException | InterruptedException e) {
+            System.err.println("Erro ao iniciar SRepository: " + e.getMessage());
+            return;
+        }*/
+
+        // 6. Lança os restantes servidores e threads via script
+        try {
+            if (os.contains("mac")) {
+                String[] cmd = {
+                    "osascript",
+                    "-e",
+                    "tell application \"Terminal\" to do script \"cd '" + userDir + "' && chmod +x start-others.sh && ./start-others.sh\""
                 };
                 Runtime.getRuntime().exec(cmd);
             } else if (os.contains("win")) {
                 String path = userDir + "\\start-others.bat";
                 String[] cmd = {
-                    "cmd.exe",
-                    "/c",
-                    "start",
-                    "\"\"",
-                    "\"" + path + "\""
+                    "cmd.exe", "/c", "start", "\"\"", "\"" + path + "\""
                 };
-                
                 Runtime.getRuntime().exec(cmd);
-
-            } else if (os.contains("linux")) {
-                String path = userDir + "/start-others.sh";
-                String[] cmd = {
-                    "gnome-terminal",
-                    "--",
-                    "sh",
-                    path
-                };
-
-                Runtime.getRuntime().exec(cmd);
-
-            } else {
-                System.err.println("Sistema operativo não suportado.");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Erro ao iniciar restantes servidores: " + e.getMessage());
         }
-        // 4. Desabilita o botão de start
-        startButton.setEnabled(false);
-        
+
     }//GEN-LAST:event_startButtonActionPerformed
-    
+
     private void writeEnvFile(int numVoters, int maxCapacity, int maxVotes) {
         try {
             File envDir = new File("src");
@@ -745,7 +755,7 @@ public class mainGUI extends javax.swing.JFrame {
      * @param enabled 
      */
     public void setStartButtonEnabled(boolean enabled) {
-        SwingUtilities.invokeLater(() -> startButton.setEnabled(enabled));
+        startButton.setEnabled(enabled);
     }
 
     

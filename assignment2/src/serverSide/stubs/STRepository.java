@@ -3,22 +3,19 @@ package serverSide.stubs;
 import commInfra.MessageType;
 import commInfra.interfaces.Repository.IRepo_ALL;
 
-public class SRepository extends Stub implements IRepo_ALL{
-    private static SRepository instance = null;
+public class STRepository extends Stub implements IRepo_ALL{
+    private static STRepository instance = null;
 
-    private SRepository(String serverHostName, int serverPortNumb) {
+    private STRepository(String serverHostName, int serverPortNumb) {
         super(serverHostName, serverPortNumb);
         System.out.println("Server Repository: " + serverHostName + ":" + serverPortNumb);
     }
 
-    public static SRepository getInstance(String serverHostName, int serverPortNumb) {
-        if (instance == null) {
-            instance = new SRepository(serverHostName, serverPortNumb);
-        }
+    public static STRepository getInstance(String host, int port) {
+        instance = new STRepository(host, port);  // SEM if
         return instance;
     }
 
-    
     @Override
     public void logVoting(String voterId, char vote) {
         sendMessage(MessageType.LOGVOTING, voterId, vote);
@@ -67,6 +64,10 @@ public class SRepository extends Stub implements IRepo_ALL{
     @Override
     public void logSurveyResults(long A, long B, String winner) {
         sendMessage(MessageType.LOGSURVEYRESULTS, A, B, winner);
+    }
+    
+    public void shutdown() {
+        sendMessage(MessageType.SHUTDOWN);
     }
     
 }

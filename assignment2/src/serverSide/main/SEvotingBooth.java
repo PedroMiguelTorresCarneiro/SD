@@ -2,7 +2,7 @@ package serverSide.main;
 
 import commInfra.ServerCom;
 import serverSide.entities.PEvotingBooth;
-import serverSide.stubs.SRepository;
+import serverSide.stubs.STRepository;
 import commInfra.interfaces.Repository.IRepo_VotingBooth;
 import java.net.SocketTimeoutException;
 import serverSide.sharedRegions.EVotingBooth.MEvotingBooth;
@@ -33,7 +33,7 @@ public class SEvotingBooth {
         int boothPort = EnvReader.getInt("EVOTINGBOOTH_PORT");
 
         /* Instancia o stub remoto do repositório */
-        IRepo_VotingBooth logs = SRepository.getInstance(host, repoPort);
+        IRepo_VotingBooth logs = STRepository.getInstance(host, repoPort);
 
         /* Instancia o monitor */
         booth = MEvotingBooth.getInstance(logs);

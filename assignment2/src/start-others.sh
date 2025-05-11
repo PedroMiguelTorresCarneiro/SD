@@ -21,6 +21,8 @@ javac -d "$BUILD_DIR" $(find "$SRC_DIR" -name "*.java")
 # Detect OS
 if [[ "$OSTYPE" == "darwin"* ]]; then
     # macOS
+    osascript -e "tell app \"Terminal\" to do script \"cd '$SRC_DIR' && java -cp '$BUILD_DIR' serverSide.main.SRepository\""
+    sleep 3
     osascript -e "tell app \"Terminal\" to do script \"cd '$SRC_DIR' && java -cp '$BUILD_DIR' serverSide.main.SIDCheck\""
     sleep 1
     osascript -e "tell app \"Terminal\" to do script \"cd '$SRC_DIR' && java -cp '$BUILD_DIR' serverSide.main.SPollStation\""
@@ -36,6 +38,8 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     osascript -e "tell app \"Terminal\" to do script \"cd '$SRC_DIR' && java -cp '$BUILD_DIR' clientSide.main.CPollster\""
 else
     # Linux
+    gnome-terminal -- bash -c "cd '$SRC_DIR' && java -cp '$BUILD_DIR' serverSide.main.SRepository; bash" &
+    sleep 3
     gnome-terminal -- bash -c "cd '$SRC_DIR' && java -cp '$BUILD_DIR' serverSide.main.SIDCheck; bash" &
     sleep 1
     gnome-terminal -- bash -c "cd '$SRC_DIR' && java -cp '$BUILD_DIR' serverSide.main.SPollStation; bash" &

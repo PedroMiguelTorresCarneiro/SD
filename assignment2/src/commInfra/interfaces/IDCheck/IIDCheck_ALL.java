@@ -10,6 +10,6 @@ package commInfra.interfaces.IDCheck;
  * @author Inês Águia
  * @author Pedro Carneiro
  */
-public interface IIDCheck_ALL extends IIDCheck_TVoter{
+public interface IIDCheck_ALL extends IIDCheck_TVoter, IIDCheck_TPollClerk{
     
 }

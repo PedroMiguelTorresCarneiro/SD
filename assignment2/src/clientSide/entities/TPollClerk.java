@@ -14,6 +14,7 @@ package clientSide.entities;
  */
 import clientSide.stubs.STEvotingBooth;
 import clientSide.stubs.STExitPoll;
+import clientSide.stubs.STIDCheck;
 import clientSide.stubs.STPollStation;
 
 public class TPollClerk implements Runnable {
@@ -36,6 +37,9 @@ public class TPollClerk implements Runnable {
      */
     private final STExitPoll exitPoll;
 
+    
+    private final STIDCheck idCheck;
+    
     /**
      * The instance attribute stores the unique instance of the TPollClerk class.
      * This attribute is used to implement the Singleton design pattern, ensuring that only one poll clerk exists in the simulation.
@@ -95,11 +99,12 @@ public class TPollClerk implements Runnable {
      * @param exitPoll The exit poll shared region.
      * @param maxVotes The maximum number of votes required to trigger the end of the elections.
      */
-    private TPollClerk(STPollStation pollStation, STEvotingBooth booth, STExitPoll exitPoll, int maxVotes) {
+    private TPollClerk(STPollStation pollStation, STEvotingBooth booth, STExitPoll exitPoll, int maxVotes, STIDCheck idCheck) {
         this.pollStation = pollStation;
         this.booth = booth;
         this.exitPoll = exitPoll;
         this.maxVotes = maxVotes;
+        this.idCheck = idCheck;
     }
 
     /**
@@ -111,9 +116,9 @@ public class TPollClerk implements Runnable {
      * @param maxVotes The maximum number of votes required to trigger the end of the elections.
      * @return The unique instance of the TPollClerk class.
      */
-    public static Runnable getInstance(STPollStation pollStation, STEvotingBooth booth, STExitPoll exitPoll, int maxVotes) {
+    public static Runnable getInstance(STPollStation pollStation, STEvotingBooth booth, STExitPoll exitPoll, int maxVotes, STIDCheck idCheck) {
         if (instance == null) {
-            instance = new TPollClerk(pollStation, booth, exitPoll, maxVotes);
+            instance = new TPollClerk(pollStation, booth, exitPoll, maxVotes, idCheck);
         }
 
         return instance;
@@ -195,6 +200,23 @@ public class TPollClerk implements Runnable {
                         System.out.println("\n[TPOLLCLERK] - Publishing election results --->\n");
                         booth.publishElectionResults();
                         System.out.println("\n[TPOLLCLERK] - Election results published --->\n");
+                        
+                        System.out.println("\n[TPOLLCLERK] - Closing polling station --->\n");
+                        pollStation.shutdown();
+                        System.out.println("\n[TPOLLCLERK] - Polling station closed --->\n");
+
+                        System.out.println("\n[TPOLLCLERK] - Closing voting booth --->\n");
+                        booth.shutdown();
+                        System.out.println("\n[TPOLLCLERK] - Voting booth closed --->\n");
+
+                        System.out.println("\n[TPOLLCLERK] - Closing ID check --->\n");
+                        idCheck.shutdown();
+                        System.out.println("\n[TPOLLCLERK] - ID check closed --->\n");
+
+                        System.out.println("\n[TPOLLCLERK] - Closing exit poll --->\n");
+                        exitPoll.shutdown();
+                        System.out.println("\n[TPOLLCLERK] - Exit poll closed --->\n");
+
                         setState(PollClerkState.PUBLISHING_WINNER);
                     }
 

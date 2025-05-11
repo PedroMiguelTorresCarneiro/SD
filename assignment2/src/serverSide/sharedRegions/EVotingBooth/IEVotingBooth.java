@@ -73,6 +73,18 @@ public class IEVotingBooth implements IEVotingBooth_ALL {
                 System.out.println("Total de votos: " + count);
                 outMessage = Message.getInstance(MessageType.GET_VOTES_COUNT, count);
             }
+            case SHUTDOWN -> {
+                System.out.println("🔻 Pedido de shutdown recebido.");
+                outMessage = Message.getInstance(MessageType.ACK);  // responde primeiro!
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(100); // pequeno delay para garantir que o ACK é enviado
+                        shutdown(); // encerra depois
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }).start();
+            }
             default -> throw new MessageException("Tipo de mensagem inválido", inMessage);
         
         }
@@ -103,6 +115,11 @@ public class IEVotingBooth implements IEVotingBooth_ALL {
     @Override
     public int getVotesCount() {
         return booth.getVotesCount();
+    }
+
+    @Override
+    public void shutdown() {
+        System.exit(0);  // Encerra este servidor
     }
 
 

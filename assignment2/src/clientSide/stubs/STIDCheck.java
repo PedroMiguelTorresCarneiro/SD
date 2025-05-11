@@ -21,5 +21,9 @@ public class STIDCheck extends Stub implements IIDCheck_ALL {
     public boolean checkID(String voterId) throws InterruptedException {
         return boolComm(MessageType.CHECK_ID, voterId);
     }
-
+    
+    @Override
+    public void shutdown() {
+        sendMessage(MessageType.SHUTDOWN);
+    }
 }

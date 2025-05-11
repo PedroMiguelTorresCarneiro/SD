@@ -60,6 +60,18 @@ public class IIDCheck implements IIDCheck_ALL{
                     throw new MessageException("Thread interrompida durante checkID().", inMessage);
                 }
             }
+            case SHUTDOWN -> {
+                System.out.println("🔻 Pedido de shutdown recebido.");
+                outMessage = Message.getInstance(MessageType.ACK);  // responde primeiro!
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(100); // pequeno delay para garantir que o ACK é enviado
+                        shutdown(); // encerra depois
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }).start();
+            }
 
             default -> throw new MessageException("Tipo de mensagem inválido", inMessage);
         }
@@ -77,5 +89,10 @@ public class IIDCheck implements IIDCheck_ALL{
     @Override
     public boolean checkID(String voterId) throws InterruptedException {
         return idCheck.checkID(voterId);
+    }
+
+    @Override
+    public void shutdown() {
+        System.exit(0);  // Encerra este servidor
     }
 }

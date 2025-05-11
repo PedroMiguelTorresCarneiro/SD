@@ -4,7 +4,7 @@ import commInfra.ServerCom;
 import serverSide.entities.PPollStation;
 import serverSide.sharedRegions.PollStation.IPollStation;
 import serverSide.sharedRegions.PollStation.MPollStation;
-import serverSide.stubs.SRepository;
+import serverSide.stubs.STRepository;
 import commInfra.interfaces.Repository.IRepo_PollStation;
 import utils.EnvReader;
 import java.net.SocketTimeoutException;
@@ -34,7 +34,7 @@ public class SPollStation {
         int pollStationPort = EnvReader.getInt("POLLSTATION_PORT");
 
         /* Instancia o stub remoto do repositório */
-        IRepo_PollStation logs = SRepository.getInstance(host, repoPort);
+        IRepo_PollStation logs = STRepository.getInstance(host, repoPort);
 
         /* Instancia o monitor com capacidade máxima */
         pollStation = MPollStation.getInstance(maxInside, logs);

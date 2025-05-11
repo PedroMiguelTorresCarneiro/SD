@@ -97,6 +97,18 @@ public class IExitPoll implements IExitPoll_ALL {
                     throw new MessageException("Thread interrompida durante callForSurvey().", inMessage);
                 }
             }
+            case SHUTDOWN -> {
+                System.out.println("🔻 Pedido de shutdown recebido.");
+                outMessage = Message.getInstance(MessageType.ACK);  // responde primeiro!
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(100); // pequeno delay para garantir que o ACK é enviado
+                        shutdown(); // encerra depois
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }).start();
+            }
             default -> throw new MessageException("Tipo de mensagem inválido", inMessage);
         }
         
@@ -132,6 +144,11 @@ public class IExitPoll implements IExitPoll_ALL {
     @Override
     public void callForSurvey(char vote, String voterId) throws InterruptedException {
         exitPoll.callForSurvey(vote, voterId);
+    }
+
+    @Override
+    public void shutdown() {
+        System.exit(0);  // Encerra este servidor
     }
     
 }

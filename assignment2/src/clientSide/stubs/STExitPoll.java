@@ -46,6 +46,10 @@ public class STExitPoll extends Stub implements IExitPoll_ALL{
     public void close() {
         sendMessage(MessageType.CLOSE_PS);
     }
-
+    
+    @Override
+    public void shutdown() {
+        sendMessage(MessageType.SHUTDOWN);
+    }
 
 }

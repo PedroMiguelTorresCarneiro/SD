@@ -39,5 +39,7 @@ public interface IPollStation_TPollClerk {
      * 
      * @return boolean The boolean that indicates if the polling station is closed after the last voter has voted.
      */    
-    public boolean isPSclosedAfter();
+    boolean isPSclosedAfter();
+    
+    void shutdown();
 }
