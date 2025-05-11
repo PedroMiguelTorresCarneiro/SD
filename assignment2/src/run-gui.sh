@@ -15,5 +15,16 @@ fi
 echo "📚 A compilar classes Java..."
 javac -d "$BUILD_DIR" $(find "$SRC_DIR" -name "*.java")
 
-# Lançar a mainGUI
-osascript -e "tell application \"Terminal\" to do script \"cd '$SRC_DIR' && java -cp '$BUILD_DIR' serverSide.main.SmainGUI\""
+# Verificar o sistema operacional
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS
+    echo "🍎 Detetado macOS, a utilizar Terminal..."
+    osascript -e "tell application \"Terminal\" to do script \"cd '$SRC_DIR' && java -cp '$BUILD_DIR' serverSide.main.SmainGUI\""
+elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    # Linux
+    echo "🐧 Detetado Linux, a utilizar Gnome Terminal..."
+    gnome-terminal -- bash -c "cd '$SRC_DIR' && java -cp '$BUILD_DIR' serverSide.main.SmainGUI; exec bash"
+else
+    echo "⚠️ Sistema operacional não suportado: $OSTYPE"
+    echo "Por favor execute manualmente: cd '$SRC_DIR' && java -cp '$BUILD_DIR' serverSide.main.SmainGUI"
+fi

@@ -4,12 +4,9 @@ import java.awt.Color;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
-import javax.swing.SwingUtilities;
 
-import serverSide.stubs.STRepository;
+
 
 
 /**
@@ -25,9 +22,6 @@ import serverSide.stubs.STRepository;
  * @author Pedro Carneiro
  */
 public class mainGUI extends javax.swing.JFrame{
-    
-    private boolean repositoryStartedOnce = false;
-
     /**
      * The mainGUI constructor initializes the main graphical user interface.
      */
@@ -478,6 +472,14 @@ public class mainGUI extends javax.swing.JFrame{
                     "cmd.exe", "/c", "start", "\"\"", "\"" + path + "\""
                 };
                 Runtime.getRuntime().exec(cmd);
+            }else if (os.contains("linux")) {
+                String path = userDir + "/start-others.sh";
+                String[] cmd = {
+                    "bash", path
+                };
+                Runtime.getRuntime().exec(cmd);
+            } else {
+                System.err.println("Sistema operativo não suportado.");
             }
         } catch (IOException e) {
             System.err.println("Erro ao iniciar restantes servidores: " + e.getMessage());
