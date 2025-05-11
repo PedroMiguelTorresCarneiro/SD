@@ -5,10 +5,7 @@ import commInfra.*;
 import serverSide.sharedRegions.IDCheck.IIDCheck;
 
 
-/**
- *
- * @author pedrocarneiro
- */
+
 public class PIDCheck implements Runnable {
     private final ServerCom sconi;
     private final IIDCheck idCheck;

@@ -5,10 +5,7 @@ import commInfra.*;
 import serverSide.sharedRegions.MainGui.ImainGUI;
 
 
-/**
- *
- * @author pedrocarneiro
- */
+
 public class PmainGUI implements Runnable {
     private final ServerCom sconi;
     private final ImainGUI gui;

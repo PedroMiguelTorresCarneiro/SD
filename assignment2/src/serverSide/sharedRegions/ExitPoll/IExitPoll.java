@@ -5,10 +5,7 @@ import commInfra.MessageException;
 import commInfra.MessageType;
 import commInfra.interfaces.ExitPoll.IExitPoll_ALL;
 
-/**
- *
- * @author pedrocarneiro
- */
+
 public class IExitPoll implements IExitPoll_ALL {
     private static IExitPoll instance = null;
     private final MExitPoll exitPoll;

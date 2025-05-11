@@ -12,7 +12,6 @@ import java.net.SocketTimeoutException;
 /**
  * Servidor da região partilhada IDCheck com configuração via .env.
  * 
- * Autor: Pedro Carneiro
  */
 public class SIDCheck {
 

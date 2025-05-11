@@ -11,7 +11,6 @@ import utils.EnvReader;
 /**
  * Servidor da região partilhada Repository com GUI e configuração via .env.
  * 
- * Autor: Pedro Carneiro
  */
 public class SRepository {
 

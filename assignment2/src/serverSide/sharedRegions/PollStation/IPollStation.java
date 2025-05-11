@@ -9,10 +9,6 @@ import commInfra.MessageException;
 import commInfra.MessageType;
 import commInfra.interfaces.PollStation.IPollStation_ALL;
 
-/**
- *
- * @author pedrocarneiro
- */
 public class IPollStation implements IPollStation_ALL{
     private static IPollStation instance = null;
     private final MPollStation pollStation;

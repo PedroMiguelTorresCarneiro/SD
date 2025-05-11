@@ -3,10 +3,7 @@ package serverSide.entities;
 import commInfra.*;
 import serverSide.sharedRegions.PollStation.IPollStation;
 
-/**
- *
- * @author pedrocarneiro
- */
+
 public class PPollStation implements Runnable {
     private final ServerCom sconi;
     private final IPollStation poll;

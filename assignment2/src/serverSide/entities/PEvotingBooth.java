@@ -6,10 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import serverSide.sharedRegions.EVotingBooth.IEVotingBooth;
 
-/**
- *
- * @author pedrocarneiro
- */
+
 public class PEvotingBooth implements Runnable{
     private final ServerCom sconi;
     private final IEVotingBooth votingBooth;

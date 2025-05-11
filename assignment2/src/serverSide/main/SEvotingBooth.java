@@ -12,7 +12,6 @@ import utils.EnvReader;
 /**
  * Servidor da região partilhada EvotingBooth com configuração via .env.
  * 
- * Autor: Pedro Carneiro
  */
 public class SEvotingBooth {
 

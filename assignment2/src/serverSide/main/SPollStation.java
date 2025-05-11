@@ -12,7 +12,6 @@ import java.net.SocketTimeoutException;
 /**
  * Servidor da região partilhada PollStation com configuração via .env.
  * 
- * Autor: Pedro Carneiro
  */
 public class SPollStation {
 
