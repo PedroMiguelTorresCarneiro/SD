@@ -1,37 +1,104 @@
+// package clientSide.main;
+
+// import clientSide.entities.TPollClerk;
+// import commInfra.interfaces.PollStation.IPollStation_TPollClerk;
+// import commInfra.interfaces.EvotingBooth.IEVotingBooth_TPollClerk;
+// import commInfra.interfaces.ExitPoll.IExitPoll_TPollClerk;
+// import commInfra.interfaces.IDCheck.IIDCheck_TPollClerk;
+// import commInfra.interfaces.Repository.IRepo_TPollClerk;
+
+// import java.rmi.Naming;
+
+// public class CPollClerk {
+
+//     public static void main(String[] args) {
+//         try {
+//             /* Lê parâmetros do ficheiro .env */
+//             String host = "localhost";
+
+//             int psPort = 46000;
+//             int boothPort = 44000;
+//             int exitPollPort = 45000;
+//             int idCheckPort = 42000;
+
+//             // Obter stubs remotos via RMI
+//             IPollStation_TPollClerk pollStation = (IPollStation_TPollClerk)
+//                 Naming.lookup("rmi://" + host + ":" + psPort + "/PollStation");
+
+//             IEVotingBooth_TPollClerk booth = (IEVotingBooth_TPollClerk)
+//                 Naming.lookup("rmi://" + host + ":" + boothPort + "/EVotingBooth");
+
+//             IExitPoll_TPollClerk exitPoll = (IExitPoll_TPollClerk)
+//                 Naming.lookup("rmi://" + host + ":" + exitPollPort + "/ExitPoll");
+
+//             IIDCheck_TPollClerk idCheck = (IIDCheck_TPollClerk)
+//                 Naming.lookup("rmi://" + host + ":" + idCheckPort + "/IDCheck");
+            
+//             IRepo_TPollClerk repo = (IRepo_TPollClerk)
+//                 Naming.lookup("rmi://localhost:43000/Repository");
+
+//             int maxVotes = repo.getMaxVotes(); // vem do lado do servidor
+//             // Iniciar a thread TPollClerk
+//             Thread clerk = new Thread(TPollClerk.getInstance(
+//                     pollStation, booth, exitPoll, idCheck, maxVotes
+//             ));
+//             clerk.start();
+//             clerk.join();
+
+//         } catch (Exception e) {
+//             System.err.println("Erro no cliente CPollClerk: " + e.getMessage());
+//             e.printStackTrace();
+//         }
+//     }
+// }
+
 package clientSide.main;
 
 import clientSide.entities.TPollClerk;
-import clientSide.stubs.STEvotingBooth;
-import clientSide.stubs.STExitPoll;
-import clientSide.stubs.STIDCheck;
-import clientSide.stubs.STPollStation;
-import utils.EnvReader;
+import commInfra.interfaces.EvotingBooth.IEVotingBooth_TPollClerk;
+import commInfra.interfaces.ExitPoll.IExitPoll_TPollClerk;
+import commInfra.interfaces.IDCheck.IIDCheck_TPollClerk;
+import commInfra.interfaces.PollStation.IPollStation_TPollClerk;
+import commInfra.interfaces.Repository.IRepo_TPollClerk;
+import java.rmi.Naming;
 
 public class CPollClerk {
 
     public static void main(String[] args) {
-        /* Lê parâmetros do ficheiro .env */
-        String host = EnvReader.get("HOST");
-        int psPort = EnvReader.getInt("POLLSTATION_PORT");
-        int boothPort = EnvReader.getInt("EVOTINGBOOTH_PORT");
-        int exitPollPort = EnvReader.getInt("EXITPOLL_PORT");
-        int maxVotes = EnvReader.getInt("VOTES_TO_END");
-        int idCheckPort = EnvReader.getInt("IDCHECK_PORT");
-
-        /* Instancia os stubs */
-        var pollStation = STPollStation.getInstance(host, psPort);
-        var booth = STEvotingBooth.getInstance(host, boothPort);
-        var exitPoll = STExitPoll.getInstance(host, exitPollPort);
-        var idCheck = STIDCheck.getInstance(host, idCheckPort);
-
-        /* Inicia a thread do funcionário */
-        Thread clerk = new Thread(TPollClerk.getInstance(pollStation, booth, exitPoll, maxVotes, idCheck));
-        clerk.start();
-
         try {
+            String host = "localhost";
+            int registryPort = 1099;
+
+            // Obter stubs do RMI Registry central
+            IPollStation_TPollClerk pollStation = (IPollStation_TPollClerk)
+                Naming.lookup("rmi://" + host + ":" + registryPort + "/PollStation");
+
+            IEVotingBooth_TPollClerk booth = (IEVotingBooth_TPollClerk)
+                Naming.lookup("rmi://" + host + ":" + registryPort + "/EVotingBooth");
+
+            IExitPoll_TPollClerk exitPoll = (IExitPoll_TPollClerk)
+                Naming.lookup("rmi://" + host + ":" + registryPort + "/ExitPoll");
+
+            IIDCheck_TPollClerk idCheck = (IIDCheck_TPollClerk)
+                Naming.lookup("rmi://" + host + ":" + registryPort + "/IDCheck");
+
+            IRepo_TPollClerk repo = (IRepo_TPollClerk)
+                Naming.lookup("rmi://" + host + ":" + registryPort + "/Repository");
+
+            int maxVotes = repo.getMaxVotes();
+
+            // Lançar thread TPollClerk
+            Thread clerk = new Thread(TPollClerk.getInstance(
+                pollStation, booth, exitPoll, idCheck, maxVotes
+            ));
+            clerk.start();
             clerk.join();
-        } catch (InterruptedException e) {
-            System.out.println("Poll Clerk thread interrupted: " + e.getMessage());
+
+        } catch (Exception e) {
+            System.err.println("❌ Erro no cliente CPollClerk: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }
+
+

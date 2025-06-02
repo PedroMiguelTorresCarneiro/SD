@@ -15,24 +15,24 @@ public interface IPollStation_TPollClerk extends Remote{
      * 
      * @throws InterruptedException The exception thrown when a thread is waiting, sleeping, or otherwise occupied, and the thread is interrupted, either before or during the activity.
      */
-    void openPS() throws InterruptedException;
+    void openPS() throws RemoteException;
 
     /**
      * The callNextVoter method is called by the poll clerk to call the next voter in the polling station inside queue.
      */
-    void callNextVoter();
+    void callNextVoter() throws RemoteException;
 
     /**
      * The closePS method is called by the poll clerk to close the polling station.
      */
-    void closePS();
+    void closePS() throws RemoteException;
 
     /**
      * The isEmpty method is called by the poll clerk to check if the polling station inside queue is empty.
      * 
      * @return boolean The boolean that indicates if the polling station inside queue is empty.
      */
-    boolean isEmpty();
+    boolean isEmpty() throws RemoteException;
 
 
     /**
@@ -40,7 +40,7 @@ public interface IPollStation_TPollClerk extends Remote{
      * 
      * @return boolean The boolean that indicates if the polling station is closed after the last voter has voted.
      */    
-    boolean isPSclosedAfter();
+    boolean isPSclosedAfter() throws RemoteException;
     
-    void shutdown();
+    void shutdown() throws RemoteException;
 }

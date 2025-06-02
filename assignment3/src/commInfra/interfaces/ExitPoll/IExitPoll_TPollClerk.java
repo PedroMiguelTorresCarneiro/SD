@@ -9,7 +9,7 @@ public interface IExitPoll_TPollClerk extends Remote{
     /**
      * The close method is called by the poll clerk to close the exit poll.
      */
-    void close();
+    void close() throws RemoteException;
     
-    void shutdown();
+    void shutdown() throws RemoteException;
 }

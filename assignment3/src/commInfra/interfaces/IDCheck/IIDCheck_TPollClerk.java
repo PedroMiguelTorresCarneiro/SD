@@ -3,5 +3,5 @@ import java.rmi.*;
 
 
 public interface IIDCheck_TPollClerk  extends Remote{
-    void shutdown();
+    void shutdown() throws RemoteException;
 }

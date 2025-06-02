@@ -2,12 +2,16 @@ package serverSide.sharedRegions.EVotingBooth;
 
 import commInfra.interfaces.EvotingBooth.IEVotingBooth_ALL;
 import commInfra.interfaces.Repository.IRepo_VotingBooth;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The MEvotingBooth class implements the IEVotingBooth_ALL interface and represents the evoting booth shared region.
@@ -106,7 +110,8 @@ public class MEvotingBooth implements IEVotingBooth_ALL{
      * 
      * @throws InterruptedException exception.
      */
-    public void gathering() throws InterruptedException {
+    @Override
+    public void gathering(){
         lockGathering.lock();
 
         try {
@@ -118,7 +123,11 @@ public class MEvotingBooth implements IEVotingBooth_ALL{
                     .filter(valor -> valor == 'B')
                     .count();
 
-            simulateCountig.await(2000, TimeUnit.MILLISECONDS);
+            try {
+                simulateCountig.await(2000, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(MEvotingBooth.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
         } finally {
             lockGathering.unlock();
@@ -126,30 +135,38 @@ public class MEvotingBooth implements IEVotingBooth_ALL{
     }
 
     /**
-     * The publishElectionResults method is called by the poll clerk to publish the election results.
-     * The election results are logged in the repository.
+     * The publishElectionResults method is called by the poll clerk to publish the election results.The election results are logged in the repository.
+     * @throws java.rmi.RemoteException
      */
-    public void publishElectionResults() {
+    @Override
+    public void publishElectionResults() throws RemoteException {
         log.logElectionResults(countA, countB, (countA > countB ? "A" : (countB > countA ? "B" : "TIE")));
-        log.close();
+        try {
+            log.close();
+        } catch (RemoteException ex) {
+            System.getLogger(MEvotingBooth.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
     }
 
     /**
-     * The vote method is called by the voter to vote in a party.
-     * A time delay is created to simulate the voting process.
+     * The vote method is called by the voter to vote in a party.A time delay is created to simulate the voting process.
      * The vote is stored in the votes map and is logged in the repository.
      * 
      * @param voterId the voter ID.
-     * @throws InterruptedException exception.
      */
-    public void vote(String voterId) throws InterruptedException {
+    @Override
+    public void vote(String voterId) throws RemoteException{
         lockVote.lock();
 
         try{      
             Character vote = Math.random() < PARTY_A_PROB ? 'A' : 'B';
         
             long randomDuration = 500 + random.nextInt(1501);
-            simulateVoting.await(randomDuration, TimeUnit.MILLISECONDS);
+            try {
+                simulateVoting.await(randomDuration, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(MEvotingBooth.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
             votes.put(voterId, vote);
 
@@ -165,6 +182,7 @@ public class MEvotingBooth implements IEVotingBooth_ALL{
      * @param voterId voter ID.
      * @return the vote of the voter.
      */
+    @Override
     public char getVote(String voterId) {
         lockGettingVote.lock();
         
@@ -180,6 +198,7 @@ public class MEvotingBooth implements IEVotingBooth_ALL{
      * 
      * @return the number of votes.
      */
+    @Override
     public int getVotesCount(){
         lockSize.lock();
 
@@ -203,8 +222,9 @@ public class MEvotingBooth implements IEVotingBooth_ALL{
    }
 
     @Override
-    public void shutdown() {
-        // TO DO: ver o que fazer no shutdown!
+    public void shutdown() throws RemoteException {
+        UnicastRemoteObject.unexportObject(this, true);
+        System.out.println("[SHUTDOWN] Região EVotingBooth desligada.");
     }
 
 }

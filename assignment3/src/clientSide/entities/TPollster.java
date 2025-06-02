@@ -1,6 +1,9 @@
 package clientSide.entities;
 
-import clientSide.stubs.STExitPoll;
+import commInfra.interfaces.ExitPoll.IExitPoll_TPollster;
+import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -21,7 +24,7 @@ public class TPollster implements Runnable {
      * The exitPoll attribute stores a reference to the exit poll shared region.
      * This is the interface that the pollster uses to interact with the exit poll.
      */
-    private final STExitPoll exitPoll;
+    private final IExitPoll_TPollster exitPoll;
 
     /**
      * The instance attribute stores the unique instance of the TPollster class.
@@ -54,7 +57,7 @@ public class TPollster implements Runnable {
      *
      * @param exitPoll The exit poll shared region.
      */
-    private TPollster(STExitPoll exitPoll) {
+    private TPollster(IExitPoll_TPollster exitPoll) {
         this.exitPoll = exitPoll;
     }
 
@@ -65,7 +68,7 @@ public class TPollster implements Runnable {
      * @param exitPoll The exit poll shared region.
      * @return The unique instance of the TPollster class.
      */
-    public static Runnable getInstance(STExitPoll exitPoll) {
+    public static Runnable getInstance(IExitPoll_TPollster exitPoll) {
         if (instance == null) {
             instance = new TPollster(exitPoll);
         }
@@ -109,8 +112,8 @@ public class TPollster implements Runnable {
             exitPoll.publishResults();
             setState(PollsterState.PUBLISHING_RESULTS);
             resetInstance();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+        } catch (RemoteException ex) {
+            Logger.getLogger(TPollster.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

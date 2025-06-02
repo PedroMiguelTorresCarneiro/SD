@@ -1,4 +1,4 @@
-package commInfra.interfaces.GUI;
+package commInfra.interfaces.MainGUI;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

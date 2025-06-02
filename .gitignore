@@ -43,3 +43,4 @@ manifest.mf
 
 # System temporary files
 .DS_Store
+/assignment3/dist/

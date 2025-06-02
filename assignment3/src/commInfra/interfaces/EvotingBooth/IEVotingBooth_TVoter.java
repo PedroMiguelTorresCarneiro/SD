@@ -15,12 +15,12 @@ public interface IEVotingBooth_TVoter extends Remote{
      * @param voterId the voter id.
      * @throws InterruptedException if the thread is interrupted.
      */
-    void vote(String voterId) throws InterruptedException;
+    void vote(String voterId) throws RemoteException;
 
    /**
     * The getVote method is called by the voter to get the vote.
     * @param voterId the voter id.
     * @return the vote of the voter.
     */
-    char getVote(String voterId);
+    char getVote(String voterId) throws RemoteException;
 }

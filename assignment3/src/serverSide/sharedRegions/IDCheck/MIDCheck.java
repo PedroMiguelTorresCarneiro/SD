@@ -8,6 +8,10 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import commInfra.interfaces.Repository.IRepo_IDChek;
 import commInfra.interfaces.IDCheck.IIDCheck_ALL;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The MIDCheck class implements the ID check shared region.
@@ -79,23 +83,26 @@ public class MIDCheck implements IIDCheck_ALL{
     }
     
     /**
-     * The checkID method simulates the voter checking his ID.
-     * The voter waits for a random duration and then checks if his ID has already been checked.
-     * If the ID has not been checked, the voter is accepted and the ID is added to the set of checked IDs.
+     * The checkID method simulates the voter checking his ID.The voter waits for a random duration and then checks if his ID has already been checked.If the ID has not been checked, the voter is accepted and the ID is added to the set of checked IDs.
      * This information is logged in the repository.
      * 
      * @param voterId The ID of the voter
      * @return boolean Returns true if the voter's ID is valid, false otherwise.
-     * @throws java.lang.InterruptedException
+     * @throws java.rmi.RemoteException
      */
-    public boolean checkID(String voterId) throws InterruptedException{
+    @Override
+    public boolean checkID(String voterId) throws RemoteException{
         lock_idCheck.lock();
 
         try{
             char accepted;
             
             long randomDuration = 500 + random.nextInt(1001);
-            simulate_idCheck.await(randomDuration, TimeUnit.MILLISECONDS);
+            try {
+                simulate_idCheck.await(randomDuration, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(MIDCheck.class.getName()).log(Level.SEVERE, null, ex);
+            }
             
             if(!idsChecked.contains(voterId)){
                 accepted = '✔';
@@ -128,8 +135,9 @@ public class MIDCheck implements IIDCheck_ALL{
     }
 
     @Override
-    public void shutdown() {
-        // TO DO: implementar o metodo de shutdown
+    public void shutdown() throws RemoteException {
+        UnicastRemoteObject.unexportObject(this, true);
+        System.out.println("[SHUTDOWN] Região IDCheck desligada.");
     }
 
 }

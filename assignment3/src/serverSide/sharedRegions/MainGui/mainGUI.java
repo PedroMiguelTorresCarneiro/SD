@@ -1,11 +1,10 @@
 package serverSide.sharedRegions.MainGui;
 
-import commInfra.interfaces.GUI.IMainGUI_ALL;
+import commInfra.interfaces.MainGUI.IMainGUI_ALL;
 import java.awt.Color;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import javax.swing.DefaultListModel;
+import javax.swing.SwingUtilities;
 
 
 
@@ -27,25 +26,34 @@ public class mainGUI extends javax.swing.JFrame implements IMainGUI_ALL{
      * The mainGUI constructor initializes the main graphical user interface.
      */
     public mainGUI() {
-        initComponents();
-         // Initialize DefaultListModel for externalFIFO
+        initComponents(); // esta é que faz toda a criação dos componentes ligados ao layout
+
+        if (partyA_progress == null) {
+            partyA_progress = new javax.swing.JProgressBar();
+            getContentPane().add(partyA_progress); // para evitar erros de layout
+            System.err.println("⚠️ Atenção: partyA_progress estava null! Foi inicializado manualmente.");
+        }
+        // Configurações extra válidas
         externalFIFO.setModel(new DefaultListModel<>());
         internalFIFO.setModel(new DefaultListModel<>());
         idcheckFIFO.setModel(new DefaultListModel<>());
-        partyA_progress.setMinimum(0); // Set minimum value
-        partyA_progress.setMaximum(100); // Set maximum value
-        partyA_progress.setValue(0); // Set initial value
-        partyB_progress.setMinimum(0); // Set minimum value
-        partyB_progress.setMaximum(100); // Set maximum value
-        partyB_progress.setValue(0); // Set initial value
-        
-        partyA_survey.setMinimum(0); // Set minimum value
-        partyA_survey.setMaximum(100); // Set maximum value
-        partyA_survey.setValue(0); // Set initial value
-        partyB_survey.setMinimum(0); // Set minimum value
-        partyB_survey.setMaximum(100); // Set maximum value
-        partyB_survey.setValue(0); // Set initial value
-        
+
+        // Configurações das progress bars
+        partyA_progress.setMinimum(0);
+        partyA_progress.setMaximum(100);
+        partyA_progress.setValue(0);
+
+        partyB_progress.setMinimum(0);
+        partyB_progress.setMaximum(100);
+        partyB_progress.setValue(0);
+
+        partyA_survey.setMinimum(0);
+        partyA_survey.setMaximum(100);
+        partyA_survey.setValue(0);
+
+        partyB_survey.setMinimum(0);
+        partyB_survey.setMaximum(100);
+        partyB_survey.setValue(0);
     }
 
     /**
@@ -311,12 +319,13 @@ public class mainGUI extends javax.swing.JFrame implements IMainGUI_ALL{
                                 .addComponent(partyA_progress, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)
                                 .addComponent(partyB_progress, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addComponent(elecpartyA, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addGap(58, 58, 58)
-                                .addComponent(startButton, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.LEADING))
-                        .addGap(66, 66, Short.MAX_VALUE)))
+                        .addGap(170, 170, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(startButton, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(53, 53, 53)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(poolingStation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
@@ -413,6 +422,7 @@ public class mainGUI extends javax.swing.JFrame implements IMainGUI_ALL{
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
         System.out.println("🟢 Botão Start clicado!");
         clean_2();
+
         // 1. Ler valores dos spinners
         int numVoters = (int) votersSpinner.getValue();
         int maxCapacity = (int) pollingStationSpinner.getValue();
@@ -424,100 +434,45 @@ public class mainGUI extends javax.swing.JFrame implements IMainGUI_ALL{
         // 2. Desativar botão Start para evitar múltiplos cliques
         setStartButtonEnabled(false);
 
-
-        // 4. Atualiza o ficheiro .env com os novos valores
-        try {
-            writeEnvFile(numVoters, maxCapacity, maxVotes);
-        } catch (Exception e) {
-            System.err.println("[mainGUI] - Erro ao escrever .env: " + e.getMessage());
+        // 3. Preparar comando para executar script com os argumentos
+        String[] cmd;
+        if (os.contains("mac")) {
+            // macOS - AppleScript para abrir novo terminal
+            cmd = new String[]{
+                "osascript",
+                "-e",
+                "tell application \"Terminal\" to do script \"cd '" + userDir + "' && chmod +x start-others.sh && ./start-others.sh "
+                    + maxVotes + " " + numVoters + " " + maxCapacity + "\""
+            };
+        } else if (os.contains("linux")) {
+            // Linux - usar gnome-terminal
+            String path = userDir + "/start-others.sh";
+            cmd = new String[]{
+                "gnome-terminal", "--", "bash", "-c",
+                "chmod +x '" + path + "' && '" + path + "' " + maxVotes + " " + numVoters + " " + maxCapacity + "; bash"
+            };
+        } else if (os.contains("win")) {
+            // Windows (chama um .bat equivalente com argumentos, se necessário)
+            String path = userDir + "\\start-others.bat";
+            cmd = new String[]{
+                "cmd.exe", "/c", "start", "\"\"", "\"" + path + "\"", String.valueOf(maxVotes),
+                String.valueOf(numVoters), String.valueOf(maxCapacity)
+            };
+        } else {
+            System.err.println("❌ Sistema operativo não suportado.");
             return;
         }
 
-        // 5. Arrancar o SRepository via script (start-repo.sh)
-        /*
+        // 4. Executar comando
         try {
-            if (os.contains("mac")) {
-                String[] cmd = {
-                    "osascript",
-                    "-e",
-                    "tell application \"Terminal\" to do script \\\"cd '" + userDir + "' && chmod +x start-repo.sh && ./start-repo.sh\\\""
-                };
-                Runtime.getRuntime().exec(cmd);
-            } else if (os.contains("win")) {
-                String path = userDir + "\\start-repo.bat";
-                String[] cmd = {
-                    "cmd.exe", "/c", "start", "\"\"", "\"" + path + "\""
-                };
-                Runtime.getRuntime().exec(cmd);
-            } else {
-                System.err.println("Sistema operativo não suportado.");
-            }
-            Thread.sleep(2000); // Dá tempo ao SRepository para arrancar antes de arrancar os outros
-        } catch (IOException | InterruptedException e) {
-            System.err.println("Erro ao iniciar SRepository: " + e.getMessage());
-            return;
-        }*/
-
-        // 6. Lança os restantes servidores e threads via script
-        try {
-            if (os.contains("mac")) {
-                String[] cmd = {
-                    "osascript",
-                    "-e",
-                    "tell application \"Terminal\" to do script \"cd '" + userDir + "' && chmod +x start-others.sh && ./start-others.sh\""
-                };
-                Runtime.getRuntime().exec(cmd);
-            } else if (os.contains("win")) {
-                String path = userDir + "\\start-others.bat";
-                String[] cmd = {
-                    "cmd.exe", "/c", "start", "\"\"", "\"" + path + "\""
-                };
-                Runtime.getRuntime().exec(cmd);
-            }else if (os.contains("linux")) {
-                String path = userDir + "/start-others.sh";
-                String[] cmd = {
-                    "bash", path
-                };
-                Runtime.getRuntime().exec(cmd);
-            } else {
-                System.err.println("Sistema operativo não suportado.");
-            }
+            Runtime.getRuntime().exec(cmd);
+            System.out.println("🚀 Script de arranque lançado com sucesso!");
         } catch (IOException e) {
-            System.err.println("Erro ao iniciar restantes servidores: " + e.getMessage());
+            System.err.println("❌ Erro ao lançar o script: " + e.getMessage());
+            e.printStackTrace();
         }
 
     }//GEN-LAST:event_startButtonActionPerformed
-
-    private void writeEnvFile(int numVoters, int maxCapacity, int maxVotes) {
-        try {
-            File envDir = new File("src");
-            if (!envDir.exists()) {
-                envDir.mkdirs(); // cria diretório src se necessário
-            }
-
-            File envFile = new File("src/.env");
-            try (FileWriter writer = new FileWriter(envFile)) {
-                String content = String.format("""
-                    NUM_VOTERS=%d
-                    MAX_INSIDE=%d
-                    VOTES_TO_END=%d
-
-                    REPOSITORY_PORT=43000
-                    IDCHECK_PORT=42000
-                    POLLSTATION_PORT=46000
-                    EVOTINGBOOTH_PORT=44000
-                    EXITPOLL_PORT=45000
-
-                    HOST=localhost
-                    """, numVoters, maxCapacity, maxVotes);
-
-                writer.write(content);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     
     /**
@@ -600,54 +555,85 @@ public class mainGUI extends javax.swing.JFrame implements IMainGUI_ALL{
      *  The addExternalFIFO method adds a voter to the queue outside the polling station.
      * @param voter the id of the voter.
      */
-    public void addExternalFIFO(String voter){
-        DefaultListModel<String> model = (DefaultListModel<String>) externalFIFO.getModel();
-        model.addElement(voter);
+    @Override
+    public void addExternalFIFO(String voter) {
+        SwingUtilities.invokeLater(() -> {
+            DefaultListModel<String> model = (DefaultListModel<String>) externalFIFO.getModel();
+            model.addElement(voter);
+            int lastIndex = model.getSize() - 1;
+            if (lastIndex >= 0) {
+                externalFIFO.setSelectedIndex(lastIndex);
+            }
+        });
     }
     
     /**
      * The removeExternalFIFO method removes a voter from the queue outside the polling station.
      * @param voter the id of the voter.
      */
+    @Override
     public void removeExternalFIFO(String voter) {
-        DefaultListModel<String> model = (DefaultListModel<String>) externalFIFO.getModel();
-        model.removeElement(voter); // Remove the specific voter by value
+        SwingUtilities.invokeLater(() -> {
+            DefaultListModel<String> model = (DefaultListModel<String>) externalFIFO.getModel();
+            model.removeElement(voter);
+        });
     }
     
     /**
      * The addInternalFIFO method adds a voter to the queue inside the polling station.
      * @param voter the id of the voter.
      */
-    public void addInternalFIFO(String voter){
-        DefaultListModel<String> model = (DefaultListModel<String>) internalFIFO.getModel();
-        model.addElement(voter);
+    @Override
+    public void addInternalFIFO(String voter) {
+        SwingUtilities.invokeLater(() -> {
+            DefaultListModel<String> model = (DefaultListModel<String>) internalFIFO.getModel();
+            model.addElement(voter);
+            int lastIndex = model.getSize() - 1;
+            if (lastIndex >= 0) {
+                internalFIFO.setSelectedIndex(lastIndex);
+            }
+        });
     }
     
     /**
      * The removeInternalFIFO method removes a voter from the queue inside the polling station.
      * @param voter the id of the voter.
      */
-    public void removeInternalFIFO(String voter){
-        DefaultListModel<String> model = (DefaultListModel<String>) internalFIFO.getModel();
-        model.removeElement(voter); // Remove the specific voter by value
+    @Override
+    public void removeInternalFIFO(String voter) {
+        SwingUtilities.invokeLater(() -> {
+            DefaultListModel<String> model = (DefaultListModel<String>) internalFIFO.getModel();
+            model.removeElement(voter);
+        });
     }
+
     
     /**
      * The addIdcheckFIFO method adds a voter to the queue inside the ID check.
      * @param voter the id of the voter.
      */ 
-    public void addIdcheckFIFO(String voter){
-        DefaultListModel<String> model = (DefaultListModel<String>) idcheckFIFO.getModel();
-        model.addElement(voter);
+    @Override
+    public void addIdcheckFIFO(String voter) {
+        SwingUtilities.invokeLater(() -> {
+            DefaultListModel<String> model = (DefaultListModel<String>) idcheckFIFO.getModel();
+            model.addElement(voter);
+            int lastIndex = model.getSize() - 1;
+            if (lastIndex >= 0) {
+                idcheckFIFO.setSelectedIndex(lastIndex);
+            }
+        });
     }
     
     /**
      * The removeIdcheckFIFO method removes a voter from the queue inside the ID check.
      * @param voter the id of the voter.
      */
-    public void removeIdcheckFIFO(String voter){
-        DefaultListModel<String> model = (DefaultListModel<String>) idcheckFIFO.getModel();
-        model.removeElement(voter); // Remove the specific voter by value
+    @Override
+    public void removeIdcheckFIFO(String voter) {
+        SwingUtilities.invokeLater(() -> {
+            DefaultListModel<String> model = (DefaultListModel<String>) idcheckFIFO.getModel();
+            model.removeElement(voter);
+        });
     }
     
     /**

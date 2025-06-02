@@ -1,5 +1,6 @@
 package serverSide.sharedRegions.Repository;
 
+import commInfra.interfaces.MainGUI.IMainGUI_ALL;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -8,6 +9,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.locks.ReentrantLock;
 import commInfra.interfaces.Repository.IRepo_ALL;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The MRepo class implements the IRepo_ALL interface and represents the repository .
@@ -84,7 +89,7 @@ public class MRepo implements IRepo_ALL{
     /**
      * The gui atributte is used to store the reference to the simulation GUI
      */
-    private final STmainGUI gui = STmainGUI.getInstance("localhost", 47000);
+    private IMainGUI_ALL gui;
 
    /**
     * The MRepo constructor initializes a new MRepo object with the specified attributes.
@@ -231,12 +236,17 @@ public class MRepo implements IRepo_ALL{
 
     * @param state The state of the polling station (OPEN or CLOSED)
     */
+    @Override
     public void logPollStation(String state) {
         lock.lock();
 
         try {
 
-            gui.logPOLLSTATION(state);
+            try {
+                gui.logPOLLSTATION(state);
+            } catch (RemoteException ex) {
+                Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
+            }
                
             
             
@@ -255,12 +265,17 @@ public class MRepo implements IRepo_ALL{
      * 
      * @param voterId The voter's ID
      */
+    @Override
     public void logWaiting(String voterId) {
         lock.lock(); 
 
         try {
             
-            gui.addExternalFIFO(voterId);
+            try {
+                gui.addExternalFIFO(voterId);
+            } catch (RemoteException ex) {
+                Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
             String logMessage = String.format("|             |   %s%-5s%s |        |         |        |          |        |%n", BOLD, voterId, RESET);
 
@@ -276,13 +291,22 @@ public class MRepo implements IRepo_ALL{
 
     * @param voterId The voter's ID
     */
+    @Override
     public void logInside(String voterId) {
         lock.lock(); 
 
         try {
             
-            gui.removeExternalFIFO(voterId);
-            gui.addInternalFIFO(voterId);
+            try {
+                gui.removeExternalFIFO(voterId);
+            } catch (RemoteException ex) {
+                Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                gui.addInternalFIFO(voterId);
+            } catch (RemoteException ex) {
+                Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
+            }
             
             String logMessage = String.format("|             |         |  %s%-5s%s |         |        |          |        |%n", GREEN, voterId, RESET);
 
@@ -299,14 +323,27 @@ public class MRepo implements IRepo_ALL{
      * @param voterId The voter's ID
      * @param accepted The result of the ID check (✔ or ✖)
      */
+    @Override
     public void logIDCheck(String voterId, char accepted) {
         lock.lock(); 
 
         try {
             
-            gui.removeInternalFIFO(voterId);
-            gui.logIDCHECK(voterId+accepted, accepted);
-            gui.addIdcheckFIFO(voterId);
+            try {
+                gui.removeInternalFIFO(voterId);
+            } catch (RemoteException ex) {
+                Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                gui.logIDCHECK(voterId+accepted, accepted);
+            } catch (RemoteException ex) {
+                Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                gui.addIdcheckFIFO(voterId);
+            } catch (RemoteException ex) {
+                Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
+            }
             
             String color = (accepted == '✔') ? GREEN : RED;
             String logMessage = String.format("|             |         |        |  %s%-4s%c%s  |        |          |        |%n", color, voterId, accepted, RESET);
@@ -324,11 +361,16 @@ public class MRepo implements IRepo_ALL{
      * @param voterId The voter's ID
      * @param vote The party the voter voted for (A or B)
      */
+    @Override
     public void logVoting(String voterId, char vote) {
         lock.lock();
 
         try {
-            gui.logVOTING(voterId);
+            try {
+                gui.logVOTING(voterId);
+            } catch (RemoteException ex) {
+                Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
             String voteColor = (vote == 'A') ? CYAN : RED;
             String logMessage = String.format("|             |         |        |         |  %-4s%s%c%s |          |        |%n", voterId, voteColor, vote, RESET);
@@ -345,11 +387,16 @@ public class MRepo implements IRepo_ALL{
      * 
      * @param voterId The voter's ID
      */
+    @Override
     public void logExitPoll(String voterId) {
         lock.lock();
 
         try {
-            gui.removeIdcheckFIFO(voterId);
+            try {
+                gui.removeIdcheckFIFO(voterId);
+            } catch (RemoteException ex) {
+                Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
             String logMessage = String.format("|             |         |        |         |        |   %s%-5s%s  |        |%n", YELLOW, voterId, RESET);
 
@@ -366,11 +413,16 @@ public class MRepo implements IRepo_ALL{
      * @param voterId The voter's ID
      * @param lieOrNot The result of the survey (L or not)
      */
+    @Override
     public void logSurvey(String voterId, char lieOrNot) {
         lock.lock(); 
 
         try {
-            gui.logSURVEY(voterId);
+            try {
+                gui.logSURVEY(voterId);
+            } catch (RemoteException ex) {
+                Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
             String logMessage = String.format("|             |         |        |         |        |          |  %s%-4s%c%s |%n", BOLD, voterId, lieOrNot, RESET);
 
@@ -388,6 +440,7 @@ public class MRepo implements IRepo_ALL{
      * @param B The number of votes for party B
      * @param winner The winner of the survey
      */
+    @Override
     public void logSurveyResults(long A, long B, String winner) {
         lock.lock(); 
 
@@ -399,15 +452,35 @@ public class MRepo implements IRepo_ALL{
             double partyBRatio = (B / (double)(A + B)) * 100; 
             int partyBPercentage = (int) partyBRatio;
             
-            gui.updatePartyA_survey(partyAPercentage);
-            gui.updatePartyB_survey(partyBPercentage);
+            try {
+                gui.updatePartyA_survey(partyAPercentage);
+            } catch (RemoteException ex) {
+                Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                gui.updatePartyB_survey(partyBPercentage);
+            } catch (RemoteException ex) {
+                Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
+            }
             
             if(partyAPercentage > partyBPercentage){
-                gui.setSurveyPartyAwinner();
+                try {
+                    gui.setSurveyPartyAwinner();
+                } catch (RemoteException ex) {
+                    Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }else if(partyAPercentage < partyBPercentage){
-                gui.setSurveyPartyBwinner();
+                try {
+                    gui.setSurveyPartyBwinner();
+                } catch (RemoteException ex) {
+                    Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }else{
-                gui.setSurveyTie();
+                try {
+                    gui.setSurveyTie();
+                } catch (RemoteException ex) {
+                    Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
             
             String logMessage = CYAN + "-------------------------------------------------------------------------" + RESET + "\n" +
@@ -431,13 +504,18 @@ public class MRepo implements IRepo_ALL{
      * @param B The number of votes for party B
      * @param winner The winner of the election
      */
+    @Override
     public void logElectionResults(long A, long B, String winner) {
         lock.lock(); 
 
         try {
-            // Clears the GUI
-            gui.clean();
-            //gui.setStartButtonEnabled(true);
+            try {
+                // Clears the GUI
+                gui.clean();
+                //gui.setStartButtonEnabled(true);
+            } catch (RemoteException ex) {
+                Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
             double partyARatio = (A / (double)(A + B)) * 100; 
             int partyAPercentage = (int) partyARatio; 
@@ -446,15 +524,35 @@ public class MRepo implements IRepo_ALL{
             int partyBPercentage = (int) partyBRatio;
             
             if(partyAPercentage > partyBPercentage){
-                gui.setElecPartyAwinner();
+                try {
+                    gui.setElecPartyAwinner();
+                } catch (RemoteException ex) {
+                    Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }else if(partyAPercentage < partyBPercentage){
-                gui.setElecPartyBwinner();
+                try {
+                    gui.setElecPartyBwinner();
+                } catch (RemoteException ex) {
+                    Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }else{
-                gui.setElecTie();
+                try {
+                    gui.setElecTie();
+                } catch (RemoteException ex) {
+                    Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
             
-            gui.updatePartyA(partyAPercentage);
-            gui.updatePartyB(partyBPercentage);
+            try {
+                gui.updatePartyA(partyAPercentage);
+            } catch (RemoteException ex) {
+                Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                gui.updatePartyB(partyBPercentage);
+            } catch (RemoteException ex) {
+                Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
+            }
             
             String logMessage = CYAN + "\n----------------------| ELECTION RESULTS" + RESET + "\n" +
                     String.format("Total votes for A: %s%d%s%n", YELLOW, A, RESET) +
@@ -462,7 +560,11 @@ public class MRepo implements IRepo_ALL{
                     BOLD + GREEN + "  WINNER  🏆🏆 -> " + winner + RESET + "\n" +
                     CYAN + "----------------------" + RESET + "\n";
             
-            gui.setStartButtonEnabled(true); 
+            try { 
+                gui.setStartButtonEnabled(true);
+            } catch (RemoteException ex) {
+                Logger.getLogger(MRepo.class.getName()).log(Level.SEVERE, null, ex);
+            }
             
             writeLog(logMessage);
         } finally {
@@ -473,10 +575,12 @@ public class MRepo implements IRepo_ALL{
     /**
      * The close method closes the file writer, and catches any IOException that may occur.
      */
+    @Override
     public void close() {
         try {
             if (fileWriter != null) {
                 fileWriter.close();
+                shutdown();
             }
         } catch (IOException e) {
             System.err.println("Failed to close file writer: " + e.getMessage());
@@ -504,11 +608,34 @@ public class MRepo implements IRepo_ALL{
     public boolean isRunning() {
         return running;
     }
+    
+    public void shutdown() throws RemoteException {
+        UnicastRemoteObject.unexportObject(this, true);
+        System.out.println("[SHUTDOWN] Região Repo desligada.");
+    }
 
+    /*
     public void shutdown() {
         running = false;
         System.out.println("🟥 [Repository] Shutdown pedido: a terminar loop principal.");
     }
+    */
+    
+    @Override
+    public int getNumberOfVoters(){
+        return this.votersNumber;
+    }
+    
+    @Override
+    public int getMaxVotes(){
+        return this.votesNumber;
+    }
+    
+    public void setGui(IMainGUI_ALL gui) {
+        this.gui = gui;
+    }
+
+
 
     /*public void attachGUI(mainGUI gui) {
         this.gui = gui;

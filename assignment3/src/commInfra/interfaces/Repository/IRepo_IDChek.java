@@ -11,5 +11,5 @@ public interface IRepo_IDChek extends Remote{
      * @param voterId The voter's ID.
      * @param accepted A char that indicates if the voter's ID was accepted or not.
      */
-    void logIDCheck(String voterId, char accepted);
+    void logIDCheck(String voterId, char accepted) throws RemoteException;
 }

@@ -15,5 +15,5 @@ package commInfra.interfaces.Repository;
  * @author Inês Águia
  * @author Pedro Carneiro
  */
-public interface IRepo_ALL extends IRepo_VotingBooth, IRepo_PollStation, IRepo_IDChek, IRepo_ExitPoll{ 
+public interface IRepo_ALL extends IRepo_VotingBooth, IRepo_PollStation, IRepo_IDChek, IRepo_ExitPoll, IRepo_Tvoter, IRepo_TPollClerk{ 
 }

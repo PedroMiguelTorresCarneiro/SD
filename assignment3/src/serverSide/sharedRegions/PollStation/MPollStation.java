@@ -2,10 +2,15 @@ package serverSide.sharedRegions.PollStation;
 
 import commInfra.interfaces.Repository.IRepo_PollStation;
 import commInfra.interfaces.PollStation.IPollStation_ALL;
+import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.rmi.server.UnicastRemoteObject;
+
 
 /**
  * The MPollStation class implements the IPollStation_ALL interface and represents the polling station shared region.
@@ -136,12 +141,11 @@ public class MPollStation implements IPollStation_ALL{
     }
 
     /**
-     * The openPs method simulates the opening of the polling station.
-     * The polling station is opened for a random duration between 0.5s and 2s, its state is updated to OPEN,
-     * and the repository is updated with the polling station state.
-     * @throws InterruptedException if the thread is interrupted
+     * The openPs method simulates the opening of the polling station.The polling station is opened for a random duration between 0.5s and 2s, its state is updated to OPEN,
+ and the repository is updated with the polling station state.
      */
-    public void openPS() throws InterruptedException {
+    @Override
+    public void openPS() throws RemoteException{
         lockChangeState.lock();
 
         try{      
@@ -149,8 +153,12 @@ public class MPollStation implements IPollStation_ALL{
 
             // Simulate voting with a random duration between 0.5s and 2s
             long randomDuration = 500 + random.nextInt(1501);
-            //simulateOpen.await(randomDuration, TimeUnit.MILLISECONDS);
-            Thread.sleep(randomDuration);
+            try {
+                //simulateOpen.await(randomDuration, TimeUnit.MILLISECONDS);
+                Thread.sleep(randomDuration);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(MPollStation.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
             state = PollStationState.OPEN;
            
@@ -163,16 +171,15 @@ public class MPollStation implements IPollStation_ALL{
     }
     
     /**
-     * The canEnterPS method simulates the voters waiting outside and trying to enter the polling station.
-     * A voter can only enter the polling station if there is space available and if the polling station is open.
-     * When a voter enters the polling station, the voters enters in the polling station inside queue (votersIsinde varaible incremented).
-     *  and waits for the poll clerk to call him to the ID check, this interaction is logged on the repository.
+     * The canEnterPS method simulates the voters waiting outside and trying to enter the polling station.A voter can only enter the polling station if there is space available and if the polling station is open.When a voter enters the polling station, the voters enters in the polling station inside queue (votersIsinde varaible incremented).
+     * and waits for the poll clerk to call him to the ID check, this interaction is logged on the repository.
      * 
      * @param voterId the ID of the voter
      * @return true if the voter entered the polling station, false otherwise.
-     * @throws InterruptedException if the thread is interrupted
+     * @throws java.rmi.RemoteException
      */
-    public boolean canEnterPS(String voterId) throws InterruptedException {
+    @Override
+    public boolean canEnterPS(String voterId) throws RemoteException{
         lockExternalFifo.lock();
 
         try{
@@ -191,7 +198,11 @@ public class MPollStation implements IPollStation_ALL{
             while(true){          
                 log.logInside(voterId);
                 externalQueue.remove(voterId);
-                internalQueue.await();
+                try {
+                    internalQueue.await();
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(MPollStation.class.getName()).log(Level.SEVERE, null, ex);
+                }
 
                 return true;
             }    
@@ -205,6 +216,7 @@ public class MPollStation implements IPollStation_ALL{
      * 
      * @return true if the polling station is closed after the election, false otherwise
      */
+    @Override
     public boolean isPSclosedAfter(){
         lockExternalFifo.lock();
         
@@ -219,6 +231,7 @@ public class MPollStation implements IPollStation_ALL{
      * The callNextVoter method simulates the poll clerk calling the next voter to the ID check.
      * The poll clerk can only call the next voter if there is a voter in the polling station inside queue.
      */
+    @Override
     public void callNextVoter() {
         lockExternalFifo.lock();
         
@@ -233,7 +246,8 @@ public class MPollStation implements IPollStation_ALL{
      * The closePS method simulates the closing of the polling station (it is called by the poll clerk).
      * And updates the repository with the polling station state.
      */
-    public void closePS() {
+    @Override
+    public void closePS() throws RemoteException {
         lockChangeState.lock();
 
         try{
@@ -254,6 +268,7 @@ public class MPollStation implements IPollStation_ALL{
      * 
      * @return true if the polling station is closed after the election, false otherwise
      */
+    @Override
     public boolean isCLosedAfterElection() {
         lockIsOpen.lock();
 
@@ -268,9 +283,10 @@ public class MPollStation implements IPollStation_ALL{
      * The exitingPS method simulates the voter going to to the exit poll after voting.The repository updates the voter to show that he is in the exit poll and
      * the number of voters inside the polling station is decremented.
      * @param voterId the ID of the voter
-     * @throws java.lang.InterruptedException
+     * @throws java.rmi.RemoteException
      */
-    public void exitingPS(String voterId) throws InterruptedException {
+    @Override
+    public void exitingPS(String voterId) throws RemoteException{
         lockExitingPS.lock();
 
         try{
@@ -287,6 +303,7 @@ public class MPollStation implements IPollStation_ALL{
      * The isEmpty method returns a flag that indicates if the polling station inside queue is empty.
      * @return true if the polling station inside queue is empty, false otherwise
      */
+    @Override
     public boolean isEmpty(){
         lockIsEmpty.lock();
 
@@ -310,7 +327,8 @@ public class MPollStation implements IPollStation_ALL{
    }
 
    @Override
-    public void shutdown() {
-        // TODO: criar o metodo de shutdown
+    public void shutdown() throws RemoteException {
+        UnicastRemoteObject.unexportObject(this, true);
+        System.out.println("[SHUTDOWN] Região PollStation desligada.");
     }
 }

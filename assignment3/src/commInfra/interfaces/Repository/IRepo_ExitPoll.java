@@ -16,7 +16,7 @@ public interface IRepo_ExitPoll extends Remote{
      * @param voterId The voter's ID.
      * @param lieOrNot  A char that indicates if the voter lied or not in the survey.
      */
-    void logSurvey(String voterId, char lieOrNot);
+    void logSurvey(String voterId, char lieOrNot) throws RemoteException;
 
     /**
      * The logSurveyResults method logs the survey results of the election in the exit poll shared region.
@@ -24,5 +24,5 @@ public interface IRepo_ExitPoll extends Remote{
      * @param B The number of votes for candidate B.
      * @param winner The name of the winning candidate.
      */
-    void logSurveyResults(long A, long B, String winner);
+    void logSurveyResults(long A, long B, String winner) throws RemoteException;
 }

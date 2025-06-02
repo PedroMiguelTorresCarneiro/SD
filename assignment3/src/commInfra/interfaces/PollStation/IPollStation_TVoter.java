@@ -16,7 +16,7 @@ public interface IPollStation_TVoter extends Remote {
      * 
      * @return Boolean The Boolean that indicates if the polling station is closed after the election.
      */
-    boolean isCLosedAfterElection();
+    boolean isCLosedAfterElection() throws RemoteException;
 
     /**
      * The canEnterPS method is called by the voter to try to enter in the polling station.
@@ -26,12 +26,12 @@ public interface IPollStation_TVoter extends Remote {
      * @throws InterruptedException The exception thrown when a thread is waiting, sleeping, or otherwise occupied, and the thread is interrupted, either before or during the activity.
      * 
      */
-    boolean canEnterPS(String voterId) throws InterruptedException;
+    boolean canEnterPS(String voterId) throws RemoteException;
 
     /**
      * The exitingPS method is called by the voter to exit the polling station.
      * @param voterId The ID of the voter.
      * @throws InterruptedException The exception thrown when a thread is waiting, sleeping, or otherwise occupied, and the thread is interrupted, either before or during the activity.
      */
-    void exitingPS(String voterId) throws InterruptedException;
+    void exitingPS(String voterId)  throws RemoteException;
 }

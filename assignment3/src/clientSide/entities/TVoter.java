@@ -1,11 +1,14 @@
 package clientSide.entities;
 
 
-import clientSide.stubs.STEvotingBooth;
-import clientSide.stubs.STExitPoll;
-import clientSide.stubs.STIDCheck;
-import clientSide.stubs.STPollStation;
+import commInfra.interfaces.EvotingBooth.IEVotingBooth_TVoter;
+import commInfra.interfaces.ExitPoll.IExitPoll_TVoter;
+import commInfra.interfaces.IDCheck.IIDCheck_TVoter;
+import commInfra.interfaces.PollStation.IPollStation_TVoter;
+import java.rmi.RemoteException;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The TVoter class implements the Runnable interface and represents the life cycle of a voter in the election simulation.
@@ -23,25 +26,25 @@ public class TVoter implements Runnable {
      * The pollStation attribute stores a reference to the polling station shared region.
      * This is the interface that the voter uses to interact with the polling station.
      */
-    private final STPollStation pollStation;
+    private final IPollStation_TVoter pollStation;
 
     /**
      * The booth attribute stores a reference to the voting booth shared region.
      * This is the interface that the voter uses to interact with the voting booth.
      */
-    private final STEvotingBooth booth;
+    private final IEVotingBooth_TVoter booth;
 
     /**
      * The idCheck attribute stores a reference to the ID check shared region.
      * This is the interface that the voter uses to interact with the ID check.
      */
-    private final STIDCheck idCheck;
+    private final IIDCheck_TVoter idCheck;
 
     /**
      * The exitPoll attribute stores a reference to the exit poll shared region.
      * This is the interface that the voter uses to interact with the exit poll.
      */
-    private final STExitPoll exitPoll;
+    private final IExitPoll_TVoter exitPoll;
 
     /**
      * The state attribute stores the current state of the voter.
@@ -119,7 +122,7 @@ public class TVoter implements Runnable {
      * @param booth       The voting booth shared region.
      * @param exitPoll    The exit poll shared region.
      */
-    private TVoter(String voterId, STPollStation pollStation, STIDCheck idCheck, STEvotingBooth booth, STExitPoll exitPoll) {
+    private TVoter(String voterId, IPollStation_TVoter pollStation, IIDCheck_TVoter idCheck, IEVotingBooth_TVoter booth, IExitPoll_TVoter exitPoll) {
         this.voterId = voterId;
         this.pollStation = pollStation;
         this.idCheck = idCheck;
@@ -137,7 +140,7 @@ public class TVoter implements Runnable {
      * @param exitPoll    The exit poll shared region.
      * @return A new TVoter object.
      */
-    public static Runnable getInstance(String voterId, STPollStation pollStation, STIDCheck idCheck, STEvotingBooth booth, STExitPoll exitPoll) {
+    public static Runnable getInstance(String voterId, IPollStation_TVoter pollStation, IIDCheck_TVoter idCheck, IEVotingBooth_TVoter booth, IExitPoll_TVoter exitPoll) {
         return new TVoter(voterId, pollStation, idCheck, booth, exitPoll);
     }
 
@@ -259,8 +262,8 @@ public class TVoter implements Runnable {
                     }
                 }
             }
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+        } catch (RemoteException ex) {
+            Logger.getLogger(TVoter.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

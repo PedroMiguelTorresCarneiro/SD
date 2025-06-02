@@ -2,11 +2,15 @@ package serverSide.sharedRegions.ExitPoll;
 
 import commInfra.interfaces.Repository.IRepo_ExitPoll;
 import commInfra.interfaces.ExitPoll.IExitPoll_ALL;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The MExitPoll class implements the IExitPoll_ALL interface and represents the Exit Poll shared region.
@@ -114,6 +118,7 @@ public class MExitPoll implements IExitPoll_ALL{
      * 
      * @return The flag that indicates if the exit poll is open or closed
      */
+    @Override
     public boolean isOpen() {
         lockCheckingState.lock();
 
@@ -138,11 +143,10 @@ public class MExitPoll implements IExitPoll_ALL{
     }
    
     /**
-     * The conductSurvey method is called by the pollster to conduct a survey.
-     * The voter is notified that the pollster is waiting for him.
-     * @throws java.lang.InterruptedException
+     * The conductSurvey method is called by the pollster to conduct a survey.The voter is notified that the pollster is waiting for him.
      */
-    public void conductSurvey() throws InterruptedException {
+    @Override
+    public void conductSurvey(){
         lockSurvey.lock();
 
         try{
@@ -154,12 +158,11 @@ public class MExitPoll implements IExitPoll_ALL{
     }
     
     /**
-     * The publishResults method is called by the pollster to publish the results of the survey.The pollster is set to the PUBLISHING_RESULTS state.
-     * The results of the survey are logged (in the log file and on the terminal) and displayed on the GUI.
+     * The publishResults method is called by the pollster to publish the results of the survey.The pollster is set to the PUBLISHING_RESULTS state.The results of the survey are logged (in the log file and on the terminal) and displayed on the GUI.
      * 
-     * @throws java.lang.InterruptedException
      */
-    public void publishResults() throws InterruptedException {
+    @Override
+    public void publishResults() throws RemoteException{
         lockPublishResults.lock();
 
         try{   
@@ -173,7 +176,11 @@ public class MExitPoll implements IExitPoll_ALL{
             
             // Simulate the vote with a random duration between 0.5s and 2s
             long randomDuration = 500 + random.nextInt(1501);
-            simulatePublishing.await(randomDuration, TimeUnit.MILLISECONDS);
+            try {
+                simulatePublishing.await(randomDuration, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(MExitPoll.class.getName()).log(Level.SEVERE, null, ex);
+            }
             
             log.logSurveyResults(countA, countB, (countA > countB ? "A" : (countB > countA ? "B" : "TIE")));
 
@@ -188,6 +195,7 @@ public class MExitPoll implements IExitPoll_ALL{
      * The close method is called by the pollster to close the exit poll.
      * The exit poll is set to closed.
      */
+    @Override
     public void close() {
         closeLock.lock();
 
@@ -199,17 +207,20 @@ public class MExitPoll implements IExitPoll_ALL{
     }
      
     /**
-     * The choosen method is called by the voter to check if he was chosen to answer the survey.
-     * The voter waits for the pollster to notify him that he was chosen.
+     * The choosen method is called by the voter to check if he was chosen to answer the survey.The voter waits for the pollster to notify him that he was chosen.
      * 
      * @return True if the voter was chosen, false otherwise
-     * @throws java.lang.InterruptedException
      */
-    public boolean choosen() throws InterruptedException{
+    @Override
+    public boolean choosen(){
         lockSurvey.lock();
 
         try{
-            waitingForPollster.await();
+            try {
+                waitingForPollster.await();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(MExitPoll.class.getName()).log(Level.SEVERE, null, ex);
+            }
             
             return Math.random() < BEING_CHOSEN_PROB;
             
@@ -219,14 +230,14 @@ public class MExitPoll implements IExitPoll_ALL{
     }
    
     /**
-     * The callForSurvey method is called by the voter to answer the survey.The voter may chose to lie in the survey with a probability of LIE_PROB.
-     * The voter answers are logged (in the log file and on the terminal) and displayed on the GUI.
+     * The callForSurvey method is called by the voter to answer the survey.The voter may chose to lie in the survey with a probability of LIE_PROB.The voter answers are logged (in the log file and on the terminal) and displayed on the GUI.
      * 
      * @param vote The vote of the voter
      * @param voterId The ID of the voter
-     * @throws java.lang.InterruptedException
+     * @throws java.rmi.RemoteException
      */
-    public void callForSurvey(char vote, String voterId) throws InterruptedException{
+    @Override
+    public void callForSurvey(char vote, String voterId) throws RemoteException{
         lockVoterAnswer.lock();
 
         try{
@@ -242,9 +253,13 @@ public class MExitPoll implements IExitPoll_ALL{
             
             // Simulate the survey response with a random duration between 0.5s and 2s
             long randomDuration = 500 + random.nextInt(1501);
-            simulateVoting.await(randomDuration, TimeUnit.MILLISECONDS);
-            
-            //voter.setState(TVoter.VoterState.ANSWER_SURVEY);
+            try {
+                simulateVoting.await(randomDuration, TimeUnit.MILLISECONDS);
+                
+                //voter.setState(TVoter.VoterState.ANSWER_SURVEY);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(MExitPoll.class.getName()).log(Level.SEVERE, null, ex);
+            }
             
         } finally {
             lockVoterAnswer.unlock();
@@ -265,8 +280,9 @@ public class MExitPoll implements IExitPoll_ALL{
    }
 
     @Override
-    public void shutdown() {
-        // TO DO: implementar o método de shutdown!
+    public void shutdown() throws RemoteException {
+        UnicastRemoteObject.unexportObject(this, true);
+        System.out.println("[SHUTDOWN] Região ExitPoll desligada.");
     }
 
 }

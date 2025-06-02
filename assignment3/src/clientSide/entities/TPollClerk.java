@@ -12,10 +12,14 @@ package clientSide.entities;
  * @author Inês Águia
  * @author Pedro Carneiro
  */
-import clientSide.stubs.STEvotingBooth;
-import clientSide.stubs.STExitPoll;
-import clientSide.stubs.STIDCheck;
-import clientSide.stubs.STPollStation;
+import commInfra.interfaces.ExitPoll.IExitPoll_TPollClerk;
+import commInfra.interfaces.PollStation.IPollStation_TPollClerk;
+import commInfra.interfaces.EvotingBooth.IEVotingBooth_TPollClerk;
+import commInfra.interfaces.IDCheck.IIDCheck_TPollClerk;
+import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 public class TPollClerk implements Runnable {
 
@@ -23,22 +27,22 @@ public class TPollClerk implements Runnable {
      * The pollStation attribute stores a reference to the polling station shared region.
      * This is the interface that the poll clerk uses to interact with the polling station.
      */
-    private final STPollStation pollStation;
+    private final IPollStation_TPollClerk pollStation;
 
     /**
      * The booth attribute stores a reference to the voting booth shared region.
      * This is the interface that the poll clerk uses to interact with the voting booth.
      */
-    private final STEvotingBooth booth;
+    private final IEVotingBooth_TPollClerk booth;
 
     /**
      * The exitPoll attribute stores a reference to the exit poll shared region.
      * This is the interface that the poll clerk uses to interact with the exit poll.
      */
-    private final STExitPoll exitPoll;
+    private final IExitPoll_TPollClerk exitPoll;
 
     
-    private final STIDCheck idCheck;
+    private final IIDCheck_TPollClerk idCheck;
     
     /**
      * The instance attribute stores the unique instance of the TPollClerk class.
@@ -99,7 +103,7 @@ public class TPollClerk implements Runnable {
      * @param exitPoll The exit poll shared region.
      * @param maxVotes The maximum number of votes required to trigger the end of the elections.
      */
-    private TPollClerk(STPollStation pollStation, STEvotingBooth booth, STExitPoll exitPoll, int maxVotes, STIDCheck idCheck) {
+    private TPollClerk(IPollStation_TPollClerk pollStation, IEVotingBooth_TPollClerk booth, IExitPoll_TPollClerk exitPoll, IIDCheck_TPollClerk idCheck, int maxVotes) {
         this.pollStation = pollStation;
         this.booth = booth;
         this.exitPoll = exitPoll;
@@ -113,12 +117,13 @@ public class TPollClerk implements Runnable {
      * @param pollStation The polling station shared region.
      * @param booth The voting booth shared region.
      * @param exitPoll The exit poll shared region.
+     * @param idCheck
      * @param maxVotes The maximum number of votes required to trigger the end of the elections.
      * @return The unique instance of the TPollClerk class.
      */
-    public static Runnable getInstance(STPollStation pollStation, STEvotingBooth booth, STExitPoll exitPoll, int maxVotes, STIDCheck idCheck) {
+    public static Runnable getInstance(IPollStation_TPollClerk pollStation, IEVotingBooth_TPollClerk booth, IExitPoll_TPollClerk exitPoll, IIDCheck_TPollClerk idCheck, int maxVotes) {
         if (instance == null) {
-            instance = new TPollClerk(pollStation, booth, exitPoll, maxVotes, idCheck);
+            instance = new TPollClerk(pollStation, booth, exitPoll, idCheck, maxVotes);
         }
 
         return instance;
@@ -226,8 +231,8 @@ public class TPollClerk implements Runnable {
             }
 
             resetInstance();     
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+        } catch (RemoteException ex) {
+            Logger.getLogger(TPollClerk.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

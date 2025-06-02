@@ -14,18 +14,18 @@ public interface IEVotingBooth_TPollClerk extends Remote{
      * The gathering method is called by the poll clerk to gather all the votes.
      * @throws InterruptedException if the thread is interrupted.
      */
-    void gathering() throws InterruptedException;
+    void gathering() throws RemoteException;
     
     /**
      * The publishElectionResults method is called by the poll clerk to publish the election results.
      */
-    void publishElectionResults();
+    void publishElectionResults() throws RemoteException;
     
     /**
      * The getVotesCount method is called by the poll clerk to get the number of voters.
      * @return the number of voters that have voted.
      */
-    int getVotesCount();
+    int getVotesCount() throws RemoteException;
     
-    void shutdown();
+    void shutdown() throws RemoteException;
 }

@@ -16,7 +16,7 @@ public interface IRepo_VotingBooth extends Remote{
      * @param voterId The voter's ID.
      * @param vote The candidate the voter voted for.
      */
-    void logVoting(String voterId, char vote);
+    void logVoting(String voterId, char vote) throws RemoteException;
 
     /**
      * The logElectionResults method logs the results of the election in the voting booth shared region.
@@ -24,10 +24,10 @@ public interface IRepo_VotingBooth extends Remote{
      * @param B The number of votes for party B.
      * @param winner The winner of the election.
      */
-    void logElectionResults(long A, long B, String winner);
+    void logElectionResults(long A, long B, String winner) throws RemoteException;
 
     /**
      * The close method closes the repository shared region after the election is over. 
      */
-    void close();
+    void close() throws RemoteException;
 }

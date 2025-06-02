@@ -11,7 +11,7 @@ public interface IExitPoll_TVoter extends Remote{
      * @return true if the voter was choosen for the survey, false otherwise.
      * @throws InterruptedException if the thread is interrupted
      */
-    boolean choosen() throws InterruptedException;
+    boolean choosen() throws RemoteException;
 
     /**
      * The callForSurvey method is called by the voter to vote in the survey.
@@ -19,11 +19,11 @@ public interface IExitPoll_TVoter extends Remote{
      * @param voterId The ID of the voter
      * @throws InterruptedException if the thread is interrupted
      */
-    void callForSurvey(char vote, String voterId) throws InterruptedException;
+    void callForSurvey(char vote, String voterId) throws RemoteException;
     
     /**
      * The isOpen method is called by the voter to see if the exit poll is open.
      * @return true if the exit poll is open, false otherwise.
      */
-    boolean isOpen();
+    boolean isOpen() throws RemoteException;
 }
